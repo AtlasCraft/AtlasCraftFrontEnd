@@ -36,12 +36,12 @@ const App = () => {
 		<BrowserRouter>
 			<AuthContextProvider>
 				<GlobalStoreContextProvider>
-					<ThemeProvider theme={theme}>
+					{/* <ThemeProvider theme={theme}> */}
 						<NavigationBar />
 						<Switch>
 							<Route path="/" exact component={HomeScreen} />
 						</Switch>
-					</ThemeProvider>
+					{/* </ThemeProvider> */}
 				</GlobalStoreContextProvider>
 			</AuthContextProvider>
 		</BrowserRouter>

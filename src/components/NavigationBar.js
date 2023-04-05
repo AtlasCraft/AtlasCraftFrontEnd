@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import AuthContext from "../auth";
 import { GlobalStoreContext } from "../store";
@@ -11,6 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Avatar from "@mui/material/Avatar";
+import { Button } from '@mui/material';
 
 export default function AppBanner() {
 	const { auth } = useContext(AuthContext);
@@ -30,58 +31,28 @@ export default function AppBanner() {
 		handleMenuClose();
 		auth.logoutUser(store);
 	};
-
-	const menuId = "primary-search-account-menu";
-	const loggedOutMenu = (
-		<Menu
-			anchorEl={anchorEl}
-			anchorOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			id={menuId}
-			keepMounted
-			transformOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			open={isMenuOpen}
-			onClose={handleMenuClose}
-		>
-			<MenuItem onClick={handleMenuClose}>
-				<Link to="/register/">Create New Account</Link>
-			</MenuItem>
-			<MenuItem onClick={handleMenuClose}>
-				<Link to="/login/">Login</Link>
-			</MenuItem>
-		</Menu>
-	);
-	const loggedInMenu = (
-		<Menu
-			anchorEl={anchorEl}
-			anchorOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			id={menuId}
-			keepMounted
-			transformOrigin={{
-				vertical: "top",
-				horizontal: "right",
-			}}
-			open={isMenuOpen}
-			onClose={handleMenuClose}
-		>
-			<MenuItem onClick={handleLogout}>Logout</MenuItem>
-		</Menu>
-	);
-
-	let editToolbar = "";
-	let menu = loggedOutMenu;
-	if (auth.loggedIn) {
-		menu = loggedInMenu;
+	function handleChangePassword(){
+		//todo
 	}
-
+	const menuId = "primary-search-account-menu";
+	const menuItems = useMemo(() => {
+		let temp = <>
+			<MenuItem onClick={handleMenuClose}>
+				<Link to="/">Create New Account</Link>
+			</MenuItem>
+			<MenuItem onClick={handleMenuClose}>
+				<Link to="/">Login</Link>
+			</MenuItem>
+		</>;
+		if(auth.loggedIn){
+			temp = <>
+				<MenuItem onClick={handleLogout}>Logout</MenuItem>
+				<MenuItem onClick={handleChangePassword}>Change Password</MenuItem>
+			</>;
+		}
+		return temp
+	}, [auth.loggedIn]);
+	let editToolbar = "";
 	function getAccountMenu(loggedIn) {
 		if (loggedIn) {
 			return (
@@ -97,43 +68,56 @@ export default function AppBanner() {
 				</Avatar>
 			);
 		}
-		return <AccountCircle />;
+		return <AccountCircle style={{color: "#F5DEB3", transform:"scale(1.6)"}}/>;
 	}
 
 	return (
-		<Box sx={{ flexGrow: 1, border: "black solid .5px" }}>
-			<AppBar position="static">
-				<Toolbar>
+		<Box style={{width:"100%"}}>
+			<AppBar position="static" sx ={{background: "#1C353D", width:"100%"}}>
+				<Toolbar style={{width:"96%"}}>
+					<Button style = {{borderRadius:"25px"}}>
+						<img src = {require('./../util/AtlasCraftLogo.png')} style ={{width: "40px", height: "40px", borderRadius:"25px"}}/>
+					</Button>
 					<Typography
-						variant="h4"
+						variant="h6"
 						noWrap
 						component="div"
-						sx={{ display: { xs: "none", sm: "block" } }}
+						sx={{ display: { xs: "none", sm: "block", color: "#F5DEB3" } }}
 					>
-						<Link
-							style={{ textDecoration: "none", color: "white" }}
-							to="/"
-						>
-							T<sup>5</sup>L
-						</Link>
+						AtlasCraft
 					</Typography>
-					<Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
-					<Box sx={{ display: { xs: "none", md: "flex" } }}>
-						<IconButton
-							size="large"
-							edge="end"
-							aria-label="account of current user"
-							aria-controls={menuId}
-							aria-haspopup="true"
-							onClick={handleProfileMenuOpen}
-							color="inherit"
-						>
-							{getAccountMenu(auth.loggedIn)}
-						</IconButton>
-					</Box>
+					{/* <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box> */}
+					<IconButton
+						size="large"
+						style={{ position: "absolute", left:"95%" }}
+						// edge="end"
+						aria-label="account of current user"
+						aria-controls={menuId}
+						aria-haspopup="true"
+						onClick={handleProfileMenuOpen}
+						color="#F5DEB3"
+					>
+						{getAccountMenu(auth.loggedIn)}
+					</IconButton>
 				</Toolbar>
 			</AppBar>
-			{menu}
+			<Menu
+				anchorEl={anchorEl}
+				anchorOrigin={{
+					vertical: "top",
+					horizontal: "right",
+				}}
+				id={menuId}
+				keepMounted
+				transformOrigin={{
+					vertical: "top",
+					horizontal: "right",
+				}}
+				open={isMenuOpen}
+				onClose={handleMenuClose}
+			>
+				{menuItems}
+			</Menu>
 		</Box>
 	);
 }
