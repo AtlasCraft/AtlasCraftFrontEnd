@@ -52,7 +52,6 @@ export default function AppBanner() {
 		}
 		return temp
 	}, [auth.loggedIn]);
-	let editToolbar = "";
 	function getAccountMenu(loggedIn) {
 		if (loggedIn) {
 			return (
@@ -74,7 +73,7 @@ export default function AppBanner() {
 	return (
 		<Box style={{width:"100%"}}>
 			<AppBar position="static" sx ={{background: "#1C353D", width:"100%"}}>
-				<Toolbar style={{width:"96%"}}>
+				<Toolbar style={{width:"95%"}}>
 					<Button style = {{borderRadius:"25px"}}>
 						<img src = {require('./../util/AtlasCraftLogo.png')} style ={{width: "40px", height: "40px", borderRadius:"25px"}}/>
 					</Button>
@@ -86,11 +85,10 @@ export default function AppBanner() {
 					>
 						AtlasCraft
 					</Typography>
-					{/* <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box> */}
+					<Box sx={{ flexGrow: 1 }}></Box>
 					<IconButton
 						size="large"
-						style={{ position: "absolute", left:"95%" }}
-						// edge="end"
+						edge="end"
 						aria-label="account of current user"
 						aria-controls={menuId}
 						aria-haspopup="true"
