@@ -6,7 +6,8 @@ import { GlobalStoreContextProvider } from "./store";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import {
 	NavigationBar,
-	HomeScreen
+	HomeScreen,
+	AppPaperScreen
 } from "./components";
 /*
     This is our application's top-level component.
@@ -38,9 +39,11 @@ const App = () => {
 				<GlobalStoreContextProvider>
 					{/* <ThemeProvider theme={theme}> */}
 						<NavigationBar />
-						<Switch>
-							<Route path="/" exact component={HomeScreen} />
-						</Switch>
+						<AppPaperScreen>
+							<Switch>
+								<Route path="/" exact component={HomeScreen} />
+							</Switch>
+						</AppPaperScreen>
 					{/* </ThemeProvider> */}
 				</GlobalStoreContextProvider>
 			</AuthContextProvider>
