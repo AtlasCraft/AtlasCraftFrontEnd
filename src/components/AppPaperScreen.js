@@ -1,5 +1,5 @@
 import { Paper } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
 import Image from "./../util/hd-wallpaper-gf327242da_1920.jpg";
 const style = {
     paperContainer: {
@@ -9,13 +9,12 @@ const style = {
     }
 };
 
-const HomeScreen = () => {
+const AppPaperScreen = () => {
 	return (
-		<>
-		
-		</>
-		
+		<Paper style={style.paperContainer}>
+
+		</Paper>
 	);
 };
 
-export default HomeScreen;
+export default AppPaperScreen;
