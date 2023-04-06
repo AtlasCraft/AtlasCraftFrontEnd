@@ -4,15 +4,18 @@ import Image from "./../util/hd-wallpaper-gf327242da_1920.jpg";
 const style = {
     paperContainer: {
         backgroundImage: `url(${Image})`,
-		height:"92%"
+		height:"92%",
+        width:"100%",
+        zIndex:"0",
+        position: "absolute"
 		
     }
 };
 
-const AppPaperScreen = () => {
+const AppPaperScreen = (props) => {
 	return (
 		<Paper style={style.paperContainer}>
-
+            {props.children}
 		</Paper>
 	);
 };
