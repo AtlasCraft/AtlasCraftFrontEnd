@@ -31,9 +31,10 @@ export default function AppBanner() {
 		handleMenuClose();
 		auth.logoutUser(store);
 	};
-	function handleChangePassword() {
-		//todo
-	}
+	const handleChangePassword = () => {
+		handleMenuClose();
+		auth.changePassword(store);
+	};
 	const menuId = "primary-search-account-menu";
 	const menuItems = useMemo(() => {
 		let temp = <>

@@ -130,6 +130,11 @@ function AuthContextProvider(props) {
 		} catch (err) { }
 	};
 
+	auth.changePassword = async function (store) {
+		store.closeCurrentList();
+		history.push("/changepasswordscreen");
+	};
+
 	auth.fakeLogin = async function () {
 		setAuth({
 			user: { firstName: 'Atlas', lastName: 'Craft' },

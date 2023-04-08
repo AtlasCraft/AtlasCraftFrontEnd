@@ -4,14 +4,11 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useHistory } from "react-router-dom";
 
-const PasswordRetrievalPage = () => {
+const ChangePasswordScreen = () => {
     const history = useHistory();
+    const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
-    const [securityQuestion1, setSecurityQuestion1] = useState('');
-    const [answer1, setAnswer1] = useState('');
-    const [securityQuestion2, setSecurityQuestion2] = useState('');
-    const [answer2, setAnswer2] = useState('');
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
@@ -33,35 +30,38 @@ const PasswordRetrievalPage = () => {
         // ...
 
         // Reset form fields
+        setOldPassword('');
         setNewPassword('');
         setConfirmNewPassword('');
-        setSecurityQuestion1('');
-        setAnswer1('');
-        setSecurityQuestion2('');
-        setAnswer2('');
-        history.push("/");
+        history.goBack();
     };
 
     const handleFormCancel = () => {
         // Reset form fields
+        setOldPassword('');
         setNewPassword('');
         setConfirmNewPassword('');
-        setSecurityQuestion1('');
-        setAnswer1('');
-        setSecurityQuestion2('');
-        setAnswer2('');
-        history.push("/");
+        history.goBack();
     };
 
     return (
         <Grid container justifyContent="center" style={{ padding: '64px' }}>
             <Grid justifyContent="center" style={{ borderRadius: '10px', height: '70%', width: '70%', padding: '36px', backgroundColor: '#1C353D' }}>
                 <Grid item xs={12}>
-                    <h1 style={{ color: '#E5CAAD' }}>Retrieve Password</h1>
+                    <h1 style={{ color: '#E5CAAD' }}>Change Password</h1>
                 </Grid>
                 <Grid item xs={12}>
                     <form onSubmit={handleFormSubmit}>
                         <Grid container spacing={2}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    label="Old Password"
+                                    type="password"
+                                    fullWidth
+                                    value={oldPassword}
+                                    onChange={(e) => setOldPassword(e.target.value)}
+                                />
+                            </Grid>
                             <Grid item xs={12}>
                                 <TextField
                                     label="New Password"
@@ -78,22 +78,6 @@ const PasswordRetrievalPage = () => {
                                     fullWidth
                                     value={confirmNewPassword}
                                     onChange={(e) => setConfirmNewPassword(e.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Security Question 1: What was your favorite school teacher’s name?"
-                                    fullWidth
-                                    value={answer1}
-                                    onChange={(e) => setAnswer1(e.target.value)}
-                                />
-                            </Grid>
-                            <Grid item xs={12}>
-                                <TextField
-                                    label="Security Question 2: What’s your favorite movie?"
-                                    fullWidth
-                                    value={answer2}
-                                    onChange={(e) => setAnswer2(e.target.value)}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -118,4 +102,4 @@ const PasswordRetrievalPage = () => {
     );
 };
 
-export default PasswordRetrievalPage;
+export default ChangePasswordScreen;
