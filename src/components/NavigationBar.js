@@ -31,7 +31,7 @@ export default function AppBanner() {
 		handleMenuClose();
 		auth.logoutUser(store);
 	};
-	function handleChangePassword(){
+	function handleChangePassword() {
 		//todo
 	}
 	const menuId = "primary-search-account-menu";
@@ -44,7 +44,7 @@ export default function AppBanner() {
 				<Link to="/">Login</Link>
 			</MenuItem>
 		</>;
-		if(auth.loggedIn){
+		if (auth.loggedIn) {
 			temp = <>
 				<MenuItem onClick={handleLogout}>Logout</MenuItem>
 				<MenuItem onClick={handleChangePassword}>Change Password</MenuItem>
@@ -67,15 +67,15 @@ export default function AppBanner() {
 				</Avatar>
 			);
 		}
-		return <AccountCircle style={{color: "#F5DEB3", transform:"scale(1.6)"}}/>;
+		return <AccountCircle style={{ color: "#F5DEB3", transform: "scale(1.6)" }} />;
 	}
 
 	return (
-		<Box style={{width:"100%"}}>
-			<AppBar position="static" sx ={{background: "#1C353D", width:"100%"}}>
-				<Toolbar style={{width:"95%"}}>
-					<Button style = {{borderRadius:"25px"}}>
-						<img src = {require('./../util/AtlasCraftLogo.png')} style ={{width: "40px", height: "40px", borderRadius:"25px"}}/>
+		<Box style={{ width: "100%" }}>
+			<AppBar position="static" sx={{ background: "#1C353D", width: "100%" }}>
+				<Toolbar style={{ width: "95%" }}>
+					<Button style={{ borderRadius: "25px" }}>
+						<img src={require('./../util/AtlasCraftLogo.png')} style={{ width: "40px", height: "40px", borderRadius: "25px" }} />
 					</Button>
 					<Typography
 						variant="h6"

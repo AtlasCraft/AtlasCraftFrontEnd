@@ -7,12 +7,13 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import {
 	NavigationBar,
 	HomeScreen,
-	AppPaperScreen
+	AppPaperScreen,
+	LoginScreen
 } from "./components";
 /*
-    This is our application's top-level component.
+	This is our application's top-level component.
     
-    @author McKilla Gorilla
+	@author McKilla Gorilla
 */
 /*
   This is the entry-point for our application. Notice that we
@@ -38,12 +39,13 @@ const App = () => {
 			<AuthContextProvider>
 				<GlobalStoreContextProvider>
 					{/* <ThemeProvider theme={theme}> */}
-						<NavigationBar />
-						<AppPaperScreen>
-							<Switch>
-								<Route path="/" exact component={HomeScreen} />
-							</Switch>
-						</AppPaperScreen>
+					<NavigationBar />
+					<AppPaperScreen>
+						<Switch>
+							<Route path="/" exact component={LoginScreen} />
+							<Route path="/homescreen" exact component={HomeScreen} />
+						</Switch>
+					</AppPaperScreen>
 					{/* </ThemeProvider> */}
 				</GlobalStoreContextProvider>
 			</AuthContextProvider>
