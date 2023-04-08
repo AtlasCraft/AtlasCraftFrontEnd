@@ -8,7 +8,8 @@ import {
 	NavigationBar,
 	HomeScreen,
 	AppPaperScreen,
-	LoginScreen
+	LoginScreen,
+	ForgotPasswordScreen
 } from "./components";
 /*
 	This is our application's top-level component.
@@ -44,6 +45,7 @@ const App = () => {
 						<Switch>
 							<Route path="/" exact component={LoginScreen} />
 							<Route path="/homescreen" exact component={HomeScreen} />
+							<Route path="/forgotpassword" exact component={ForgotPasswordScreen} />
 						</Switch>
 					</AppPaperScreen>
 					{/* </ThemeProvider> */}

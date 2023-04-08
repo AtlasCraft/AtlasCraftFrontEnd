@@ -11,7 +11,7 @@ import AuthContext from "../auth";
 import { GlobalStoreContext } from "../store";
 // import ErrorModal from "./ErrorModal";
 
-const LoginPage = () => {
+const LoginScreen = () => {
 	const { auth } = useContext(AuthContext);
 	const { store } = useContext(GlobalStoreContext);
 	const [username, setUsername] = useState('');
@@ -93,4 +93,4 @@ const LoginPage = () => {
 	);
 };
 
-export default LoginPage;
+export default LoginScreen;

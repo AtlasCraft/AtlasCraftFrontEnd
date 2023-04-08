@@ -4,11 +4,13 @@ import RegisterScreen from "./RegisterScreen";
 import LoginScreen from "./LoginScreen";
 import AppPaperScreen from "./AppPaperScreen";
 import MapCard from "./MapCard";
+import ForgotPasswordScreen from "./ForgotPasswordScreen";
+
 /*
-    This serves as a module so that we can import
-    all the other components as we wish.
+	This serves as a module so that we can import
+	all the other components as we wish.
     
-    @author McKilla Gorilla
+	@author McKilla Gorilla
 */
 export {
 	NavigationBar,
@@ -16,5 +18,6 @@ export {
 	RegisterScreen,
 	LoginScreen,
 	AppPaperScreen,
-	MapCard
+	MapCard,
+	ForgotPasswordScreen
 };
