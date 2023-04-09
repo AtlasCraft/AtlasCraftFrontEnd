@@ -1,9 +1,9 @@
 import {IconButton, Button, List, Input, createTheme, ButtonGroup} from "@mui/material";
-import {LinearScale, RectangleOutlined, CircleOutlined, FormatColorFill, FormatBold, FormatItalic, ChangeHistory} from "@mui/icons-material";
-import { useState } from "react";
+import {LinearScale, RectangleOutlined, CircleOutlined, FormatColorFill, FormatBold, FormatItalic, ChangeHistory, Delete, ZoomOutMap} from "@mui/icons-material";
+import { useRef, useState, useEffect } from "react";
 import Konva from 'konva';
 import React from "react";
-// import { Stage, Layer, Rect, Text, Circle, Line } from 'react-konva';
+import { Stage, Layer, Rect, Text, Circle, Line } from 'react-konva';
 const theme = createTheme({
 
 })
@@ -45,12 +45,24 @@ export default function DrawScreen(){
     const [selectedOption, setSelected] = useState("None");
     const [bold, setBold] = useState(false);
     const [italic, setItalic] = useState(false);
+    const [stageDimensions, setStageDimensions] = useState({
+        width: 0,
+        height: 0
+      })
+    const divRef = useRef(null)
     let width = window.innerWidth ;
     let height = window.innerHeight;
     // let state = new Konva.Stage({
     //     container: "CanvasContainer"
     // })
-
+    useEffect(() => {
+        if (divRef.current?.offsetHeight && divRef.current?.offsetWidth) {
+          setStageDimensions({
+            width: divRef.current.offsetWidth,
+            height: divRef.current.offsetHeight
+          })
+        }
+      }, [])
     return ( 
     <div style={style.mainPage}>
         <div style={style.drawToolBar}>
@@ -68,11 +80,26 @@ export default function DrawScreen(){
             <div style={style.dividerLine}>|</div>
             <div style={{position:"relative",width:"80%", display:"flex"}}>
                 <div>
+                    <IconButton disabled = {false} onClick = {()=>{setSelected("move")}}>
+                        <ZoomOutMap style ={{
+                            fontSize: "25pt",
+                            color: "black",
+                            opacity: selectedOption === "move"?"100%":"50%",
+                            transform:"rotate(45deg)"
+                        }}/>
+                    </IconButton>
                     <IconButton disabled = {false} onClick = {()=>{setSelected("fill")}}>
                         <FormatColorFill style ={{
                             fontSize: "25pt",
                             color: "black",
                             opacity: selectedOption === "fill"?"100%":"50%",
+                        }}/>
+                    </IconButton>
+                    <IconButton disabled = {false} onClick = {()=>{setSelected("delete")}}>
+                        <Delete style ={{
+                            fontSize: "25pt",
+                            color: "black",
+                            opacity: selectedOption === "delete"?"100%":"50%",
                         }}/>
                     </IconButton>
                     <Button variant="text" onClick ={()=>{setSelected("text")}} style={{
@@ -150,20 +177,21 @@ export default function DrawScreen(){
                 <div style={style.dividerLine}>|</div>
             </div>
         </div>
-        <div id="CanvasContainer" style={style.canvasContainer}>
+        <div id="CanvasContainer" style={style.canvasContainer} ref={divRef}>
+            <Stage width={stageDimensions.width} height ={stageDimensions.height}>
+                <Layer>
+                    <Rect
+                    x={10}
+                    y={100}
+                    width={100}
+                    height={100}
+                    fill="red"
+                    shadowBlur={10}
+                    draggable="true"
+                    />
+                </Layer>
+            </Stage>
         </div>
-        {/* <Stage>
-            <Layer>
-            <Rect
-            x={20}
-            y={50}
-            width={100}
-            height={100}
-            fill="red"
-            shadowBlur={10}
-            />
-            </Layer>
-        </Stage> */}
     </div>
 
     );
