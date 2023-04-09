@@ -42,7 +42,7 @@ const style = {
 }
 
 export default function DrawScreen(){
-    const [selectedOption, setSelected] = useState("None");
+    const [selectedOption, setSelected] = useState("move");
     const [bold, setBold] = useState(false);
     const [italic, setItalic] = useState(false);
     const [stageDimensions, setStageDimensions] = useState({

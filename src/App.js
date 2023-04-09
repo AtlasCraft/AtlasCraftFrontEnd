@@ -42,7 +42,7 @@ const App = () => {
 						<NavigationBar />
 						<AppPaperScreen>
 							<Switch>
-								<Route path="/" exact component={DrawScreen} />
+								<Route path="/draw" exact component={DrawScreen} />
 								<Route path="/home" exact component={HomeScreen} />
 							</Switch>
 						</AppPaperScreen>
