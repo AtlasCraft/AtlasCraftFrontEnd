@@ -8,7 +8,9 @@ import {
 	NavigationBar,
 	HomeScreen,
 	AppPaperScreen,
-	DrawScreen
+	DrawScreen,
+	RegisterScreen,
+	ViewScreen
 } from "./components";
 /*
     This is our application's top-level component.
@@ -42,8 +44,8 @@ const App = () => {
 						<NavigationBar />
 						<AppPaperScreen>
 							<Switch>
-								<Route path="/draw" exact component={DrawScreen} />
-								<Route path="/home" exact component={HomeScreen} />
+								<Route path="/register" exact component={RegisterScreen} />
+								<Route path="/view" exact component={ViewScreen} />
 							</Switch>
 						</AppPaperScreen>
 					{/* </ThemeProvider> */}
