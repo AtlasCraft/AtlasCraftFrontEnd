@@ -1,9 +1,9 @@
 import {IconButton, Button, List, Input, createTheme, ButtonGroup} from "@mui/material";
 import {LinearScale, RectangleOutlined, CircleOutlined, FormatColorFill, FormatBold, FormatItalic, ChangeHistory, Delete, ZoomOutMap} from "@mui/icons-material";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import Konva from 'konva';
 import React from "react";
-import { Stage, Layer, Rect, Text, Circle, Line } from 'react-konva';
+import { Stage, Layer, Rect, Shape } from 'react-konva';
 const theme = createTheme({
 
 })
@@ -48,7 +48,7 @@ export default function DrawScreen(){
     const [stageDimensions, setStageDimensions] = useState({
         width: 0,
         height: 0
-      })
+        })
     const divRef = useRef(null)
     let width = window.innerWidth ;
     let height = window.innerHeight;
@@ -63,6 +63,51 @@ export default function DrawScreen(){
           })
         }
       }, [])
+
+
+ //needs to be removed in final build
+    const tempGeo = require("../util/VaticanTestGeojson.json");
+    const pointToDraw = useMemo(()=>{
+        if(!tempGeo) return [];
+        let tempList = [];
+        const coords = tempGeo.features[0].geometry.coordinates[0][0];
+        let minLon = 10000;
+        let maxLon = 0;
+        let minLat = 10000;
+        let maxLat = 0;
+        for(let i=0; i<coords.length; i++){//first find the min and max lat and lon NOTE the geojson saves it as [lon lat] = [y,x]
+            if(coords[i][0]<minLon) minLon = coords[i][0]
+            if(coords[i][0]>maxLon) maxLon = coords[i][0]
+            if(coords[i][1]<minLat) minLat = coords[i][1]
+            if(coords[i][1]>maxLat) maxLat = coords[i][1]
+        }
+        //resize the lat so it doesnt fit the whole screen
+
+        //now to scale the image
+        //math works as follows 
+        //drawx = (lat-minLat/(maxLat-minLat))stageDimensions.width
+        //drawy = (lon-minLon/(maxLon-minLon))stageDimensions.height
+        for(let i=0; i<coords.length; i++){
+            let drawx = stageDimensions.width - ((coords[i][1]-minLat)/(maxLat-minLat)) * (stageDimensions.height * .8)  - (stageDimensions.width * .4)
+            let drawy = ((coords[i][0]-minLon)/(maxLon-minLon)) * (stageDimensions.height * .8) + (stageDimensions.height * .05)
+            tempList.push([drawx, drawy])
+        }
+        return tempList;
+    }, [stageDimensions]);
+    function sceneFunction(context, shape){
+        context.beginPath();
+        context.moveTo(pointToDraw[0][0], pointToDraw[0][1]);
+        for(let i=1; i<pointToDraw.length;i++){
+            context.lineTo(pointToDraw[i][0], pointToDraw[i][1]);
+        }
+        context.closePath();
+        context.fillStrokeShape(shape);
+    }
+
+//end remove
+
+    console.log(pointToDraw);
+    console.log(stageDimensions)
     return ( 
     <div style={style.mainPage}>
         <div style={style.drawToolBar}>
@@ -180,7 +225,7 @@ export default function DrawScreen(){
         <div id="CanvasContainer" style={style.canvasContainer} ref={divRef}>
             <Stage width={stageDimensions.width} height ={stageDimensions.height}>
                 <Layer>
-                    <Rect
+                    {/* <Rect
                     x={10}
                     y={100}
                     width={100}
@@ -188,7 +233,14 @@ export default function DrawScreen(){
                     fill="red"
                     shadowBlur={10}
                     draggable="true"
+                    /> */}
+                    <Shape
+                        sceneFunc = {sceneFunction}
+                        fill="#00D2FF"
+                        stroke="black"
+                        strokeWidth={2}
                     />
+
                 </Layer>
             </Stage>
         </div>
