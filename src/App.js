@@ -7,7 +7,8 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import {
 	NavigationBar,
 	HomeScreen,
-	AppPaperScreen
+	AppPaperScreen,
+	DrawScreen
 } from "./components";
 /*
     This is our application's top-level component.
@@ -41,7 +42,8 @@ const App = () => {
 						<NavigationBar />
 						<AppPaperScreen>
 							<Switch>
-								<Route path="/" exact component={HomeScreen} />
+								<Route path="/" exact component={DrawScreen} />
+								<Route path="/home" exact component={HomeScreen} />
 							</Switch>
 						</AppPaperScreen>
 					{/* </ThemeProvider> */}
