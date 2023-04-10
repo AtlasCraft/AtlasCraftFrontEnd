@@ -6,7 +6,7 @@ import AppPaperScreen from "./AppPaperScreen";
 import MapCard from "./MapCard";
 import ForgotPasswordScreen from "./ForgotPasswordScreen";
 import ChangePasswordScreen from "./ChangePasswordScreen";
-
+import DrawScreen from "./DrawScreen";
 
 /*
 	This serves as a module so that we can import
@@ -22,5 +22,6 @@ export {
 	AppPaperScreen,
 	MapCard,
 	ForgotPasswordScreen,
-	ChangePasswordScreen
+	ChangePasswordScreen,
+	DrawScreen
 };

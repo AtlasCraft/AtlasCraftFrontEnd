@@ -10,7 +10,8 @@ import {
 	AppPaperScreen,
 	LoginScreen,
 	ForgotPasswordScreen,
-	ChangePasswordScreen
+	ChangePasswordScreen,
+	DrawScreen
 } from "./components";
 /*
 	This is our application's top-level component.
@@ -41,15 +42,18 @@ const App = () => {
 			<AuthContextProvider>
 				<GlobalStoreContextProvider>
 					{/* <ThemeProvider theme={theme}> */}
+
 					<NavigationBar />
 					<AppPaperScreen>
 						<Switch>
 							<Route path="/" exact component={LoginScreen} />
-							<Route path="/homescreen" exact component={HomeScreen} />
+							<Route path="/draw" exact component={DrawScreen} />
+							<Route path="/home" exact component={HomeScreen} />
 							<Route path="/forgotpassword" exact component={ForgotPasswordScreen} />
 							<Route path="/changepasswordscreen" exact component={ChangePasswordScreen} />
 						</Switch>
 					</AppPaperScreen>
+
 					{/* </ThemeProvider> */}
 				</GlobalStoreContextProvider>
 			</AuthContextProvider>
