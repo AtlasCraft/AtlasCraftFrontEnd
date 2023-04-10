@@ -9,8 +9,8 @@ import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
 
 
 export default function ViewScreen() {
-
-
+  const tempGeo = require("../util/VaticanTestGeojson.json");
+  console.log(tempGeo)
   return (
     <div>
       <div>
@@ -31,7 +31,7 @@ export default function ViewScreen() {
             alignItems="center"
             spacing={2}
           >
-            <TextField id="mapname" label="Name" variant="filled" hiddenLabel />
+            <div style={{width:"80%", left:"2%", fontSize:"20pt"}}> The Vatican City</div>
             <Button
               variant="contained"
               href="#"
@@ -66,6 +66,7 @@ export default function ViewScreen() {
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     />
+                    <GeoJSON data={tempGeo.features}/>
                 </MapContainer>
                 
             </Box>

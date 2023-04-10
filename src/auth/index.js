@@ -108,7 +108,7 @@ function AuthContextProvider(props) {
 						user: response.data.user,
 					},
 				});
-				history.push("/");
+				history.push("/homescreen");
 				store.loadListUsers();
 			}
 		} catch (err) {
@@ -126,7 +126,21 @@ function AuthContextProvider(props) {
 					payload: {},
 				});
 			}
-		} catch (err) {}
+			history.push("/");
+		} catch (err) { }
+	};
+
+	auth.changePassword = async function (store) {
+		store.closeCurrentList();
+		history.push("/changepasswordscreen");
+	};
+
+	auth.fakeLogin = async function () {
+		setAuth({
+			user: { firstName: 'Atlas', lastName: 'Craft' },
+			loggedIn: true
+		});
+		history.push("/homescreen");
 	};
 	return (
 		<AuthContext.Provider

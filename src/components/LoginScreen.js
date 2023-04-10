@@ -1,127 +1,96 @@
-import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
-import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useHistory } from "react-router-dom";
 
 // import Copyright from "./Copyright";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import AuthContext from "../auth";
 import { GlobalStoreContext } from "../store";
 // import ErrorModal from "./ErrorModal";
 
-const theme = createTheme();
-
-export default function LoginScreen() {
+const LoginScreen = () => {
 	const { auth } = useContext(AuthContext);
 	const { store } = useContext(GlobalStoreContext);
+	const [username, setUsername] = useState('');
+	const [password, setPassword] = useState('');
+	const history = useHistory();
 
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		const formData = new FormData(event.currentTarget);
-		// eslint-disable-next-line no-console
-		auth.loginUser(
-			{
-				username: formData.get("username"),
-				password: formData.get("password"),
-			},
-			store
-		);
+	const handleLogin = (e) => {
+		e.preventDefault();
+
+		// If login is successful, navigate to the home page
+		if (authValidation()) {
+			auth.fakeLogin();
+		}
 	};
 
+	function authValidation() { return true; } // TODO
+
 	return (
-		<ThemeProvider theme={theme}>
-			<Grid
-				container
-				component="main"
-				sx={{ height: "90%", justifyContent: "center" }}
-			>
-				<CssBaseline />
-				<Grid
-					item
-					xs={12}
-					sm={8}
-					md={5}
-					component={Paper}
-					elevation={6}
-					square
-				>
-					<Box
-						sx={{
-							my: 8,
-							mx: 4,
-							display: "flex",
-							flexDirection: "column",
-							alignItems: "center",
-						}}
-					>
-						<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-							<LockOutlinedIcon />
-						</Avatar>
-						<Typography component="h1" variant="h5">
-							Sign in
-						</Typography>
-						<Box
-							component="form"
-							noValidate
-							onSubmit={handleSubmit}
-							sx={{ mt: 1 }}
-						>
-							<TextField
-								margin="normal"
-								required
-								fullWidth
-								id="Username"
-								label="Username"
-								name="username"
-								autoComplete="username"
-								autoFocus
-							/>
-							<TextField
-								margin="normal"
-								required
-								fullWidth
-								name="password"
-								label="Password"
-								type="password"
-								id="password"
-								autoComplete="current-password"
-							/>
-							<Button
-								type="submit"
-								fullWidth
-								variant="contained"
-								color="secondary"
-								sx={{ mt: 3, mb: 2 }}
-							>
-								Sign In
-							</Button>
-							<Grid container>
-								<Grid item xs>
-									<Link href="#" variant="body2">
-										Forgot password?
-									</Link>
-								</Grid>
-								<Grid item>
-									<Link href="/register" variant="body2">
-										{"Don't have an account? Sign Up"}
-									</Link>
-								</Grid>
+		<Grid container justifyContent="center" style={{ height: '100%', padding: '48px' }}>
+			{/* Wrap the grids in a container grid with padding around it */}
+			<Grid item xs={12} md={7} style={{ height: '100%' }}>
+				{/* Picture on the left taking up 3/5 of the area */}
+				<img
+					src={require('./../util/AtlasCraftLogo.png')}
+					alt="Logo"
+					style={{ width: '100%', height: '100%' }} />
+			</Grid>
+			<Grid item xs={12} md={5} style={{ backgroundColor: '#1C353D', height: '100%' }} >
+				<Typography variant="h3" style={{ padding: '24px' }} align="center" color={'#E5CAAD'}>
+					AtlasCraft
+				</Typography>
+				<Typography variant="h6" align="center" color={'#E5CAAD'}>
+					Welcome to AtlasCraft
+				</Typography>
+				<Typography variant="h6" align="center" color={'#E5CAAD'}>
+					A Map Editing, Viewing, and Sharing Platform
+				</Typography>
+				<Grid container style={{ padding: '24px' }} >
+					{/* Login component on the right taking up 2/5 of the area */}
+					<form onSubmit={handleLogin}>
+						<TextField
+							label="Username"
+							variant="outlined"
+							fullWidth
+							margin="normal"
+							value={username}
+							onChange={(e) => setUsername(e.target.value)}
+						/>
+						<TextField
+							label="Password"
+							variant="outlined"
+							fullWidth
+							margin="normal"
+							type="password"
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+						/>
+						<Button type="submit" variant="contained" color="primary" fullWidth>
+							Login
+						</Button>
+						<Grid container justifyContent="space-between">
+							{/* "Sign Up" and "Forgot password" links on the same line */}
+							<Grid item>
+								<Link href="/signup" variant="body2">
+									Sign Up
+								</Link>
 							</Grid>
-							{/* <Copyright sx={{ mt: 5 }} /> */}
-						</Box>
-					</Box>
+							<Grid item>
+								<Link href="/forgotpassword" variant="body2">
+									Forgot Password
+								</Link>
+							</Grid>
+
+						</Grid>
+					</form>
 				</Grid>
 			</Grid>
-			{/* <ErrorModal /> */}
-		</ThemeProvider>
+		</Grid>
 	);
-}
+};
+
+export default LoginScreen;

@@ -3,10 +3,10 @@ import { useHistory } from "react-router-dom";
 import api from "../api";
 import AuthContext from "../auth";
 /*
-    This is our global data store. Note that it uses the Flux design pattern,
-    which makes use of things like actions and reducers. 
+	This is our global data store. Note that it uses the Flux design pattern,
+	which makes use of things like actions and reducers. 
     
-    @author McKilla Gorilla
+	@author McKilla Gorilla
 */
 
 // THIS IS THE CONTEXT WE'LL USE TO SHARE OUR STORE
@@ -294,7 +294,7 @@ function GlobalStoreContextProvider(props) {
 			type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
 			payload: {},
 		});
-		history.push("/");
+		history.push("/homescreen");
 	};
 
 	// THIS FUNCTION CREATES A NEW LIST
@@ -377,7 +377,7 @@ function GlobalStoreContextProvider(props) {
 					payload: array,
 				});
 			}
-		} catch (err) {}
+		} catch (err) { }
 	};
 
 	// THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
@@ -397,7 +397,7 @@ function GlobalStoreContextProvider(props) {
 		let response = await api.deleteTop5ListById(listToDelete._id);
 		if (response.data.success) {
 			store.loadListUsers();
-			// history.push("/");
+			// history.push("/homescreen");
 		}
 	};
 
@@ -439,7 +439,7 @@ function GlobalStoreContextProvider(props) {
 			);
 			setTimeout(() => {
 				store.hideErr();
-				history.push("/");
+				history.push("/homescreen");
 			}, 3000);
 			console.log(err);
 		}
@@ -483,7 +483,7 @@ function GlobalStoreContextProvider(props) {
 					});
 				}
 			}
-		} catch (err) {}
+		} catch (err) { }
 	};
 	store.updateCurrentList = async function () {
 		const response = await api.updateTop5ListById(
@@ -564,7 +564,7 @@ function GlobalStoreContextProvider(props) {
 			store.tab === "community"
 				? await api.incViewCommunity(id)
 				: await api.incView(id);
-		} catch (error) {}
+		} catch (error) { }
 		if (store.tab === "home") store.loadListUsers();
 		else if (store.tab === "community") store.loadCommunityList();
 		else store.loadList();
@@ -606,7 +606,7 @@ function GlobalStoreContextProvider(props) {
 					});
 				}
 			}
-		} catch (err) {}
+		} catch (err) { }
 	};
 
 	store.updateRating = async function (id, action) {
@@ -617,7 +617,7 @@ function GlobalStoreContextProvider(props) {
 			if (store.tab === "home") store.loadListUsers();
 			else if (store.tab === "community") store.loadCommunityList();
 			else store.loadList();
-		} catch (err) {}
+		} catch (err) { }
 	};
 
 	store.showErr = function (statusCode, msg) {
