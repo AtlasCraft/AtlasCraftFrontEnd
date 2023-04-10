@@ -12,11 +12,22 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { GlobalStoreContext } from "../store";
+import Select, { StylesConfig } from 'react-select';
+import { ClassNames } from "@emotion/react";
 // import ErrorModal from "./ErrorModal";
+
+
 
 export default function RegisterScreen() {
 	const { auth } = useContext(AuthContext);
 	const { store } = useContext(GlobalStoreContext);
+
+	const options = [
+		{label: "What is your favorite color?", value: 1, className: 'q1'},
+		{label: "What is name of your uncle?", value: 2, className: 'q2'},
+		{label: "What is name of your best friend?", value: 3, className: 'q3'},
+		{label: "What is name of the city you were born?", value: 4, className: 'q4'},
+	];
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
@@ -29,10 +40,15 @@ export default function RegisterScreen() {
 				username: formData.get("username"),
 				password: formData.get("password"),
 				passwordVerify: formData.get("passwordVerify"),
+				question1: formData.get(options),
+				answer1: formData.get("answer1"),
+				question2: formData.get(options),
+				answer2: formData.get("answer2")
 			},
 			store
 		);
 	};
+	  
 
 	return (
 		<Container component="main" maxWidth="xs">
@@ -43,8 +59,12 @@ export default function RegisterScreen() {
 					display: "flex",
 					flexDirection: "column",
 					alignItems: "center",
+					position: 'absolute',
+					position: 'absolute', left: '50%', top: '50%',
+        			transform: 'translate(-50%, -50%)'
 				}}
 			>
+			{/* 
 				<Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
 					<LockOutlinedIcon />
 				</Avatar>
@@ -57,6 +77,7 @@ export default function RegisterScreen() {
 					onSubmit={handleSubmit}
 					sx={{ mt: 3 }}
 				>
+				*/}
 					<Grid container spacing={2}>
 						<Grid item xs={12} sm={6}>
 							<TextField
@@ -121,23 +142,58 @@ export default function RegisterScreen() {
 								autoComplete="new-password"
 							/>
 						</Grid>
+						<Grid item xs={12} sm={6}>
+						<Select
+							options={options}
+							placeholder={'Security Question1'}
+							clearable={false}
+						/>
+						</Grid>
+						<Grid item xs={12} sm={6}>
+							<TextField
+								required
+								fullWidth
+								id="answer1"
+								label="answer1"
+								name="answer1"
+								autoComplete="answer1"
+							/>
+						</Grid>
+						<Grid item xs={12} sm={6}>
+						<Select
+							options={options}
+							placeholder={'Security Question2'}
+							clearable={false}
+						/>
+						</Grid>
+						<Grid item xs={12} sm={6}>
+							<TextField
+								required
+								fullWidth
+								id="answer2"
+								label="answer2"
+								name="answer2"
+								autoComplete="answer2"
+							/>
+						</Grid>
+						
 					</Grid>
+					
 					<Button
 						type="submit"
-						fullWidth
 						variant="contained"
 						sx={{ mt: 3, mb: 2 }}
 					>
-						Sign Up
+						Create Account
 					</Button>
 					<Grid container justifyContent="center">
 						<Grid item>
-							<Link href="/login/" variant="body2">
+							<Link href="/" variant="body2">
 								Already have an account? Sign in
 							</Link>
 						</Grid>
 					</Grid>
-				</Box>
+				{/*</Box>*/}			
 			</Box>
 			{/* <Copyright /> */}
 			{/* <ErrorModal /> */}

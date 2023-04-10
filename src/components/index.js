@@ -9,6 +9,7 @@ import ChangePasswordScreen from './ChangePasswordScreen';
 import DrawScreen from './DrawScreen';
 import EditScreen from './EditScreen';
 
+import ViewScreen from "./ViewScreen";
 /*
 	This serves as a module so that we can import
 	all the other components as we wish.
@@ -16,14 +17,15 @@ import EditScreen from './EditScreen';
 	@author McKilla Gorilla
 */
 export {
-  NavigationBar,
-  HomeScreen,
-  RegisterScreen,
-  LoginScreen,
-  AppPaperScreen,
-  MapCard,
-  ForgotPasswordScreen,
-  ChangePasswordScreen,
-  DrawScreen,
-  EditScreen,
+	NavigationBar,
+	HomeScreen,
+	RegisterScreen,
+	LoginScreen,
+	AppPaperScreen,
+	MapCard,
+	ForgotPasswordScreen,
+	ChangePasswordScreen,
+	DrawScreen,
+	ViewScreen,
+	EditScreen,
 };

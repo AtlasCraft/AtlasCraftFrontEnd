@@ -13,6 +13,8 @@ import {
   ChangePasswordScreen,
   DrawScreen,
   EditScreen,
+  RegisterScreen,
+	ViewScreen,
 } from './components';
 /*
 	This is our application's top-level component.
@@ -38,6 +40,7 @@ let theme = createTheme({
 });
 
 const App = () => {
+
   return (
     <BrowserRouter>
       <AuthContextProvider>
@@ -52,6 +55,8 @@ const App = () => {
               <Route path="/edit/" exact component={EditScreen} />
               <Route path="/forgotpassword/" exact component={ForgotPasswordScreen} />
 							<Route path="/changepassword/" exact component={ChangePasswordScreen} />
+              <Route path="/register/" exact component={RegisterScreen} />
+							<Route path="/view/" exact component={ViewScreen} />
             </Switch>
           </AppPaperScreen>
           {/* </ThemeProvider> */}
