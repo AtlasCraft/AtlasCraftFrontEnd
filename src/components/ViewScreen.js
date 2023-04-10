@@ -4,12 +4,13 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Grid from "@mui/material/Grid";
-import { MapContainer, TileLayer, GeoJson } from 'react-leaflet';
-import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
 
-const mapData = require('./test/demo1.json');
+
 export default function ViewScreen() {
-  
+
+
   return (
     <div>
       <div>
@@ -49,25 +50,25 @@ export default function ViewScreen() {
             </Button>
           </Stack>
           <Stack spacing={0}>
-            <div
-                style={{
-                width: '80%',
-                background: 'gray',
-                height: '100%',
-                }}
-            >
+            <Box
+                sx={{
+                    width: '100%',
+                    height: 380,
+                    margin: 0.5,
+                    backgroundColor: 'white'
+                }}>
                 <MapContainer
-                style={{ height: '80vh' }}
+                style={{width:'100%', height:380, margin: 0.5}}
                 center={[42.09618442380296, -71.5045166015625]}
                 zoom={7}
                 >
-                <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                <GeoJSON data={mapData.geojson} style={countryStyle} />
+                    <TileLayer
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
                 </MapContainer>
-            </div>
+                
+            </Box>
             <Box
             sx={{
                 id: "comments",
