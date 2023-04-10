@@ -47,8 +47,8 @@ const App = () => {
           <AppPaperScreen>
             <Switch>
               <Route path="/" exact component={DrawScreen} />
-              <Route path="/home" exact component={HomeScreen} />
-              <Route path="/edit" exact component={EditScreen} />
+              <Route path="/home/" exact component={HomeScreen} />
+              <Route path="/edit/" exact component={EditScreen} />
             </Switch>
           </AppPaperScreen>
           {/* </ThemeProvider> */}
