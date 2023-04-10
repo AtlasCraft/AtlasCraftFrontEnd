@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
-import Text from 'react-text';
+import Grid from "@mui/material/Grid";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
 export default function ViewScreen() {
@@ -46,6 +46,51 @@ export default function ViewScreen() {
               Download
             </Button>
           </Stack>
+          <Stack spacing={0}>
+            <Box
+                sx={{
+                    width: '100%',
+                    height: 380,
+                    margin: 0.5,
+                    backgroundColor: 'white'
+                }}>
+                    map
+            </Box>
+            <Box
+            sx={{
+                id: "comments",
+                width: '100%',
+                height: 150,
+                margin: 0.5,
+                backgroundColor: 'rgb(192,192,192)'
+            }}>
+            </Box>
+          </Stack>
+
+          <Grid container spacing={2}>
+            <Grid item>
+                <TextField
+                    fullWidth
+                    id="comment"
+                    name="comment"
+                    autoComplete="comment"
+                />
+                </Grid>
+            <Grid item>
+                <Button
+                variant="contained"
+                href="#"
+                sx={{
+                    marginTop: 2,
+                    'align-self': 'center',
+                }}
+                >
+                Enter
+                </Button>
+            </Grid>
+            
+
+          </Grid>
         </Box>
       </div>
       
