@@ -121,7 +121,7 @@ export default function EditScreen() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <GeoJSON data={mapData.geojson} style={countryStyle} />
+              <GeoJSON data={mapData.geojson.features} style={countryStyle} />
             </MapContainer>
           </div>
           <div style={{ width: '20%', background: 'white', height: '100%' }}>

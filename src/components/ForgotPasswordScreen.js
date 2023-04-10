@@ -69,6 +69,8 @@ const PasswordRetrievalPage = () => {
                                     fullWidth
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
+                                    sx={{input:{color:"#F5DEB3"}}}
+                                    InputLabelProps={{sx: {color:"#F5DEB3"}}}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -78,6 +80,8 @@ const PasswordRetrievalPage = () => {
                                     fullWidth
                                     value={confirmNewPassword}
                                     onChange={(e) => setConfirmNewPassword(e.target.value)}
+                                    sx={{input:{color:"#F5DEB3"}}}
+                                    InputLabelProps={{sx: {color:"#F5DEB3"}}}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -86,6 +90,8 @@ const PasswordRetrievalPage = () => {
                                     fullWidth
                                     value={answer1}
                                     onChange={(e) => setAnswer1(e.target.value)}
+                                    sx={{input:{color:"#F5DEB3"}}}
+                                    InputLabelProps={{sx: {color:"#F5DEB3"}}}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -94,6 +100,8 @@ const PasswordRetrievalPage = () => {
                                     fullWidth
                                     value={answer2}
                                     onChange={(e) => setAnswer2(e.target.value)}
+                                    sx={{input:{color:"#F5DEB3"}}}
+                                    InputLabelProps={{sx: {color:"#F5DEB3"}}}
                                 />
                             </Grid>
                             <Grid item xs={12}>
