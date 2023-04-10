@@ -48,6 +48,7 @@ const App = () => {
             <Switch>
               <Route path="/" exact component={DrawScreen} />
               <Route path="/home" exact component={HomeScreen} />
+              <Route path="/edit" exact component={EditScreen} />
             </Switch>
           </AppPaperScreen>
           {/* </ThemeProvider> */}
