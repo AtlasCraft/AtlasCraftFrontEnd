@@ -61,7 +61,10 @@ export default function RegisterScreen() {
 					alignItems: "center",
 					position: 'absolute',
 					position: 'absolute', left: '50%', top: '50%',
-        			transform: 'translate(-50%, -50%)'
+        			transform: 'translate(-50%, -50%)',
+					backgroundColor: '#1C353D',
+					borderRadius: '10px'
+
 				}}
 			>
 			{/* 
@@ -88,6 +91,8 @@ export default function RegisterScreen() {
 								id="firstName"
 								label="First Name"
 								autoFocus
+								sx={{input:{color:"#F5DEB3"}}}
+                                InputLabelProps={{sx: {color:"#F5DEB3"}}}
 							/>
 						</Grid>
 						<Grid item xs={12} sm={6}>
@@ -98,6 +103,8 @@ export default function RegisterScreen() {
 								label="Last Name"
 								name="lastName"
 								autoComplete="lname"
+								sx={{input:{color:"#F5DEB3"}}}
+                                InputLabelProps={{sx: {color:"#F5DEB3"}}}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -108,6 +115,8 @@ export default function RegisterScreen() {
 								label="Email Address"
 								name="email"
 								autoComplete="email"
+								sx={{input:{color:"#F5DEB3"}}}
+                                InputLabelProps={{sx: {color:"#F5DEB3"}}}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -118,6 +127,8 @@ export default function RegisterScreen() {
 								label="Username"
 								name="username"
 								autoComplete="username"
+								sx={{input:{color:"#F5DEB3"}}}
+                                InputLabelProps={{sx: {color:"#F5DEB3"}}}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -129,6 +140,8 @@ export default function RegisterScreen() {
 								type="password"
 								id="password"
 								autoComplete="new-password"
+								sx={{input:{color:"#F5DEB3"}}}
+                                InputLabelProps={{sx: {color:"#F5DEB3"}}}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -140,6 +153,8 @@ export default function RegisterScreen() {
 								type="password"
 								id="passwordVerify"
 								autoComplete="new-password"
+								sx={{input:{color:"#F5DEB3"}}}
+                                InputLabelProps={{sx: {color:"#F5DEB3"}}}
 							/>
 						</Grid>
 						<Grid item xs={12} sm={6}>
@@ -157,6 +172,8 @@ export default function RegisterScreen() {
 								label="answer1"
 								name="answer1"
 								autoComplete="answer1"
+								sx={{input:{color:"#F5DEB3"}}}
+                                InputLabelProps={{sx: {color:"#F5DEB3"}}}
 							/>
 						</Grid>
 						<Grid item xs={12} sm={6}>
@@ -174,6 +191,8 @@ export default function RegisterScreen() {
 								label="answer2"
 								name="answer2"
 								autoComplete="answer2"
+								sx={{input:{color:"#F5DEB3"}}}
+                                InputLabelProps={{sx: {color:"#F5DEB3"}}}
 							/>
 						</Grid>
 						
