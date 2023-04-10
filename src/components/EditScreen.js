@@ -113,7 +113,7 @@ export default function EditScreen() {
             }}
           >
             <MapContainer
-              style={{ height: '80vh' }}
+              style={{ height: '75vh' }}
               center={[42.09618442380296, -71.5045166015625]}
               zoom={7}
             >
