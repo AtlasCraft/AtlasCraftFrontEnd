@@ -1,12 +1,13 @@
-import NavigationBar from "./NavigationBar";
-import HomeScreen from "./HomeScreen";
-import RegisterScreen from "./RegisterScreen";
-import LoginScreen from "./LoginScreen";
-import AppPaperScreen from "./AppPaperScreen";
-import MapCard from "./MapCard";
-import ForgotPasswordScreen from "./ForgotPasswordScreen";
-import ChangePasswordScreen from "./ChangePasswordScreen";
-import DrawScreen from "./DrawScreen";
+import NavigationBar from './NavigationBar';
+import HomeScreen from './HomeScreen';
+import RegisterScreen from './RegisterScreen';
+import LoginScreen from './LoginScreen';
+import AppPaperScreen from './AppPaperScreen';
+import MapCard from './MapCard';
+import ForgotPasswordScreen from './ForgotPasswordScreen';
+import ChangePasswordScreen from './ChangePasswordScreen';
+import DrawScreen from './DrawScreen';
+import EditScreen from './EditScreen';
 
 /*
 	This serves as a module so that we can import
@@ -15,13 +16,14 @@ import DrawScreen from "./DrawScreen";
 	@author McKilla Gorilla
 */
 export {
-	NavigationBar,
-	HomeScreen,
-	RegisterScreen,
-	LoginScreen,
-	AppPaperScreen,
-	MapCard,
-	ForgotPasswordScreen,
-	ChangePasswordScreen,
-	DrawScreen
+  NavigationBar,
+  HomeScreen,
+  RegisterScreen,
+  LoginScreen,
+  AppPaperScreen,
+  MapCard,
+  ForgotPasswordScreen,
+  ChangePasswordScreen,
+  DrawScreen,
+  EditScreen,
 };
