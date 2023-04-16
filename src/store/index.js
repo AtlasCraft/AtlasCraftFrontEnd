@@ -88,7 +88,7 @@ function GlobalStoreContextProvider(props) {
 	store.loadMapCards = async function(){
 		let res = await api.getAllMapCards();
 		if(res.data.success){
-			console.log(data);
+			console.log(res.data);
 		}
 	}
 
@@ -170,7 +170,15 @@ function GlobalStoreContextProvider(props) {
 	store.deleteMap = function(){
 
 	}
-
+	return (
+		<GlobalStoreContext.Provider
+			value={{
+				store,
+			}}
+		>
+			{props.children}
+		</GlobalStoreContext.Provider>
+	);
 }
 
 export default GlobalStoreContext;

@@ -39,8 +39,8 @@ export const registerUser = (payload) => api.post(`/register/`, payload);
 export const loginUser = (payload) => api.post(`/login/`, payload);
 export const logoutUser = () => api.get(`/logout/`);
 export const getSequrityQestions = () => api.get('/sq/:username');
-export const forgotPassword = () => api.post('/forgotPassword', payload);
-export const changePassword = () => api.post('/changePassword', payload);
+export const forgotPassword = (payload) => api.post('/forgotPassword', payload);
+export const changePassword = (payload) => api.post('/changePassword', payload);
 
 
 const apis = {

@@ -85,7 +85,7 @@ function AuthContextProvider(props) {
 		try {
 			const response = await api.registerUser(userData);
 			if (response.status === 200) {
-				history.push("/login");
+				history.push("/");
 			}
 		} catch (err) {
 			store.showErr(err.response.status, err.response.data.errorMessage);
@@ -134,7 +134,7 @@ function AuthContextProvider(props) {
 			user: { firstName: 'Atlas', lastName: 'Craft' },
 			loggedIn: true
 		});
-		history.push("/homescreen");
+		history.push("/home");
 	};
 	return (
 		<AuthContext.Provider
