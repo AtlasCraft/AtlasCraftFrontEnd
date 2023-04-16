@@ -3,7 +3,7 @@ name: "Frontend Tests"
 on: 
   push:
     branches:
-      - test
+      - test-branch
 
 permissions:
   contents: read
