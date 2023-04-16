@@ -26,6 +26,7 @@ export const GlobalStoreActionType = {
 	SET_SELECTED_REGION: "SET_SELECTED_REGION",
 	ADD_PROP: "ADD_PROP",
 	UPDATE_PROP: "UPDATE_PROP",
+	SET_MAPCARDS:"SET_MAPCARDS",
 };
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -58,13 +59,13 @@ function GlobalStoreContextProvider(props) {
 		const { type, payload } = action;
 		switch (type) {
 			// LIST UPDATE OF ITS NAME
-			case GlobalStoreActionType.SET_MAP: {
+			case GlobalStoreActionType.SET_MAPCARDS: {
 				return setStore({
 					geojson: null,
 					nameMap: null,
 					mapId: null,
 					ownedUser: null,
-					mapcardList: [],
+					mapcardList: payload,
 					ownedMapCardList:[],
 					editable: false,
 					graphicState:[],
@@ -81,6 +82,15 @@ function GlobalStoreContextProvider(props) {
 	// THESE ARE THE FUNCTIONS THAT WILL UPDATE OUR STORE AND
 	// DRIVE THE STATE OF THE APPLICATION. WE'LL CALL THESE IN
 	// RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
+
+	// ***ANY FUNCTION NOT FILLED IN MEANS IT IS PLANNED FOR A FUTURE BUILD***
+
+	store.loadMapCards = async function(){
+		let res = await api.getAllMapCards();
+		if(res.data.success){
+			console.log(data);
+		}
+	}
 
 	// tps handling functions
 	store.canUndo = function(){
