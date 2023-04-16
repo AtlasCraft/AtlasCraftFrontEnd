@@ -17,6 +17,8 @@ function AuthContextProvider(props) {
 	const [auth, setAuth] = useState({
 		user: null,
 		loggedIn: false,
+		error: false,
+		errorMsg: null,
 		// guest: false,
 	});
 	const history = useHistory();
@@ -33,20 +35,17 @@ function AuthContextProvider(props) {
 				return setAuth({
 					user: payload.user,
 					loggedIn: payload.loggedIn,
+					error: false,
+					errorMsg: null,
 					// guest: auth.guest,
 				});
 			}
-			// case AuthActionType.REGISTER_USER: {
-			// 	return setAuth({
-			// 		user: payload.user,
-			// 		loggedIn: true,
-			// 		// guest: false,
-			// 	});
-			// }
 			case AuthActionType.LOGIN_USER: {
 				return setAuth({
 					user: payload.user,
 					loggedIn: true,
+					error: false,
+					errorMsg: null,
 					// guest: false,
 				});
 			}
@@ -54,6 +53,8 @@ function AuthContextProvider(props) {
 				return setAuth({
 					user: null,
 					loggedIn: false,
+					error: false,
+					errorMsg: null,
 					// guest: false,
 				});
 			}
@@ -84,14 +85,7 @@ function AuthContextProvider(props) {
 		try {
 			const response = await api.registerUser(userData);
 			if (response.status === 200) {
-				// authReducer({
-				// 	type: AuthActionType.REGISTER_USER,
-				// 	payload: {
-				// 		user: response.data.user,
-				// 	},
-				// });
-				history.push("/login");
-				// store.loadListUsers();
+				history.push("/");
 			}
 		} catch (err) {
 			store.showErr(err.response.status, err.response.data.errorMessage);
@@ -108,8 +102,9 @@ function AuthContextProvider(props) {
 						user: response.data.user,
 					},
 				});
-				history.push("/homescreen");
-				store.loadListUsers();
+				store.loadMapCards();
+				history.push("/home");
+				
 			}
 		} catch (err) {
 			store.showErr(err.response.status, err.response.data.errorMessage);
@@ -131,8 +126,7 @@ function AuthContextProvider(props) {
 	};
 
 	auth.changePassword = async function (store) {
-		store.closeCurrentList();
-		history.push("/changepasswordscreen");
+		//For build 4
 	};
 
 	auth.fakeLogin = async function () {
@@ -140,7 +134,7 @@ function AuthContextProvider(props) {
 			user: { firstName: 'Atlas', lastName: 'Craft' },
 			loggedIn: true
 		});
-		history.push("/homescreen");
+		history.push("/home");
 	};
 	return (
 		<AuthContext.Provider
