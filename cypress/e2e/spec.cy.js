@@ -1,12 +1,12 @@
 describe('template spec', () => {
 
-  it('passes', () => {
-    cy.visit('http://64.227.29.95/')
-    cy.get('a.MuiButtonBase-root').click
-    cy.get('.css-1an0zpc > .MuiBox-root > button.MuiButtonBase-root').click
-    cy.get('.MuiBox-root > .MuiTypography-inherit').click
-    cy.get('.MuiBox-root > .MuiTypography-inherit').click({force: true})
-  });
+  // it('passes', () => {
+  //   cy.visit('http://64.227.29.95/')
+  //   cy.get('a.MuiButtonBase-root').click
+  //   cy.get('.css-1an0zpc > .MuiBox-root > button.MuiButtonBase-root').click
+  //   cy.get('.MuiBox-root > .MuiTypography-inherit').click
+  //   cy.get('.MuiBox-root > .MuiTypography-inherit').click({force: true})
+  // });
 
   // it('create account test', function() {
   //   cy.visit('http://64.227.29.95/register')

@@ -14,7 +14,7 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 const api = axios.create({
   // baseURL: 'https://urchin-app-zt4cv.ondigitalocean.app/api',
-  baseURL:"https://jaszheng.me/",
+  baseURL: 'https://jaszheng.me/api',
 });
 
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
@@ -25,23 +25,27 @@ const api = axios.create({
 // CUSTOM FILTERS FOR QUERIES
 
 // Map Editing info
-export const createMapEditingInfo = (payload)=>api.post('/mapeditinginfo', payload);
-export const deleteMapEditingInfo = (payload)=>api.delete('/mapeditinginfo', payload);
-export const getMapEditingInfoById = (id)=>api.get(`/mapeditinginfo/${id}`);
-export const updateMapEditingInfoById = (id, payload)=>api.post(`/mapeditinginfo/${id}`, payload);
+export const createMapEditingInfo = (payload) =>
+  api.post('/mapeditinginfo', payload);
+export const deleteMapEditingInfo = (payload) =>
+  api.delete('/mapeditinginfo', payload);
+export const getMapEditingInfoById = (id) => api.get(`/mapeditinginfo/${id}`);
+export const updateMapEditingInfoById = (id, payload) =>
+  api.post(`/mapeditinginfo/${id}`, payload);
 
 // Map Cards
 export const getAllMapCards = ()=>api.get(`/mapcard`);
+export const updateCardLikes = (id)=>api.post(`/mapcard/${id}/likes`);
+export const updateCardDislikes = (id)=>api.post(`/mapcard/${id}/dislikes`);
 
 // Auth
 export const getLoggedIn = () => api.get(`/loggedIn/`);
 export const registerUser = (payload) => api.post(`/register/`, payload);
 export const loginUser = (payload) => api.post(`/login/`, payload);
 export const logoutUser = () => api.get(`/logout/`);
-export const getSequrityQestions = () => api.get('/sq/:username');
+export const getSecurityQuestions = () => api.get('/sq/:username');
 export const forgotPassword = (payload) => api.post('/forgotPassword', payload);
 export const changePassword = (payload) => api.post('/changePassword', payload);
-
 
 const apis = {
   //map editing info
@@ -51,12 +55,14 @@ const apis = {
   updateMapEditingInfoById,
   //map cards
   getAllMapCards,
+  updateCardDislikes,
+  updateCardLikes,
   //auth
   getLoggedIn,
   registerUser,
   loginUser,
   logoutUser,
-  getSequrityQestions,
+  getSecurityQuestions,
   forgotPassword,
   changePassword,
 };

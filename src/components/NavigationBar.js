@@ -1,5 +1,5 @@
 import { useContext, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useHistory } from "react-router-dom";
 import AuthContext from "../auth";
 import { GlobalStoreContext } from "../store";
 import AppBar from "@mui/material/AppBar";
@@ -18,7 +18,8 @@ export default function AppBanner() {
 	const { store } = useContext(GlobalStoreContext);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const isMenuOpen = Boolean(anchorEl);
-
+	const history = useHistory();
+	
 	const handleProfileMenuOpen = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
@@ -33,23 +34,32 @@ export default function AppBanner() {
 	};
 	const handleChangePassword = () => {
 		handleMenuClose();
-		auth.changePassword(store);
+		history.push('/changepassword')
+		// auth.changePassword(store);
 	};
+	const toHome = ()=>{
+		if(auth.loggedIn){
+			store.loadMapCards();
+			history.push("/home");
+		}
+		
+	}
 	const menuId = "primary-search-account-menu";
 	const menuItems = useMemo(() => {
-		let temp = <>
+		console.log(auth);
+		let temp = <div>
 			<MenuItem onClick={handleMenuClose}>
 				<Link to="/">Create New Account</Link>
 			</MenuItem>
 			<MenuItem onClick={handleMenuClose}>
 				<Link to="/">Login</Link>
 			</MenuItem>
-		</>;
+		</div>;
 		if (auth.loggedIn) {
-			temp = <>
+			temp = <div>
 				<MenuItem onClick={handleLogout}>Logout</MenuItem>
 				<MenuItem onClick={handleChangePassword}>Change Password</MenuItem>
-			</>;
+			</div>;
 		}
 		return temp
 	}, [auth.loggedIn]);
@@ -75,7 +85,7 @@ export default function AppBanner() {
 		<Box style={{ width: "100%" }}>
 			<AppBar position="static" sx={{ background: "#1C353D", width: "100%" }}>
 				<Toolbar style={{ width: "95%" }}>
-					<Button style={{ borderRadius: "25px" }}>
+					<Button style={{ borderRadius: "25px" }} onClick={()=>{toHome()}}>
 						<img src={require('./../util/AtlasCraftLogo.png')} style={{ width: "40px", height: "40px", borderRadius: "25px" }} />
 					</Button>
 					<Typography
