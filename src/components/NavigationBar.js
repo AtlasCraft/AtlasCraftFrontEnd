@@ -49,7 +49,7 @@ export default function AppBanner() {
 		console.log(auth);
 		let temp = <div>
 			<MenuItem onClick={handleMenuClose}>
-				<Link to="/">Create New Account</Link>
+				<Link to="/register">Create New Account</Link>
 			</MenuItem>
 			<MenuItem onClick={handleMenuClose}>
 				<Link to="/">Login</Link>
