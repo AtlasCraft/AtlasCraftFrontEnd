@@ -34,7 +34,9 @@ export const updateMapEditingInfoById = (id, payload) =>
   api.post(`/mapeditinginfo/${id}`, payload);
 
 // Map Cards
-export const getAllMapCards = () => api.get(`/mapcard`);
+export const getAllMapCards = ()=>api.get(`/mapcard`);
+export const updateCardLikes = (id)=>api.post(`/mapcard/${id}/likes`);
+export const updateCardDislikes = (id)=>api.post(`/mapcard/${id}/dislikes`);
 
 // Auth
 export const getLoggedIn = () => api.get(`/loggedIn/`);
@@ -53,6 +55,8 @@ const apis = {
   updateMapEditingInfoById,
   //map cards
   getAllMapCards,
+  updateCardDislikes,
+  updateCardLikes,
   //auth
   getLoggedIn,
   registerUser,

@@ -100,12 +100,19 @@ function GlobalStoreContextProvider(props) {
 
   // ***ANY FUNCTION NOT FILLED IN MEANS IT IS PLANNED FOR A FUTURE BUILD***
 
-  store.loadMapCards = async function () {
-    let res = await api.getAllMapCards();
-    if (res.data.success) {
-      console.log(res.data);
-    }
-  };
+  //Mapcard updates
+	store.updateLikes = async function(){
+
+	}
+	store.updateDislikes = async function(){
+		
+	}
+	store.loadMapCards = async function(){
+		let res = await api.getAllMapCards();
+		if(res.data.success){
+			console.log(res.data);
+		}
+	}
 
   // tps handling functions
   store.canUndo = function () {
@@ -147,6 +154,7 @@ function GlobalStoreContextProvider(props) {
   store.changeMapName = function () {};
   store.saveMap = function () {};
   store.deleteMap = function () {};
+  store.createNewMap = function(){};
   store.showErr = function (statusCode, msg) {
     console.log(msg);
     storeReducer({
@@ -171,6 +179,7 @@ function GlobalStoreContextProvider(props) {
       {props.children}
     </GlobalStoreContext.Provider>
   );
+
 }
 
 export default GlobalStoreContext;
