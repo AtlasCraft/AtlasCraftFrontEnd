@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import {ListItem, IconButton} from "@mui/material";
+import {ListItem, IconButton, Tooltip} from "@mui/material";
 import {Visibility, FileCopy, Download, Edit, ThumbUp, ThumbDown, ThumbDownAltOutlined, ThumbUpAltOutlined} from '@mui/icons-material';
 import AuthContext from '../auth'
 import GlobalStoreContext from '../store'
@@ -59,9 +59,13 @@ export default function MapCard(props){
     // const loggedInUser = "user1"
     const ownedUser = props.ownedUser;
     const mapName = props.mapName;
-    const [likedUsers, setLiked] = useState(props.likedUsers);
-    const [dislikedUsers, setDisliked] = useState(props.dislikedUsers);
-
+    const [likedUsers, setLiked] = useState([]);
+    const [dislikedUsers, setDisliked] = useState([]);
+    useEffect(()=>{
+        setLiked(props.likedUsers);
+        setDisliked(props.dislikedUsers);
+    },[props.likedUsers, props.dislikedUsers]);
+    
     function handleLike(){
         // if(likedUsers.includes(loggedInUser)){
         //     //remove from liked users and update backend
@@ -136,24 +140,28 @@ export default function MapCard(props){
     }
 
     let likeButton = 
-    (likedUsers.includes(loggedInUser)?
-        <IconButton onClick={handleLike}>
-            <ThumbUp style={style.iconButtons}/>
-        </IconButton>:
-        <IconButton onClick={handleLike}>
-            <ThumbUpAltOutlined style={style.iconButtons}/>
-        </IconButton>
-        );
-
+    
+    <Tooltip title="Like Map">
+        {likedUsers.includes(loggedInUser)?
+            <IconButton onClick={handleLike}>
+                <ThumbUp style={style.iconButtons}/>
+            </IconButton>:
+            <IconButton onClick={handleLike}>
+                <ThumbUpAltOutlined style={style.iconButtons}/>
+            </IconButton>
+        }
+    </Tooltip>
     let dislikeButton = 
-    (dislikedUsers.includes(loggedInUser)?
-        <IconButton onClick={handleDislike}>
-            <ThumbDown style={style.iconButtons}/>
-        </IconButton>:
-        <IconButton onClick={handleDislike}>
-            <ThumbDownAltOutlined style={style.iconButtons}/>
-        </IconButton>
-        );
+    <Tooltip title="Dislike Map">
+        {dislikedUsers.includes(loggedInUser)?
+            <IconButton onClick={handleDislike}>
+                <ThumbDown style={style.iconButtons}/>
+            </IconButton>:
+            <IconButton onClick={handleDislike}>
+                <ThumbDownAltOutlined style={style.iconButtons}/>
+            </IconButton>
+        }
+    </Tooltip>
 
     return(
         <ListItem style={style.cardContainer}>
@@ -167,19 +175,28 @@ export default function MapCard(props){
             </div>
             <div style={style.bottomDivContainer}>
                 <div style={style.leftDivContainer}>
-                    <IconButton onClick={()=>{store.loadMap(props.id, "view");}}>
-                        <Visibility style={style.iconButtons}/>
-                    </IconButton>
-                    <IconButton onClick={()=>{handleFork()}}>
-                        <FileCopy style={style.iconButtons} />
-                    </IconButton>
-                    <IconButton>
-                        <Download style={style.iconButtons}/>
-                    </IconButton>
+                    <Tooltip title="View Map">
+                        <IconButton onClick={()=>{store.loadMap(props.id, "view");}}>
+                            <Visibility style={style.iconButtons}/>
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Fork Map">
+                        <IconButton onClick={()=>{handleFork()}}>
+                            <FileCopy style={style.iconButtons} />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Download Map">
+                        <IconButton>
+                            <Download style={style.iconButtons}/>
+                        </IconButton>
+                    </Tooltip>
                     {loggedInUser == ownedUser?
-                        <IconButton onClick={()=>{store.loadMap(props.id, "edit");}}>
-                            <Edit style={style.iconButtons}/>
-                        </IconButton>:<></>}
+                        <Tooltip title="Edit Map">
+                            <IconButton onClick={()=>{store.loadMap(props.id, "edit");}}>
+                                <Edit style={style.iconButtons}/>
+                            </IconButton>
+                        </Tooltip>
+                        :<></>}
                 </div>
                 <div style={style.rightDiveContainer}>
                     {likeButton}

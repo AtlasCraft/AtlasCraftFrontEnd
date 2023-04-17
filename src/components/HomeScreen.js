@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import {IconButton, TextField, List, MenuItem, Menu} from "@mui/material";
+import {IconButton, TextField, List, MenuItem, Menu, Tooltip} from "@mui/material";
 import {People, Person, Add} from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu"
 import MapCard from "./MapCard";
@@ -156,27 +156,33 @@ export default function HomeScreen() {
 		<div id="homepage-screen">
 			<div style={style.HomeFullContainer}>
 				<div>
-					<IconButton disabled = {false} onClick = {()=>{setAllUserSelected(true)}}>
-						<People style ={{
-							fontSize: "35pt",
-							color: "black",
-							opacity: allUserSelected?"100%":"50%",
-							margin:"auto auto auto 0"
-						}}/>
-					</IconButton>
-					<IconButton disabled = {false} onClick = {()=>{setAllUserSelected(false)}}>
-						<Person style ={{
-							fontSize: "35pt",
-							color: "black",
-							opacity: allUserSelected?"50%":"100%"
-						}}/>
-					</IconButton>
-					<IconButton disabled = {false} onClick = {(e)=>{handleCreateMap(e)}}>
-						<Add style ={{
-							fontSize: "35pt",
-							color: "black"
-						}}/>
-					</IconButton>
+					<Tooltip title="View All Published">
+						<IconButton disabled = {false} onClick = {()=>{setAllUserSelected(true)}}>
+							<People style ={{
+								fontSize: "35pt",
+								color: "black",
+								opacity: allUserSelected?"100%":"50%",
+								margin:"auto auto auto 0"
+							}}/>
+						</IconButton>
+					</Tooltip>
+					<Tooltip title="View Your Maps">
+						<IconButton disabled = {false} onClick = {()=>{setAllUserSelected(false)}}>
+							<Person style ={{
+								fontSize: "35pt",
+								color: "black",
+								opacity: allUserSelected?"50%":"100%"
+							}}/>
+						</IconButton>
+					</Tooltip>
+					<Tooltip title="Create New Map">
+						<IconButton disabled = {false} onClick = {(e)=>{handleCreateMap(e)}}>
+							<Add style ={{
+								fontSize: "35pt",
+								color: "black"
+							}}/>
+						</IconButton>
+					</Tooltip>
 					<TextField 
 						label="Search" 
 						className="inputRounded"
@@ -185,9 +191,11 @@ export default function HomeScreen() {
 						disabled = {false}
 						onChange={handleUpdateSearchText}>
 					</TextField>
-					<IconButton disabled = {false} onClick = {(event)=>{setAnchorEl(event.currentTarget);}} style={{position:"absolute", left:"100%", transform: "translate(-100%,0%)"}}>
-						<MenuIcon style ={{ fontSize: "35pt", color:"black", }}/>
-					</IconButton>
+					<Tooltip title="Sort By">
+						<IconButton disabled = {false} onClick = {(event)=>{setAnchorEl(event.currentTarget);}} style={{position:"absolute", left:"100%", transform: "translate(-100%,0%)"}}>
+							<MenuIcon style ={{ fontSize: "35pt", color:"black", }}/>
+						</IconButton>
+					</Tooltip>
 					
 				</div>
 				
