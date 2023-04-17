@@ -8,7 +8,7 @@ import ForgotPasswordScreen from './ForgotPasswordScreen';
 import ChangePasswordScreen from './ChangePasswordScreen';
 import DrawScreen from './DrawScreen';
 import EditScreen from './EditScreen';
-
+import ErrorModal from './ErrorModal';
 import ViewScreen from "./ViewScreen";
 /*
 	This serves as a module so that we can import
@@ -28,4 +28,5 @@ export {
 	DrawScreen,
 	ViewScreen,
 	EditScreen,
+	ErrorModal,
 };

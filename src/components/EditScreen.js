@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -20,11 +20,14 @@ import MergeIcon from '@mui/icons-material/Merge';
 import CallSplitIcon from '@mui/icons-material/CallSplit';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
-
+import AuthContext from '../auth'
+import GlobalStoreContext from '../store'
 const mapData = require('../test/MapEditingInfo.json');
-export default function EditScreen() {
-  const [value, setValue] = React.useState('1');
 
+export default function EditScreen() {
+  const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
+  const [value, setValue] = React.useState('1');
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -81,7 +84,7 @@ export default function EditScreen() {
             <TextField
               id="mapname"
               variant="filled"
-              value={mapData.mapName}
+              value={store.mapName}
               hiddenLabel
             />
             <Button
@@ -90,6 +93,7 @@ export default function EditScreen() {
               sx={{
                 'align-self': 'center',
               }}
+              onClick={()=>{store.publishMap()}}
             >
               Save
             </Button>
@@ -121,7 +125,7 @@ export default function EditScreen() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <GeoJSON data={mapData.geojson.features} style={countryStyle} />
+              <GeoJSON data={store.geojson} style={countryStyle} />
             </MapContainer>
           </div>
           <div style={{ width: '20%', background: 'white', height: '100%' }}>

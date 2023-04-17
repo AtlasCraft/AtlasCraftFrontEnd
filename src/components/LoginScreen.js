@@ -12,6 +12,7 @@ import { GlobalStoreContext } from '../store';
 // import ErrorModal from "./ErrorModal";
 
 const LoginScreen = () => {
+  const mapData = require('../test/MapEditingInfo.json');
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
   const [username, setUsername] = useState('');
@@ -20,14 +21,15 @@ const LoginScreen = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+    // const formData = new FormData(e.currentTarget);
     auth.loginUser(
       {
-        username: formData.get('username'),
-        password: formData.get('password'),
+        username: username,
+        password: password,
       },
       store
     );
+    store.loadMapCards();
   };
 
   function authValidation() {
@@ -91,7 +93,7 @@ const LoginScreen = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button type="submit" variant="contained" color="primary" fullWidth>
+            <Button type="submit" variant="contained" color="primary" fullWidth onClick={handleLogin}>
               Login
             </Button>
             <Grid container justifyContent="space-between">

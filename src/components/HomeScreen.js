@@ -6,14 +6,14 @@ import MapCard from "./MapCard";
 import AuthContext from '../auth'
 import GlobalStoreContext from '../store'
 
-const mapCardListTest = [
-	{mapId:"2", mapName:"Name2", ownedUser:"user1", likedUsers:[ "user2", "user3", "user4"], dislikedUsers:["user1",], published: true}, 
-	{mapId:"1", mapName:"Name1", ownedUser:"user1", likedUsers:["user1", "user2"], dislikedUsers:[],published: true}, 
-	{mapId:"3", mapName:"Name3", ownedUser:"user1", likedUsers:["user1", "user4", "user6", "user2"], dislikedUsers:[],published: false}, 
-	{mapId:"4", mapName:"Name4", ownedUser:"user1", likedUsers:["user1", "user3"], dislikedUsers:[],published: false}, 
-	{mapId:"5", mapName:"Name5", ownedUser:"user3", likedUsers:["user1", "user4", "user5"], dislikedUsers:[],published: true}, 
+// const mapCardListTest = [
+// 	{mapId:"2", mapName:"Name2", ownedUser:"user1", likedUsers:[ "user2", "user3", "user4"], dislikedUsers:["user1",], published: true}, 
+// 	{mapId:"1", mapName:"Name1", ownedUser:"user1", likedUsers:["user1", "user2"], dislikedUsers:[],published: true}, 
+// 	{mapId:"3", mapName:"Name3", ownedUser:"user1", likedUsers:["user1", "user4", "user6", "user2"], dislikedUsers:[],published: false}, 
+// 	{mapId:"4", mapName:"Name4", ownedUser:"user1", likedUsers:["user1", "user3"], dislikedUsers:[],published: false}, 
+// 	{mapId:"5", mapName:"Name5", ownedUser:"user3", likedUsers:["user1", "user4", "user5"], dislikedUsers:[],published: true}, 
 
-];
+// ];
 
 const style = {
     HomeFullContainer: {
@@ -48,15 +48,18 @@ export default function HomeScreen() {
 	const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const [anchorEl, setAnchorEl] = useState(null);
-	const [mapCardList, setMapCardList] = useState(mapCardListTest)
+	const [mapCardList, setMapCardList] = useState([])
 	const [sortStyle, setSortStyle] = useState("none");//"none", "AZ", "ZA", "likes", "dislikes"
 	const [allUserSelected, setAllUserSelected] = useState(true);
 	const [searchText, setSearchText] = useState("");
 	const isMenuOpen = Boolean(anchorEl);
-	// UNCOMMENT THIS FOR NON TESTS
-	// mapCardList = store.mapcardList;
-	// const loggedInUser = auth.user.username;
-	const loggedInUser = "user1"
+	
+	useEffect(()=>{
+		setMapCardList(store.mapcardList);
+	},[store]);
+
+	const loggedInUser = auth.user?auth.user.username:"";
+	// const loggedInUser = "user1"
 	function sortAZ(){
 		setMapCardList(mapCardList.toSorted((card1,card2)=>{
 			return(card1.mapName.localeCompare(card2.mapName));
@@ -87,11 +90,11 @@ export default function HomeScreen() {
 	function handleUpdateSearchText(e){
 		setSearchText(e.target.value);
 	}
-	function handleCreateMap(){
-
+	function handleCreateMap(e){
+		store.createNewMap();
 	}
 
-	const mapCards = 
+	const mapCards =
 		useMemo(()=>{
 			return(
 				<div style={style.MapCardListContainer}>
@@ -141,7 +144,7 @@ export default function HomeScreen() {
 					</List>
 				</div>
 			)
-		}, [searchText, mapCardList, allUserSelected]);
+		}, [searchText, mapCardList, allUserSelected, store.mapCardList]);
 
 	
 
@@ -164,7 +167,7 @@ export default function HomeScreen() {
 							opacity: allUserSelected?"50%":"100%"
 						}}/>
 					</IconButton>
-					<IconButton disabled = {false} onClick = {()=>{}}>
+					<IconButton disabled = {false} onClick = {(e)=>{handleCreateMap(e)}}>
 						<Add style ={{
 							fontSize: "35pt",
 							color: "black"
@@ -201,7 +204,6 @@ export default function HomeScreen() {
 				horizontal: 'left',
 				}}
 			>
-				<MenuItem onClick={()=>{setMapCardList(mapCardListTest);}}>None</MenuItem>
 				<MenuItem onClick={sortAZ}>Name (A-Z)</MenuItem>
 				<MenuItem onClick={sortZA}>Name (Z-A)</MenuItem>
 				<MenuItem onClick={sortLikes}>Likes</MenuItem>

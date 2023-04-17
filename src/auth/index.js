@@ -111,7 +111,6 @@ function AuthContextProvider(props) {
   };
 
   auth.logoutUser = async function (store) {
-    store.closeCurrentList();
     try {
       const response = await api.logoutUser();
       if (response.status === 200) {
@@ -119,8 +118,8 @@ function AuthContextProvider(props) {
           type: AuthActionType.LOGOUT_USER,
           payload: {},
         });
+        history.push('/');
       }
-      history.push('/');
     } catch (err) {}
   };
 

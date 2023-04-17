@@ -28,7 +28,7 @@ export default function ErrorModal() {
   console.log('Load Modal');
 
   useEffect(() => {
-    setOpen(store.err !== null);
+    setOpen(store.err != null);
   }, [store.err]);
 
   return (

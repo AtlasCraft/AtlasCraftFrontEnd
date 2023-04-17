@@ -37,7 +37,7 @@ function GlobalStoreContextProvider(props) {
   // THESE ARE ALL THE THINGS OUR DATA STORE WILL MANAGE
   const [store, setStore] = useState({
     geojson: null,
-    nameMap: null,
+    mapName: null,
     mapId: null,
     ownedUser: null,
     mapcardList: [],
@@ -47,6 +47,7 @@ function GlobalStoreContextProvider(props) {
     selectedRegion: [],
     regionProperty: null,
     editSelection: null,
+	commentListPairs:[]
   });
   const history = useHistory();
 
@@ -61,19 +62,20 @@ function GlobalStoreContextProvider(props) {
     const { type, payload } = action;
     switch (type) {
       // LIST UPDATE OF ITS NAME
+	  case GlobalStoreActionType.SET_MAP: {
+        return setStore({
+          ...store,
+		  mapName: payload.mapName,
+		  ownedUser: payload.ownedUser,
+		  comentListPairs:payload.commentListPairs,
+		  mapId:payload._id,
+		  geojson:payload.geojson?payload.geojson:{},
+        });
+      }
       case GlobalStoreActionType.SET_MAPCARDS: {
         return setStore({
-          geojson: null,
-          nameMap: null,
-          mapId: null,
-          ownedUser: null,
-          mapcardList: payload,
-          ownedMapCardList: [],
-          editable: false,
-          graphicState: [],
-          selectedRegion: [],
-          regionProperty: null,
-          editSelection: null,
+          ...store,
+		  mapcardList: payload,
         });
       }
       case GlobalStoreActionType.SHOW_ERR: {
@@ -101,16 +103,22 @@ function GlobalStoreContextProvider(props) {
   // ***ANY FUNCTION NOT FILLED IN MEANS IT IS PLANNED FOR A FUTURE BUILD***
 
   //Mapcard updates
-	store.updateLikes = async function(){
-
+	store.updateLikes = async function(id){
+		console.log(id);
+		let res = await api.updateCardLikes(id);
+		console.log(res);
 	}
-	store.updateDislikes = async function(){
-		
+	store.updateDislikes = async function(id){
+		let res = await api.updateCardDislikes(id);
+		console.log(res);
 	}
 	store.loadMapCards = async function(){
 		let res = await api.getAllMapCards();
 		if(res.data.success){
-			console.log(res.data);
+			storeReducer({
+				type:GlobalStoreActionType.SET_MAPCARDS,
+				payload:res.data.maps
+			});
 		}
 	}
 
@@ -150,11 +158,71 @@ function GlobalStoreContextProvider(props) {
   store.downloadShp = function () {};
   store.downloadPng = function () {};
   store.uploadMap = function () {};
-  store.forkMap = function () {};
+  store.forkMap = async function (id) {
+	let res = await api.getMapEditingInfoById(id);
+	if(res.data.success){
+		const newMap = {
+			mapName: res.data.map.mapName,
+			geojson: res.data.map.geojson,
+		} 
+		let res2 = await api.createMapEditingInfo(newMap);
+		if(res2.data.success){
+			storeReducer({
+				type:GlobalStoreActionType.SET_MAP,
+				payload:res2.data.map
+			});
+			store.loadMapCards();
+			history.push("/edit");
+		}
+	}
+	// console.log(res);
+  };
   store.changeMapName = function () {};
   store.saveMap = function () {};
   store.deleteMap = function () {};
-  store.createNewMap = function(){};
+  store.publishMap = async function(id){
+	let payload = {
+		mapName:store.mapName,
+		geojson:store.geojson,
+		published:true
+	}
+	let res = await api.updateMapEditingInfoById(store.mapId, payload);
+	console.log(res);
+
+  };
+  store.createNewMap = async function(){
+	const newMap = {
+		mapName: "A New Map",
+		geojson: {type:"FeatureCollection", features:[]},
+	}
+	let res = await api.createMapEditingInfo(newMap);
+	if(res.data.success){
+		storeReducer({
+			type:GlobalStoreActionType.SET_MAP,
+			payload:res.data.map
+		});
+		store.loadMapCards();
+		history.push("/edit");
+	}
+	
+  };
+  store.loadMap = async function(id, type){
+	console.log(id);
+	let res = await api.getMapEditingInfoById(id);
+	if(res.data.success){
+		storeReducer({
+			type:GlobalStoreActionType.SET_MAP,
+			payload:res.data.map
+		});
+		if(type == "edit")
+			history.push("/edit");
+		else
+			history.push("/view");
+	}
+	// console.log(res);
+  }
+
+  //error info for create user
   store.showErr = function (statusCode, msg) {
     console.log(msg);
     storeReducer({

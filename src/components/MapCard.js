@@ -3,6 +3,7 @@ import {ListItem, IconButton} from "@mui/material";
 import {Visibility, FileCopy, Download, Edit, ThumbUp, ThumbDown, ThumbDownAltOutlined, ThumbUpAltOutlined} from '@mui/icons-material';
 import AuthContext from '../auth'
 import GlobalStoreContext from '../store'
+
 const style = {
     cardContainer: {
         width: "90%",
@@ -54,64 +55,84 @@ const style = {
 export default function MapCard(props){
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
-    // const loggedInUser = auth.user.username;
-    const loggedInUser = "user1"
+    const loggedInUser = auth.user?auth.user.username:"";
+    // const loggedInUser = "user1"
     const ownedUser = props.ownedUser;
     const mapName = props.mapName;
     const [likedUsers, setLiked] = useState(props.likedUsers);
     const [dislikedUsers, setDisliked] = useState(props.dislikedUsers);
 
     function handleLike(){
-        if(likedUsers.includes(loggedInUser)){
-            //remove from liked users and update backend
-            let temp = [...likedUsers];
-            temp.splice(temp.indexOf(loggedInUser), 1)
-            setLiked(temp);
-            //TODO update backend liked
-        }
-        else if(dislikedUsers.includes(loggedInUser)){
-            //remove from disliked users and update backend and add to liked users and update backend
-            let temp = [...dislikedUsers];
-            temp.splice(temp.indexOf(loggedInUser), 1)
-            setDisliked(temp);
-            let temp2 = [...likedUsers];
-            temp2.push(loggedInUser)
-            setLiked(temp2);
-            //TODO update backend liked and disliked
-        }   
-        else {
-            //not in either list so just add to liked and update backend
+        // if(likedUsers.includes(loggedInUser)){
+        //     //remove from liked users and update backend
+        //     let temp = [...likedUsers];
+        //     temp.splice(temp.indexOf(loggedInUser), 1)
+        //     setLiked(temp);
+        //     //TODO update backend liked
+        // }
+        // else if(dislikedUsers.includes(loggedInUser)){
+        //     //remove from disliked users and update backend and add to liked users and update backend
+        //     let temp = [...dislikedUsers];
+        //     temp.splice(temp.indexOf(loggedInUser), 1)
+        //     setDisliked(temp);
+        //     let temp2 = [...likedUsers];
+        //     temp2.push(loggedInUser)
+        //     setLiked(temp2);
+        //     //TODO update backend liked and disliked
+        // }   
+        // else {
+        //     //not in either list so just add to liked and update backend
+        //     let temp = [...likedUsers];
+        //     temp.push(loggedInUser);
+        //     setLiked(temp);
+        //     //TODO update backend liked
+        // }
+        if(!dislikedUsers.includes(loggedInUser) && !likedUsers.includes(loggedInUser)){
             let temp = [...likedUsers];
             temp.push(loggedInUser);
             setLiked(temp);
-            //TODO update backend liked
+            store.updateDislikes(props.id);
         }
     }
     function handleDislike(){
-        if(dislikedUsers.includes(loggedInUser)){
-            //remove from disliked users and update backend
-            let temp = [...dislikedUsers];
-            temp.splice(temp.indexOf(loggedInUser), 1);
-            setDisliked(temp);
-            //TODO update backend disliked
-        }
-        else if(likedUsers.includes(loggedInUser)){
-            //remove from liked users and update backend and add to disliked users and update backend
-            let temp = [...likedUsers];
-            temp.splice(temp.indexOf(loggedInUser), 1)
-            setLiked(temp);
-            let temp2 = [...dislikedUsers];
-            temp2.push(loggedInUser);
-            setDisliked(temp2);
-            //TODO update backend liked and disliked
-        }   
-        else {
-            //not in either list so just add to liked and update backend
+        // if(dislikedUsers.includes(loggedInUser)){
+        //     //remove from disliked users and update backend
+        //     let temp = [...dislikedUsers];
+        //     temp.splice(temp.indexOf(loggedInUser), 1);
+        //     setDisliked(temp);
+        //     //TODO update backend disliked
+        // }
+        // else if(likedUsers.includes(loggedInUser)){
+        //     //remove from liked users and update backend and add to disliked users and update backend
+        //     let temp = [...likedUsers];
+        //     temp.splice(temp.indexOf(loggedInUser), 1)
+        //     setLiked(temp);
+        //     let temp2 = [...dislikedUsers];
+        //     temp2.push(loggedInUser);
+        //     setDisliked(temp2);
+        //     //TODO update backend liked and disliked
+        // }   
+        // else {
+        //     //not in either list so just add to liked and update backend
+        //     let temp = [...dislikedUsers];
+        //     temp.push(loggedInUser);
+        //     setDisliked(temp);
+        //     //TODO update backend liked
+        // }
+
+
+        //TEMP STUFF
+        if(!dislikedUsers.includes(loggedInUser) && !likedUsers.includes(loggedInUser)){
             let temp = [...dislikedUsers];
             temp.push(loggedInUser);
             setDisliked(temp);
-            //TODO update backend liked
+            store.updateDislikes(props.id);
         }
+        
+    }
+
+    function handleFork(){
+        store.forkMap(props.id);
     }
 
     let likeButton = 
@@ -146,18 +167,19 @@ export default function MapCard(props){
             </div>
             <div style={style.bottomDivContainer}>
                 <div style={style.leftDivContainer}>
-                    <IconButton>
+                    <IconButton onClick={()=>{store.loadMap(props.id, "view");}}>
                         <Visibility style={style.iconButtons}/>
                     </IconButton>
-                    <IconButton>
-                        <FileCopy style={style.iconButtons}/>
+                    <IconButton onClick={()=>{handleFork()}}>
+                        <FileCopy style={style.iconButtons} />
                     </IconButton>
                     <IconButton>
                         <Download style={style.iconButtons}/>
                     </IconButton>
-                    {loggedInUser == ownedUser?<IconButton>
-                        <Edit style={style.iconButtons}/>
-                    </IconButton>:<></>}
+                    {loggedInUser == ownedUser?
+                        <IconButton onClick={()=>{store.loadMap(props.id, "edit");}}>
+                            <Edit style={style.iconButtons}/>
+                        </IconButton>:<></>}
                 </div>
                 <div style={style.rightDiveContainer}>
                     {likeButton}
