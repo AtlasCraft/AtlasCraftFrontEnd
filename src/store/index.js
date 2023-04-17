@@ -85,6 +85,14 @@ function GlobalStoreContextProvider(props) {
 
 	// ***ANY FUNCTION NOT FILLED IN MEANS IT IS PLANNED FOR A FUTURE BUILD***
 
+
+	//Mapcard updates
+	store.updateLikes = async function(){
+
+	}
+	store.updateDislikes = async function(){
+		
+	}
 	store.loadMapCards = async function(){
 		let res = await api.getAllMapCards();
 		if(res.data.success){
@@ -170,6 +178,12 @@ function GlobalStoreContextProvider(props) {
 	store.deleteMap = function(){
 
 	}
+	store.createNewMap = function(){
+		
+	}
+
+
+
 	return (
 		<GlobalStoreContext.Provider
 			value={{

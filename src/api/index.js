@@ -14,7 +14,7 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 const api = axios.create({
   // baseURL: 'https://urchin-app-zt4cv.ondigitalocean.app/api',
-  baseURL:"https://jaszheng.me/",
+  baseURL:"https://jaszheng.me/api",
 });
 
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
@@ -32,6 +32,8 @@ export const updateMapEditingInfoById = (id, payload)=>api.post(`/mapeditinginfo
 
 // Map Cards
 export const getAllMapCards = ()=>api.get(`/mapcard`);
+export const updateCardLikes = (id)=>api.post(`/mapcard/${id}/likes`);
+export const updateCardDislikes = (id)=>api.post(`/mapcard/${id}/dislikes`);
 
 // Auth
 export const getLoggedIn = () => api.get(`/loggedIn/`);
@@ -51,6 +53,8 @@ const apis = {
   updateMapEditingInfoById,
   //map cards
   getAllMapCards,
+  updateCardDislikes,
+  updateCardLikes,
   //auth
   getLoggedIn,
   registerUser,
