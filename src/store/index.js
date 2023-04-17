@@ -104,7 +104,6 @@ function GlobalStoreContextProvider(props) {
 
   //Mapcard updates
 	store.updateLikes = async function(id){
-		console.log(id);
 		let res = await api.updateCardLikes(id);
 		console.log(res);
 	}

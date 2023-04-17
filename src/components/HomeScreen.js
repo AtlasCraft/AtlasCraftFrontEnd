@@ -104,6 +104,7 @@ export default function HomeScreen() {
 								if(allUserSelected && searchText != "" && card.mapName.includes(searchText) && card.published == true)
 									return <MapCard
 										id= {card.mapId}
+										cardId={card._id}
 										mapName = {card.mapName}
 										ownedUser = {card.ownedUser}
 										likedUsers = {card.likedUsers}
@@ -113,6 +114,7 @@ export default function HomeScreen() {
 								else if (allUserSelected && searchText == "" && card.published == true)
 									return <MapCard
 										id= {card.mapId}
+										cardId={card._id}
 										mapName = {card.mapName}
 										ownedUser = {card.ownedUser}
 										likedUsers = {card.likedUsers}
@@ -123,6 +125,7 @@ export default function HomeScreen() {
 								else if(!allUserSelected && searchText != "" && card.mapName.includes(searchText) && card.ownedUser == loggedInUser)
 									return <MapCard
 										id= {card.mapId}
+										cardId={card._id}
 										mapName = {card.mapName}
 										ownedUser = {card.ownedUser}
 										likedUsers = {card.likedUsers}
@@ -132,6 +135,7 @@ export default function HomeScreen() {
 								else if (!allUserSelected && searchText == "" && card.ownedUser == loggedInUser)
 									return <MapCard
 										id= {card.mapId}
+										cardId={card._id}
 										mapName = {card.mapName}
 										ownedUser = {card.ownedUser}
 										likedUsers = {card.likedUsers}

@@ -91,7 +91,7 @@ export default function MapCard(props){
             let temp = [...likedUsers];
             temp.push(loggedInUser);
             setLiked(temp);
-            store.updateDislikes(props.id);
+            store.updateLikes(props.cardId);
         }
     }
     function handleDislike(){
@@ -126,7 +126,7 @@ export default function MapCard(props){
             let temp = [...dislikedUsers];
             temp.push(loggedInUser);
             setDisliked(temp);
-            store.updateDislikes(props.id);
+            store.updateDislikes(props.cardId);
         }
         
     }
