@@ -72,7 +72,7 @@ export default function HomeScreen() {
 	}
 	function sortLikes(){
 		setMapCardList(mapCardList.toSorted((card1,card2)=>{
-			const val = card1.numLikes - card2.numLikes
+			const val = card1.likedUsers.length - card2.likedUsers.length
 			if(val < 0) return 1;
 			else if (val>0) return -1;
 			else return 0;
@@ -80,7 +80,7 @@ export default function HomeScreen() {
 	}
 	function sortDislikes(){
 		setMapCardList(mapCardList.toSorted((card1,card2)=>{
-			const val = card1.numDislikes - card2.numDislikes
+			const val = card1.dislikedUsers.length - card2.dislikedUsers.length
 			if(val < 0) return 1;
 			else if (val>0) return -1;
 			else return 0;
