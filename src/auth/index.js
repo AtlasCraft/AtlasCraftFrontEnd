@@ -31,15 +31,15 @@ function AuthContextProvider(props) {
   const authReducer = (action) => {
     const { type, payload } = action;
     switch (type) {
-      case AuthActionType.GET_LOGGED_IN: {
-        return setAuth({
-          user: payload.user,
-          loggedIn: payload.loggedIn,
-          error: false,
-          errorMsg: null,
-          // guest: auth.guest,
-        });
-      }
+      // case AuthActionType.GET_LOGGED_IN: {
+      //   return setAuth({
+      //     user: payload.user,
+      //     loggedIn: payload.loggedIn,
+      //     error: false,
+      //     errorMsg: null,
+      //     // guest: auth.guest,
+      //   });
+      // }
       case AuthActionType.LOGIN_USER: {
         return setAuth({
           user: payload.user,

@@ -19,7 +19,7 @@ import ErrorModal from './ErrorModal';
 export default function RegisterScreen() {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
-
+  console.log(auth);
   const options = [
     {
       label: 'What is your favorite color?',
@@ -204,17 +204,19 @@ export default function RegisterScreen() {
               />
             </Grid>
           </Grid>
-
-          <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Create Account
-          </Button>
+          <Box style={{display:"absolute", height:"10%"}}>
+          
           <Grid container justifyContent="center">
+            <Button type="submit" variant="contained" sx={{ mt: 3, mb: 2 }}>
+              Create Account
+            </Button>
             <Grid item>
-              <Link href="/" variant="body2">
+              <Link href="/" variant="body2" style={{top:"40%", position:"relative", left: "10%"}}>
                 Already have an account? Sign in
               </Link>
             </Grid>
           </Grid>
+          </Box>
         </Box>
       </Box>
       {/* <Copyright /> */}

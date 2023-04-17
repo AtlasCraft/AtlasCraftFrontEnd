@@ -18,7 +18,7 @@ const LoginScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const history = useHistory();
-
+  console.log(auth);
   const handleLogin = (e) => {
     e.preventDefault();
     // const formData = new FormData(e.currentTarget);
