@@ -1,45 +1,28 @@
 import React, {useContext} from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import TabPanel from '@mui/lab/TabPanel';
-import Grid from '@mui/material/Grid';
+import {Box, TextField, Button, Stack, Tab, Grid} from '@mui/material';
+import {Edit, LibraryAdd, Merge, CallSplit, Undo, Redo} from '@mui/icons-material';
+import {TabContext, TabList, TabPanel} from '@mui/lab';
 import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
+import shp from 'shpjs';
 import L from 'leaflet';
+import JSZip from 'jszip';
 import '@geoman-io/leaflet-geoman-free';
 import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import 'leaflet/dist/leaflet.css';
-import Input from '@mui/material/Input';
-import EditIcon from '@mui/icons-material/Edit';
-import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
-import MergeIcon from '@mui/icons-material/Merge';
-import CallSplitIcon from '@mui/icons-material/CallSplit';
-import UndoIcon from '@mui/icons-material/Undo';
-import RedoIcon from '@mui/icons-material/Redo';
 import AuthContext from '../auth'
 import GlobalStoreContext from '../store'
-const mapData = require('../test/MapEditingInfo.json');
+import { useMemo } from 'react';
+import {MapZoom} from './EditScreenComponents';
 
-export default function EditScreen() {
-  const { store } = useContext(GlobalStoreContext);
-  const { auth } = useContext(AuthContext);
-  const [value, setValue] = React.useState('1');
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
 
-  const countryStyle = {
+const style = {
+  countryStyle: {
     fillColor: 'yellow',
     color: 'black',
     weight: 1,
     height: '100%',
-  };
-
-  const editIconBoxStyle = {
+  },
+  editIconBoxStyle: {
     width: '100%',
     'aspect-ratio': '1 / 1',
     backgroundColor: 'rgb(200,200,200)',
@@ -48,18 +31,55 @@ export default function EditScreen() {
     'flex-direction': 'column',
     'justify-content': 'center',
     'align-items': 'center',
-  };
-
-  const editIconStyle = {
+  },
+  editIconStyle: {
     fontSize: 50,
     'text-align': 'center',
-  };
-
-  const editTextStyle = {
+  },
+  editTextStyle: {
     margin: '.5rem 0',
     'text-align': 'center',
+  }
+}
+
+export default function EditScreen() {
+  const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
+  const [value, setValue] = React.useState('1');
+  const geoComponent = useMemo(()=>{
+    return store.geojson?<GeoJSON key={store.mapKey} data={store.geojson} style={style.countryStyle} />:<></>
+  },[store])
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
   };
-  console.log(mapData);
+
+  async function handleGeoUpload(selectorFiles) {
+    let jsonStringTemp = await (await selectorFiles[0].text()).replace(/\s/g,"");
+    let jsonTemp = JSON.parse(jsonStringTemp);
+    // let jsonTemp2 = {features:jsonTemp.features , type:jsonTemp.type}
+    store.uploadMap(jsonTemp);
+  }
+
+  async function handleShpUpload(files) {
+    let reader = new FileReader();
+    let zip = new JSZip();
+    Array.from(files).forEach((f) => {
+      zip.file(f.name, f);
+    });
+
+    zip.generateAsync({ type: 'blob' }).then((content) => {
+      reader.readAsArrayBuffer(content);
+      reader.onload = function (buffer) {
+        shpUploadHelper(buffer.target.result);
+      }
+    });
+  }
+
+  async function shpUploadHelper(buf){
+    store.uploadMap(await shp(buf));
+  }
+
   return (
     <div>
       <div>
@@ -93,7 +113,7 @@ export default function EditScreen() {
               sx={{
                 'align-self': 'center',
               }}
-              onClick={()=>{store.publishMap()}}
+              onClick={()=>{store.saveMap()}}
             >
               Save
             </Button>
@@ -121,26 +141,30 @@ export default function EditScreen() {
               center={[42.09618442380296, -71.5045166015625]}
               zoom={7}
             >
+              <MapZoom/>
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <GeoJSON data={store.geojson} style={countryStyle} />
+              {geoComponent}
             </MapContainer>
           </div>
           <div style={{ width: '20%', background: 'white', height: '100%' }}>
-            <TabContext value={value}>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <TabContext value={value} style={{width:"100%"}}>
+              <Box sx={{ borderBottom: 1, borderColor: 'divider', width:"100%" }}>
                 <TabList
+                  variant="fullWidth"
                   onChange={handleChange}
                   aria-label="Edit Tabs"
-                  variant="scrollable"
+                  // variant="scrollable"
                   scrollButtons={false}
+                  style={{width:"100%"}}
+                  
                 >
-                  <Tab label="Edit" value="1" />
-                  <Tab label="Properties" value="2" />
-                  <Tab label="Upload" value="3" />
-                  <Tab label="Help" value="4" />
+                  <Tab label="Edit" value="1" style={{maxWidth:"25%"}} />
+                  <Tab label="Properties" value="2" style={{maxWidth:"25%"}} />
+                  <Tab label="Upload" value="3" style={{maxWidth:"25%"}} />
+                  <Tab label="Help" value="4" style={{maxWidth:"25%"}} />
                 </TabList>
               </Box>
               <TabPanel value="1">
@@ -151,39 +175,39 @@ export default function EditScreen() {
                     columnSpacing={{ xs: 1, sm: 2, md: 3 }}
                   >
                     <Grid item xs={6}>
-                      <Box sx={editIconBoxStyle}>
-                        <EditIcon sx={editIconStyle} />
-                        <p style={editTextStyle}>EDIT</p>
+                      <Box sx={style.editIconBoxStyle}>
+                        <Edit sx={style.editIconStyle} />
+                        <p style={style.editTextStyle}>EDIT</p>
                       </Box>
                     </Grid>
                     <Grid item xs={6}>
-                      <Box sx={editIconBoxStyle}>
-                        <LibraryAddIcon sx={editIconStyle} />
-                        <p style={editTextStyle}>CREATE REGION</p>
+                      <Box sx={style.editIconBoxStyle}>
+                        <LibraryAdd sx={style.editIconStyle} />
+                        <p style={style.editTextStyle}>CREATE REGION</p>
                       </Box>
                     </Grid>
                     <Grid item xs={6}>
-                      <Box sx={editIconBoxStyle}>
-                        <MergeIcon sx={editIconStyle} />
-                        <p style={editTextStyle}>MERGE REGION</p>
+                      <Box sx={style.editIconBoxStyle}>
+                        <Merge sx={style.editIconStyle} />
+                        <p style={style.editTextStyle}>MERGE REGION</p>
                       </Box>
                     </Grid>
                     <Grid item xs={6}>
-                      <Box sx={editIconBoxStyle}>
-                        <CallSplitIcon sx={editIconStyle} />
-                        <p style={editTextStyle}>SPLIT REGION</p>
+                      <Box sx={style.editIconBoxStyle}>
+                        <CallSplit sx={style.editIconStyle} />
+                        <p style={style.editTextStyle}>SPLIT REGION</p>
                       </Box>
                     </Grid>
                     <Grid item xs={6}>
-                      <Box sx={editIconBoxStyle}>
-                        <UndoIcon sx={editIconStyle} />
-                        <p style={editTextStyle}>UNDO</p>
+                      <Box sx={style.editIconBoxStyle}>
+                        <Undo sx={style.editIconStyle} />
+                        <p style={style.editTextStyle}>UNDO</p>
                       </Box>
                     </Grid>
                     <Grid item xs={6}>
-                      <Box sx={editIconBoxStyle}>
-                        <RedoIcon sx={editIconStyle} />
-                        <p style={editTextStyle}>REDO</p>
+                      <Box sx={style.editIconBoxStyle}>
+                        <Redo sx={style.editIconStyle} />
+                        <p style={style.editTextStyle}>REDO</p>
                       </Box>
                     </Grid>
                   </Grid>
@@ -202,39 +226,14 @@ export default function EditScreen() {
               </TabPanel>
               <TabPanel value="3">
                 <div>
-                  <label htmlFor="upload GEOJSON">
-                    <input
-                      style={{ display: 'none' }}
-                      id="upload-geojson"
-                      name="upload-geojson"
-                      type="file"
-                    />
-
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      component="span"
-                    >
-                      Upload GEOJSON
-                    </Button>
-                  </label>
-                  <label htmlFor="upload Shapefile">
-                    <input
-                      style={{ display: 'none' }}
-                      id="upload-shapefile"
-                      name="upload-shapefile"
-                      type="file"
-                    />
-
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      component="span"
-                      width="100%"
-                    >
-                      Upload Shapefile
-                    </Button>
-                  </label>
+                  <Button variant="contained" component="label">
+                    Upload GeoJson
+                    <input hidden accept="file" type="file" onChange={(e)=>handleGeoUpload(e.target.files)}/>
+                  </Button>
+                  <Button variant="contained" component="label">
+                    Upload Shp/Dbf
+                    <input hidden accept="file" type="file" onChange={(e)=>handleShpUpload(e.target.files)} multiple/>
+                  </Button>
                 </div>
               </TabPanel>
               <TabPanel value="4">
