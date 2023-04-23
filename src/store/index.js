@@ -39,6 +39,7 @@ function GlobalStoreContextProvider(props) {
     geojson: null,
     mapName: null,
     mapId: null,
+    mapObject: null,
     ownedUser: null,
     mapcardList: [],
     ownedMapCardList: [],
@@ -47,7 +48,7 @@ function GlobalStoreContextProvider(props) {
     selectedRegion: [],
     regionProperty: null,
     editSelection: null,
-	commentListPairs:[]
+    commentListPairs: [],
   });
   const history = useHistory();
 
@@ -62,20 +63,20 @@ function GlobalStoreContextProvider(props) {
     const { type, payload } = action;
     switch (type) {
       // LIST UPDATE OF ITS NAME
-	  case GlobalStoreActionType.SET_MAP: {
+      case GlobalStoreActionType.SET_MAP: {
         return setStore({
           ...store,
-		  mapName: payload.mapName,
-		  ownedUser: payload.ownedUser,
-		  comentListPairs:payload.commentListPairs,
-		  mapId:payload._id,
-		  geojson:payload.geojson?payload.geojson:{},
+          mapName: payload.mapName,
+          ownedUser: payload.ownedUser,
+          comentListPairs: payload.commentListPairs,
+          mapId: payload._id,
+          geojson: payload.geojson ? payload.geojson : {},
         });
       }
       case GlobalStoreActionType.SET_MAPCARDS: {
         return setStore({
           ...store,
-		  mapcardList: payload,
+          mapcardList: payload,
         });
       }
       case GlobalStoreActionType.SHOW_ERR: {
@@ -103,23 +104,23 @@ function GlobalStoreContextProvider(props) {
   // ***ANY FUNCTION NOT FILLED IN MEANS IT IS PLANNED FOR A FUTURE BUILD***
 
   //Mapcard updates
-	store.updateLikes = async function(id){
-		let res = await api.updateCardLikes(id);
-		console.log(res);
-	}
-	store.updateDislikes = async function(id){
-		let res = await api.updateCardDislikes(id);
-		console.log(res);
-	}
-	store.loadMapCards = async function(){
-		let res = await api.getAllMapCards();
-		if(res.data.success){
-			storeReducer({
-				type:GlobalStoreActionType.SET_MAPCARDS,
-				payload:res.data.maps
-			});
-		}
-	}
+  store.updateLikes = async function (id) {
+    let res = await api.updateCardLikes(id);
+    console.log(res);
+  };
+  store.updateDislikes = async function (id) {
+    let res = await api.updateCardDislikes(id);
+    console.log(res);
+  };
+  store.loadMapCards = async function () {
+    let res = await api.getAllMapCards();
+    if (res.data.success) {
+      storeReducer({
+        type: GlobalStoreActionType.SET_MAPCARDS,
+        payload: res.data.maps,
+      });
+    }
+  };
 
   // tps handling functions
   store.canUndo = function () {
@@ -158,68 +159,64 @@ function GlobalStoreContextProvider(props) {
   store.downloadPng = function () {};
   store.uploadMap = function () {};
   store.forkMap = async function (id) {
-	let res = await api.getMapEditingInfoById(id);
-	if(res.data.success){
-		const newMap = {
-			mapName: res.data.map.mapName,
-			geojson: res.data.map.geojson,
-		} 
-		let res2 = await api.createMapEditingInfo(newMap);
-		if(res2.data.success){
-			storeReducer({
-				type:GlobalStoreActionType.SET_MAP,
-				payload:res2.data.map
-			});
-			store.loadMapCards();
-			history.push("/edit");
-		}
-	}
-	// console.log(res);
+    let res = await api.getMapEditingInfoById(id);
+    if (res.data.success) {
+      const newMap = {
+        mapName: res.data.map.mapName,
+        geojson: res.data.map.geojson,
+      };
+      let res2 = await api.createMapEditingInfo(newMap);
+      if (res2.data.success) {
+        storeReducer({
+          type: GlobalStoreActionType.SET_MAP,
+          payload: res2.data.map,
+        });
+        store.loadMapCards();
+        history.push('/edit');
+      }
+    }
+    // console.log(res);
   };
   store.changeMapName = function () {};
   store.saveMap = function () {};
   store.deleteMap = function () {};
-  store.publishMap = async function(id){
-	let payload = {
-		mapName:store.mapName,
-		geojson:store.geojson,
-		published:true
-	}
-	let res = await api.updateMapEditingInfoById(store.mapId, payload);
-	console.log(res);
-
+  store.publishMap = async function (id) {
+    let payload = {
+      mapName: store.mapName,
+      geojson: store.geojson,
+      published: true,
+    };
+    let res = await api.updateMapEditingInfoById(store.mapId, payload);
+    console.log(res);
   };
-  store.createNewMap = async function(){
-	const newMap = {
-		mapName: "A New Map",
-		geojson: {type:"FeatureCollection", features:[]},
-	}
-	let res = await api.createMapEditingInfo(newMap);
-	if(res.data.success){
-		storeReducer({
-			type:GlobalStoreActionType.SET_MAP,
-			payload:res.data.map
-		});
-		store.loadMapCards();
-		history.push("/edit");
-	}
-	
+  store.createNewMap = async function () {
+    const newMap = {
+      mapName: 'A New Map',
+      geojson: { type: 'FeatureCollection', features: [] },
+    };
+    let res = await api.createMapEditingInfo(newMap);
+    if (res.data.success) {
+      storeReducer({
+        type: GlobalStoreActionType.SET_MAP,
+        payload: res.data.map,
+      });
+      store.loadMapCards();
+      history.push('/edit');
+    }
   };
-  store.loadMap = async function(id, type){
-	console.log(id);
-	let res = await api.getMapEditingInfoById(id);
-	if(res.data.success){
-		storeReducer({
-			type:GlobalStoreActionType.SET_MAP,
-			payload:res.data.map
-		});
-		if(type == "edit")
-			history.push("/edit");
-		else
-			history.push("/view");
-	}
-	// console.log(res);
-  }
+  store.loadMap = async function (id, type) {
+    console.log(id);
+    let res = await api.getMapEditingInfoById(id);
+    if (res.data.success) {
+      storeReducer({
+        type: GlobalStoreActionType.SET_MAP,
+        payload: res.data.map,
+      });
+      if (type == 'edit') history.push('/edit');
+      else history.push('/view');
+    }
+    // console.log(res);
+  };
 
   //error info for create user
   store.showErr = function (statusCode, msg) {
@@ -246,7 +243,6 @@ function GlobalStoreContextProvider(props) {
       {props.children}
     </GlobalStoreContext.Provider>
   );
-
 }
 
 export default GlobalStoreContext;

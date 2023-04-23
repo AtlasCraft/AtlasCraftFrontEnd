@@ -13,12 +13,9 @@ export default function MapLayer() {
     height: '100%',
   };
 
-  function getRandomLatLng() {
-    return [42.2 + 0.1 * Math.random(), -70 + 0.2 * Math.random()];
-  }
-
   const { store } = useContext(GlobalStoreContext);
   const map = useMap();
+  store.mapObject = map;
   map.doubleClickZoom.disable();
 
   map.on('pm:create', (e) => {
@@ -101,16 +98,17 @@ export default function MapLayer() {
         console.log(layers[layer]);
       }
     }
-    const poly = L.polygon(
-      [getRandomLatLng(), getRandomLatLng(), getRandomLatLng()],
-      countryStyle
-    );
-    L.featureGroup([poly])
-      .bindPopup('Hello world!')
-      .on('click', (e) => {
-        console.log();
-      })
-      .addTo(map);
+    // CODE FOR CREATING POLYGON
+    // const poly = L.polygon(
+    //   [getRandomLatLng(), getRandomLatLng(), getRandomLatLng()],
+    //   countryStyle
+    // );
+    // L.featureGroup([poly])
+    //   .bindPopup('Hello world!')
+    //   .on('click', (e) => {
+    //     console.log();
+    //   })
+    //   .addTo(map);
   });
 
   return (
