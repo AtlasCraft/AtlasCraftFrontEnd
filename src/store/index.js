@@ -169,6 +169,13 @@ function GlobalStoreContextProvider(props) {
   store.downloadShp = function () {};
   store.downloadPng = function () {};
   store.uploadMap = function (geo) {
+    console.log(geo);
+    for(let i=0; i<geo.features.length; i++){
+      let tempProp = new Map(Object.entries(geo.features[i].properties));
+      tempProp.set("AtlasCraftRegionID", Math.random());
+      geo.features[i].properties = Object.fromEntries(tempProp);
+    }
+    console.log(geo);
     storeReducer({
       type:GlobalStoreActionType.CHANGE_GEO,
       payload:geo
