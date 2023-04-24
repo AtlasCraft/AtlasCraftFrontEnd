@@ -2,6 +2,10 @@ import React, { useContext } from 'react';
 import { useMap, GeoJSON } from 'react-leaflet';
 import GlobalStoreContext from '../store';
 import L from 'leaflet';
+import {
+  AddRegion_Transaction,
+  DeleteRegion_Transaction,
+} from '../transactions';
 const mapData = require('../test/MapEditingInfo.json');
 const usData = require('../test/us.json');
 
@@ -22,16 +26,34 @@ export default function MapLayer({
   store.mapObject = map;
   map.doubleClickZoom.disable();
 
-  const events = [];
   map.on('pm:create', (e) => {
+    const { layer } = e;
     e.layer.options.pmIgnore = false;
     // L.PM.reInitLayer(e.layer);
-    console.log('Shape drawn');
-    console.log(e.layer);
-    console.log(e);
+    const trans = store.tps.transactions[store.tps.mostRecentTransaction];
+    if (trans instanceof AddRegion_Transaction) {
+      // HANDLE DUPLICATES
+      if (trans.layer !== layer) {
+        store.addAddRegionTransaction(layer);
+      }
+    } else {
+      store.addAddRegionTransaction(layer);
+    }
   });
 
-  console.log(map);
+  map.on('pm:remove', (e) => {
+    const { layer } = e;
+    e.layer.options.pmIgnore = false;
+    const trans = store.tps.transactions[store.tps.mostRecentTransaction];
+    if (trans instanceof DeleteRegion_Transaction) {
+      // HANDLE DUPLICATES
+      if (trans.layer !== layer) {
+        store.addDeleteRegionTransaction(layer);
+      }
+    } else {
+      store.addDeleteRegionTransaction(layer);
+    }
+  });
 
   map.pm.setGlobalOptions({
     limitMarkersToCount: 10,
@@ -129,17 +151,6 @@ export default function MapLayer({
       console.log(e);
     }
   });
-
-  // map.on('pm:drawend', (e) => {
-  //   const { _layers: layers } = e.target;
-  //   console.log('Finish Draw');
-  //   console.log(layers);
-  //   for (const layer in layers) {
-  //     if (layers[layer]._latlngs) {
-  //       console.log(layers[layer]);
-  //     }
-  //   }
-  // });
 
   return (
     <GeoJSON

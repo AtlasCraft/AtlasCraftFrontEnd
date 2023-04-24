@@ -83,9 +83,14 @@ export default function EditToolbar({
       }
       selected[i].remove();
     }
-    L.geoJSON(unions, countryStyle).addTo(store.mapObject);
+    const oldLayers = [...store.selectedRegion];
     store.selectedRegion = [];
-    console.log(unions);
+    const l = L.geoJSON(unions, countryStyle).addTo(store.mapObject);
+    console.log('l');
+    console.log(l);
+    for (let layer in l._layers) {
+      store.addMergeRegionTransaction(oldLayers, l._layers[layer]);
+    }
   };
 
   const handleUndo = () => {

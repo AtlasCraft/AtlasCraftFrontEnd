@@ -14,10 +14,10 @@ export default class MergeRegion_Transaction extends jsTPS_Transaction {
   }
 
   doTransaction() {
-    this.store.mergeRegion();
+    this.store.mergeRegion(this.oldRegions, this.newRegion);
   }
 
   undoTransaction() {
-    this.store.restoreRegion();
+    this.store.restoreRegion(this.oldRegions, this.newRegion);
   }
 }

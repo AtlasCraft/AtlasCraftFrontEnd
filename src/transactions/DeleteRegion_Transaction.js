@@ -13,10 +13,10 @@ export default class DeleteRegion_Transaction extends jsTPS_Transaction {
   }
 
   doTransaction() {
-    this.store.deleteRegion();
+    this.store.deleteRegion(this.layer);
   }
 
   undoTransaction() {
-    this.store.addRegion();
+    this.store.createRegion(this.layer);
   }
 }
