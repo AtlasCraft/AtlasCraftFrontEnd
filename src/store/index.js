@@ -165,13 +165,13 @@ function GlobalStoreContextProvider(props) {
   store.mergeRegion = function () {};
   store.restoreRegion = function () {};
   store.addSplitRegionTransaction = function (verts) {
-    verts.sort((vert1, vert2) => {
-      return vert1[3] - vert2[3];
-    }); //  should be in asc order
-    let vert1 = verts[0];
-    let vert2 = verts[1];
-    if (store.geojson.features[vert1[0]].geometry.type == 'Polygon') {
+    if (store.geojson.features[verts[0][0]].geometry.type == 'Polygon') {
       // need to completely remove subregion
+      verts.sort((vert1, vert2) => {
+        return vert1[2] - vert2[2];
+      }); //  should be in asc order
+      let vert1 = verts[0];
+      let vert2 = verts[1];
       let oldRegion = JSON.parse(
         JSON.stringify(store.geojson.features[vert1[0]])
       );
@@ -202,7 +202,12 @@ function GlobalStoreContextProvider(props) {
       ); //type 1 = polygon
       tps.addTransaction(transaction);
     } else {
-      //need to "modify the subregion"
+      //need to "modify the subregion" and is a multipolygon
+      verts.sort((vert1, vert2) => {
+        return vert1[3] - vert2[3];
+      }); //  should be in asc order
+      let vert1 = verts[0];
+      let vert2 = verts[1];
       let oldRegion = JSON.parse(
         JSON.stringify(store.geojson.features[vert1[0]])
       );

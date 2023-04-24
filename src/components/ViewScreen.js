@@ -1,4 +1,4 @@
-import React,{useContext} from 'react';
+import React,{useContext, useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -9,11 +9,31 @@ import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
 import AuthContext from '../auth'
 import GlobalStoreContext from '../store'
 
-export default function ViewScreen() {
+export default function ViewScreen(props) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
+  const loggedInUser = auth.user?auth.user.username:"";
   const tempGeo = require("../util/VaticanTestGeojson.json");
   console.log(tempGeo)
+  const [comment, setComment] = useState('');
+  const [comments, setComments] = useState([]);
+
+  
+  const handleComment = (e) => {
+    e.preventDefault();
+    setComment('');
+    auth.getComment({
+      ownedUser: loggedInUser,
+      body: comment
+    }, store
+    )
+    setComment("");
+  };
+
+  function handleFork(){
+    store.forkMap(props.id);
+  }
+
   return (
     <div>
       <div>
@@ -37,6 +57,7 @@ export default function ViewScreen() {
           >
             <div style={{width:"80%", left:"2%", fontSize:"20pt"}}> {store.mapName}</div>
             <Button
+              onClick={()=>{handleFork()}}
               variant="contained"
               href="#"
               sx={{
@@ -76,12 +97,13 @@ export default function ViewScreen() {
               <GeoJSON data={tempGeo.features}/>
             </MapContainer>
           </div>
-          <div style={{ width: '30%', background: 'white', height: '100%' }}>
+          <form onSubmit={handleComment}>
+          <div style={{ width: '150%', background: 'white', height: '100%' }}>
+
           <Stack
             direction="column-reverse"
             height="100%"
             justifyContent="space-between"
-            
           >
           <div style={{ background: 'rgb(192,192,192)'}}>
             <TextField
@@ -89,13 +111,19 @@ export default function ViewScreen() {
               id="comment"
               name="comment"
               label="comment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
             />
-            <Button variant="contained" href="#" sx={{ 'align-self': 'center' }} style={{maxWidth:"20%", top:"50%", transform: "translateY(-50%)"}}>
+            <Button
+              variant="contained" href="#" 
+              sx={{ 'align-self': 'center' }} 
+              style={{maxWidth:"20%", top:"50%", transform: "translateY(-50%)"}}>
                Comment
             </Button>
           </div>
         </Stack>
           </div>
+          </form>
         </Stack>
       </div>
       <div>

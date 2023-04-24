@@ -67,71 +67,82 @@ export default function MapCard(props){
     },[props.likedUsers, props.dislikedUsers]);
     
     function handleLike(){
-        // if(likedUsers.includes(loggedInUser)){
-        //     //remove from liked users and update backend
-        //     let temp = [...likedUsers];
-        //     temp.splice(temp.indexOf(loggedInUser), 1)
-        //     setLiked(temp);
-        //     //TODO update backend liked
-        // }
-        // else if(dislikedUsers.includes(loggedInUser)){
-        //     //remove from disliked users and update backend and add to liked users and update backend
-        //     let temp = [...dislikedUsers];
-        //     temp.splice(temp.indexOf(loggedInUser), 1)
-        //     setDisliked(temp);
-        //     let temp2 = [...likedUsers];
-        //     temp2.push(loggedInUser)
-        //     setLiked(temp2);
-        //     //TODO update backend liked and disliked
-        // }   
-        // else {
-        //     //not in either list so just add to liked and update backend
-        //     let temp = [...likedUsers];
-        //     temp.push(loggedInUser);
-        //     setLiked(temp);
-        //     //TODO update backend liked
-        // }
-        if(!dislikedUsers.includes(loggedInUser) && !likedUsers.includes(loggedInUser)){
+        if(likedUsers.includes(loggedInUser)){
+            //remove from liked users and update backend
+            let temp = [...likedUsers];
+            temp.splice(temp.indexOf(loggedInUser), 1)
+            setLiked(temp);
+            //update backend liked
+            store.updateLikes(props.cardId);
+        }
+        else if(dislikedUsers.includes(loggedInUser)){
+            //remove from disliked users and update backend and add to liked users and update backend
+            let temp = [...dislikedUsers];
+            temp.splice(temp.indexOf(loggedInUser), 1)
+            setDisliked(temp);
+            let temp2 = [...likedUsers];
+            temp2.push(loggedInUser)
+            setLiked(temp2);
+            //update backend liked and disliked
+            store.updateLikes(props.cardId);
+            // store.updateDislikes(props.cardId);
+        }   
+        else {
+            //not in either list so just add to liked and update backend
             let temp = [...likedUsers];
             temp.push(loggedInUser);
             setLiked(temp);
+            //update backend liked
             store.updateLikes(props.cardId);
         }
+
+        //Temp stuff
+        // if(!dislikedUsers.includes(loggedInUser) && !likedUsers.includes(loggedInUser)){
+        //     //not in either
+        //     let temp = [...likedUsers];
+        //     temp.push(loggedInUser);
+        //     setLiked(temp);
+        //     store.updateLikes(props.cardId);
+        // }
     }
     function handleDislike(){
-        // if(dislikedUsers.includes(loggedInUser)){
-        //     //remove from disliked users and update backend
-        //     let temp = [...dislikedUsers];
-        //     temp.splice(temp.indexOf(loggedInUser), 1);
-        //     setDisliked(temp);
-        //     //TODO update backend disliked
-        // }
-        // else if(likedUsers.includes(loggedInUser)){
-        //     //remove from liked users and update backend and add to disliked users and update backend
-        //     let temp = [...likedUsers];
-        //     temp.splice(temp.indexOf(loggedInUser), 1)
-        //     setLiked(temp);
-        //     let temp2 = [...dislikedUsers];
-        //     temp2.push(loggedInUser);
-        //     setDisliked(temp2);
-        //     //TODO update backend liked and disliked
-        // }   
-        // else {
-        //     //not in either list so just add to liked and update backend
-        //     let temp = [...dislikedUsers];
-        //     temp.push(loggedInUser);
-        //     setDisliked(temp);
-        //     //TODO update backend liked
-        // }
-
-
-        //TEMP STUFF
-        if(!dislikedUsers.includes(loggedInUser) && !likedUsers.includes(loggedInUser)){
+        if(dislikedUsers.includes(loggedInUser)){
+            //remove from disliked users and update backend
+            let temp = [...dislikedUsers];
+            temp.splice(temp.indexOf(loggedInUser), 1);
+            setDisliked(temp);
+            //TODO update backend disliked
+            store.updateDislikes(props.cardId);
+        }
+        else if(likedUsers.includes(loggedInUser)){
+            //remove from liked users and update backend and add to disliked users and update backend
+            let temp = [...likedUsers];
+            temp.splice(temp.indexOf(loggedInUser), 1)
+            setLiked(temp);
+            let temp2 = [...dislikedUsers];
+            temp2.push(loggedInUser);
+            setDisliked(temp2);
+            //TODO update backend liked and disliked
+            store.updateDislikes(props.cardId);
+            // store.updateLikes(props.cardId);
+        }   
+        else {
+            //not in either list so just add to liked and update backend
             let temp = [...dislikedUsers];
             temp.push(loggedInUser);
             setDisliked(temp);
+            //TODO update backend liked
             store.updateDislikes(props.cardId);
         }
+
+
+        //TEMP STUFF
+        // if(!dislikedUsers.includes(loggedInUser) && !likedUsers.includes(loggedInUser)){
+        //     let temp = [...dislikedUsers];
+        //     temp.push(loggedInUser);
+        //     setDisliked(temp);
+        //     store.updateDislikes(props.cardId);
+        // }
         
     }
 

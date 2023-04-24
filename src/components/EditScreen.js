@@ -26,8 +26,10 @@ export default function EditScreen() {
   const [selectedVerts, setVerts] = React.useState([]);
   const [tempSelectedVert, setTempSelectedVert] = React.useState([]);
   const [mapName, setMapName] = useState(store.mapName);
+  const [vertexEnabled, setVertexEnabled] = useState(true);
 
   useEffect(()=>{
+    if(!vertexEnabled) return;
     let isSame = false;
     if(tempSelectedVert.length != 0){
       for(let i=0;i<selectedVerts.length;i++){
@@ -244,6 +246,8 @@ export default function EditScreen() {
 
               <MapLayer 
                 onEachFeature={onEachFeature}
+                setVertexEnabled={setVertexEnabled}
+                setTempSelectedVert={setTempSelectedVert}
               />
             </MapContainer>
 
@@ -252,6 +256,7 @@ export default function EditScreen() {
             handleGeoUpload = {handleGeoUpload}
             handleShpUpload = {handleShpUpload}
             handleSplit = {handleSplit}
+            setVertexEnabled = {setVertexEnabled}
           />
         </Stack>
       </div>

@@ -21,6 +21,7 @@ export default function EditToolbar({
   handleGeoUpload,
   handleShpUpload,
   handleSplit,
+  setVertexEnabled,
 }) {
   const { store } = useContext(GlobalStoreContext);
   const [value, setValue] = React.useState('1');
@@ -57,6 +58,7 @@ export default function EditToolbar({
   };
 
   const handleCreateRegion = (e) => {
+    setVertexEnabled(false);
     store.mapObject.pm.enableDraw('Polygon');
   };
 

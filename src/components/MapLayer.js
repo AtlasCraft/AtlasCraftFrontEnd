@@ -5,7 +5,11 @@ import L from 'leaflet';
 const mapData = require('../test/MapEditingInfo.json');
 const usData = require('../test/us.json');
 
-export default function MapLayer({ onEachFeature }) {
+export default function MapLayer({
+  onEachFeature,
+  setVertexEnabled,
+  setTempSelectedVert,
+}) {
   const countryStyle = {
     fillColor: 'yellow',
     color: 'black',
@@ -39,6 +43,18 @@ export default function MapLayer({ onEachFeature }) {
     drawCircle: false,
   });
 
+  function findGeoIndex(props) {
+    for (let i = 0; i < store.geojson.features.length; i++) {
+      if (
+        store.geojson.features[i].properties.AtlasCraftRegionID ==
+        props.AtlasCraftRegionID
+      ) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   map.on('layeradd', (e) => {
     if (e.layer && e.layer._latlngs) {
       console.log(e);
@@ -61,7 +77,22 @@ export default function MapLayer({ onEachFeature }) {
           console.log(e);
           console.log(e.marker._latlng);
         });
+        //TODO add split feature to new layer
+        // layer.on('pm:vertexclick', (e) => {
+        //   console.log(e.indexPath);
+        //   if(e.indexPath){//if it is a proper vertex click event
+        //     // console.log(e.layer.feature.geometry.coordinates)
+        //     let featuresIndex = findGeoIndex(e.layer.feature.properties);
+        //     e.indexPath.unshift(featuresIndex);
+        //     //NOTE: some may be 4 elements and others may be 3, account for this later using loop
+        //     //The First element will always be the features index
+
+        //     setTempSelectedVert(e.indexPath);
+
+        //   }
+        // });
       });
+
       //SELECT REGION
       layer.on('dblclick', (e) => {
         const layer = e.target;

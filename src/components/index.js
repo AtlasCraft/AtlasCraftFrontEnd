@@ -30,5 +30,5 @@ export {
   ViewScreen,
   EditScreen,
   ErrorModal,
-  MapLayer,
+  MapLayer
 };

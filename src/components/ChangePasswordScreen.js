@@ -1,39 +1,36 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useHistory } from "react-router-dom";
 
+import { useContext, useState } from 'react';
+import AuthContext from '../auth';
+import { GlobalStoreContext } from '../store';
+
 const ChangePasswordScreen = () => {
+    const { auth } = useContext(AuthContext);
+    const { store } = useContext(GlobalStoreContext);
     const history = useHistory();
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    console.log(auth);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
-
-        // Validate form data
-        // if (
-        //     newPassword === '' ||
-        //     confirmNewPassword === '' ||
-        //     securityQuestion1 === '' ||
-        //     answer1 === '' ||
-        //     securityQuestion2 === '' ||
-        //     answer2 === ''
-        // ) {
-        //     alert('Please fill in all the fields.');
-        //     return;
-        // }
-
-        // Perform password retrieval logic
-        // ...
-
-        // Reset form fields
         setOldPassword('');
         setNewPassword('');
         setConfirmNewPassword('');
         history.goBack();
+        auth.changePassword(
+            {
+                oldPassword: oldPassword,
+                newPassword: newPassword,
+                newPasswordConfirm: confirmNewPassword
+            },
+            store
+        );
     };
 
     const handleFormCancel = () => {
