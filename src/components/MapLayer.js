@@ -5,7 +5,11 @@ import L from 'leaflet';
 const mapData = require('../test/MapEditingInfo.json');
 const usData = require('../test/us.json');
 
-export default function MapLayer({onEachFeature}) {
+export default function MapLayer({
+  onEachFeature,
+  setVertexEnabled,
+  setTempSelectedVert,
+}) {
   const countryStyle = {
     fillColor: 'yellow',
     color: 'black',
@@ -18,9 +22,13 @@ export default function MapLayer({onEachFeature}) {
   store.mapObject = map;
   map.doubleClickZoom.disable();
 
+  const events = [];
   map.on('pm:create', (e) => {
     e.layer.options.pmIgnore = false;
-    L.PM.reInitLayer(e.layer);
+    // L.PM.reInitLayer(e.layer);
+    console.log('Shape drawn');
+    console.log(e.layer);
+    console.log(e);
   });
 
   console.log(map);
@@ -34,6 +42,18 @@ export default function MapLayer({onEachFeature}) {
     position: 'topleft',
     drawCircle: false,
   });
+
+  function findGeoIndex(props) {
+    for (let i = 0; i < store.geojson.features.length; i++) {
+      if (
+        store.geojson.features[i].properties.AtlasCraftRegionID ==
+        props.AtlasCraftRegionID
+      ) {
+        return i;
+      }
+    }
+    return -1;
+  }
 
   map.on('layeradd', (e) => {
     if (e.layer && e.layer._latlngs) {
@@ -57,7 +77,22 @@ export default function MapLayer({onEachFeature}) {
           console.log(e);
           console.log(e.marker._latlng);
         });
+        //TODO add split feature to new layer
+        // layer.on('pm:vertexclick', (e) => {
+        //   console.log(e.indexPath);
+        //   if(e.indexPath){//if it is a proper vertex click event
+        //     // console.log(e.layer.feature.geometry.coordinates)
+        //     let featuresIndex = findGeoIndex(e.layer.feature.properties);
+        //     e.indexPath.unshift(featuresIndex);
+        //     //NOTE: some may be 4 elements and others may be 3, account for this later using loop
+        //     //The First element will always be the features index
+
+        //     setTempSelectedVert(e.indexPath);
+
+        //   }
+        // });
       });
+
       //SELECT REGION
       layer.on('dblclick', (e) => {
         const layer = e.target;
@@ -95,27 +130,16 @@ export default function MapLayer({onEachFeature}) {
     }
   });
 
-  map.on('pm:drawend', (e) => {
-    const { _layers: layers } = e.target;
-    console.log('Finish Draw');
-    console.log(layers);
-    for (const layer in layers) {
-      if (layers[layer]._latlngs) {
-        console.log(layers[layer]);
-      }
-    }
-    // CODE FOR CREATING POLYGON
-    // const poly = L.polygon(
-    //   [getRandomLatLng(), getRandomLatLng(), getRandomLatLng()],
-    //   countryStyle
-    // );
-    // L.featureGroup([poly])
-    //   .bindPopup('Hello world!')
-    //   .on('click', (e) => {
-    //     console.log();
-    //   })
-    //   .addTo(map);
-  });
+  // map.on('pm:drawend', (e) => {
+  //   const { _layers: layers } = e.target;
+  //   console.log('Finish Draw');
+  //   console.log(layers);
+  //   for (const layer in layers) {
+  //     if (layers[layer]._latlngs) {
+  //       console.log(layers[layer]);
+  //     }
+  //   }
+  // });
 
   return (
     <GeoJSON
