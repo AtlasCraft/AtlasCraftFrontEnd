@@ -1,3 +1,4 @@
+
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Box, TextField, Button, Stack, Tab, Grid, IconButton} from '@mui/material';
 import {Edit, LibraryAdd, Merge, CallSplit, Undo, Redo} from '@mui/icons-material';
@@ -168,7 +169,6 @@ export default function EditScreen() {
       store.changeMapName(mapName);
     }
   };
-
   return (
     <div>
       <div>
@@ -206,9 +206,7 @@ export default function EditScreen() {
               sx={{
                 'align-self': 'center',
               }}
-              onClick={() => {
-                store.saveMap();
-              }}
+              onClick={()=>{store.saveMap()}}
             >
               Save
             </Button>
@@ -241,12 +239,14 @@ export default function EditScreen() {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
+
               {markedVertices}
 
               <MapLayer 
                 onEachFeature={onEachFeature}
               />
             </MapContainer>
+
           </div>
           <EditToolbar
             handleGeoUpload = {handleGeoUpload}
