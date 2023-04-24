@@ -12,6 +12,8 @@ export const AuthActionType = {
   REGISTER_USER: 'REGISTER_USER',
   LOGIN_USER: 'LOGIN_USER',
   LOGOUT_USER: 'LOGOUT_USER',
+  FORGOT_PASSWORD: 'FORGOT_PASSWORD',
+  CHANGE_PASSWORD: 'CHANGE_PASSWORD'
 };
 
 function AuthContextProvider(props) {
@@ -112,6 +114,38 @@ function AuthContextProvider(props) {
 
     }
   };
+  
+  auth.forgotPassword = async function (userData, store) {
+    try {
+      const response = await api.forgotPassword(userData);
+      if (response.status === 200) {
+        authReducer({
+          type: AuthActionType.FORGOT_PASSWORD,
+          payload: {
+            user: response.data.user,
+          },
+        });
+        history.push('/');
+      }
+    } catch (err) {
+    }
+  };
+
+  auth.changePassword = async function (userData, store) {
+    try {
+      const response = await api.changePassword(userData);
+      if (response.status === 200) {
+        authReducer({
+          type: AuthActionType.CHANGE_PASSWORD,
+          payload: {
+            user: response.data.user,
+          },
+        });
+        history.push('/home');
+      }
+    } catch (err) {
+    }
+  };
 
   auth.logoutUser = async function (store) {
     try {
@@ -126,9 +160,6 @@ function AuthContextProvider(props) {
     } catch (err) {}
   };
 
-  auth.changePassword = async function (store) {
-    //For build 4
-  };
 
   auth.fakeLogin = async function () {
     setAuth({

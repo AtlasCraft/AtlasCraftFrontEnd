@@ -1,47 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import { useHistory } from "react-router-dom";
 
+import { useContext, useState } from 'react';
+import AuthContext from '../auth';
+import { GlobalStoreContext } from '../store';
+
 const PasswordRetrievalPage = () => {
+
+    const { auth } = useContext(AuthContext);
+    const { store } = useContext(GlobalStoreContext);
+
     const history = useHistory();
     const [username, setUsername] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
-    const [securityQuestion1, setSecurityQuestion1] = useState('');
     const [answer1, setAnswer1] = useState('');
-    const [securityQuestion2, setSecurityQuestion2] = useState('');
     const [answer2, setAnswer2] = useState('');
+    console.log(auth);
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
-
-        // Validate form data
-        // if (
-        //     newPassword === '' ||
-        //     confirmNewPassword === '' ||
-        //     securityQuestion1 === '' ||
-        //     answer1 === '' ||
-        //     securityQuestion2 === '' ||
-        //     answer2 === ''
-        // ) {
-        //     alert('Please fill in all the fields.');
-        //     return;
-        // }
-
-        // Perform password retrieval logic
-        // ...
-
-        // Reset form fields
         setUsername('');
         setNewPassword('');
         setConfirmNewPassword('');
-        setSecurityQuestion1('');
         setAnswer1('');
-        setSecurityQuestion2('');
         setAnswer2('');
         history.push("/");
+        auth.forgotPassword(
+            {
+              username: username,
+              newPassword: newPassword,
+              newPasswordConfirm: confirmNewPassword,
+              answer1: answer1,
+              answer2: answer2
+            },
+            store
+        );
     };
 
     const handleFormCancel = () => {
@@ -49,9 +46,7 @@ const PasswordRetrievalPage = () => {
         setUsername('');
         setNewPassword('');
         setConfirmNewPassword('');
-        setSecurityQuestion1('');
         setAnswer1('');
-        setSecurityQuestion2('');
         setAnswer2('');
         history.push("/");
     };
