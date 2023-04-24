@@ -29,6 +29,7 @@ export const GlobalStoreActionType = {
   SET_MAPCARDS: 'SET_MAPCARDS',
   SHOW_ERROR: 'SHOW_ERROR',
   HIDE_ERR: 'HIDE_ERR',
+  CHANGE_MAP_NAME: 'CHANGE_MAP_NAME',
 };
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -80,7 +81,6 @@ function GlobalStoreContextProvider(props) {
         });
       }
       case GlobalStoreActionType.SHOW_ERR: {
-        console.log(payload);
         return setStore({
           ...store,
           err: payload,
@@ -90,6 +90,13 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           ...store,
           err: null,
+        });
+      }
+      case GlobalStoreActionType.CHANGE_MAP_NAME: {
+        console.log(payload);
+        return setStore({
+          ...store,
+          mapName: payload,
         });
       }
       default:
@@ -177,7 +184,13 @@ function GlobalStoreContextProvider(props) {
     }
     // console.log(res);
   };
-  store.changeMapName = function () {};
+  store.changeMapName = function (name) {
+    storeReducer({
+      type: GlobalStoreActionType.CHANGE_MAP_NAME,
+      payload: name,
+    });
+  };
+
   store.saveMap = function () {};
   store.deleteMap = function () {};
   store.publishMap = async function (id) {

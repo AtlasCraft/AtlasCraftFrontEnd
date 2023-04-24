@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -16,6 +16,14 @@ const mapData = require('../test/MapEditingInfo.json');
 
 export default function EditScreen() {
   const { store } = useContext(GlobalStoreContext);
+  const [mapName, setMapName] = useState(store.mapName);
+
+  const updateMapName = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      store.changeMapName(mapName);
+    }
+  };
   return (
     <div>
       <div>
@@ -40,7 +48,11 @@ export default function EditScreen() {
             <TextField
               id="mapname"
               variant="filled"
-              value={store.mapName}
+              value={mapName}
+              onKeyPress={updateMapName}
+              onChange={(e) => {
+                setMapName(e.target.value);
+              }}
               hiddenLabel
             />
             <Button
