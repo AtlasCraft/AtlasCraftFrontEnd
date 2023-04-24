@@ -11,9 +11,9 @@ export const AuthActionType = {
   GET_LOGGED_IN: 'GET_LOGGED_IN',
   REGISTER_USER: 'REGISTER_USER',
   LOGIN_USER: 'LOGIN_USER',
-  LOGOUT_USER: 'LOGOUT_USER',
-  FORGOT_PASSWORD: 'FORGOT_PASSWORD',
-  CHANGE_PASSWORD: 'CHANGE_PASSWORD'
+  LOGOUT_USER: 'LOGOUT_USER'
+//  FORGOT_PASSWORD: 'FORGOT_PASSWORD',
+//  CHANGE_PASSWORD: 'CHANGE_PASSWORD'
 };
 
 function AuthContextProvider(props) {
@@ -119,15 +119,11 @@ function AuthContextProvider(props) {
     try {
       const response = await api.forgotPassword(userData);
       if (response.status === 200) {
-        authReducer({
-          type: AuthActionType.FORGOT_PASSWORD,
-          payload: {
-            user: response.data.user,
-          },
-        });
         history.push('/');
       }
     } catch (err) {
+      // store.showErr(err.response.status, err.response.data.errorMessage);
+      enqueueSnackbar(err.response.data.errorMessage, {variant: "error", autoHideDuration: 5000})
     }
   };
 
@@ -135,15 +131,11 @@ function AuthContextProvider(props) {
     try {
       const response = await api.changePassword(userData);
       if (response.status === 200) {
-        authReducer({
-          type: AuthActionType.CHANGE_PASSWORD,
-          payload: {
-            user: response.data.user,
-          },
-        });
-        history.push('/home');
+        history.push('/');
       }
     } catch (err) {
+      // store.showErr(err.response.status, err.response.data.errorMessage);
+      enqueueSnackbar(err.response.data.errorMessage, {variant: "error", autoHideDuration: 5000})
     }
   };
 
