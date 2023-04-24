@@ -16,16 +16,18 @@ export default function ViewScreen(props) {
   const tempGeo = require("../util/VaticanTestGeojson.json");
   console.log(tempGeo)
   const [comment, setComment] = useState('');
+  const [comments, setComments] = useState([]);
+
   
   const handleComment = (e) => {
     e.preventDefault();
     setComment('');
-    auth.comment({
+    auth.getComment({
       ownedUser: loggedInUser,
       body: comment
     }, store
     )
-    
+    setComment("");
   };
 
   function handleFork(){
@@ -95,7 +97,9 @@ export default function ViewScreen(props) {
               <GeoJSON data={tempGeo.features}/>
             </MapContainer>
           </div>
-          <div style={{ width: '30%', background: 'white', height: '100%' }}>
+          <form onSubmit={handleComment}>
+          <div style={{ width: '150%', background: 'white', height: '100%' }}>
+
           <Stack
             direction="column-reverse"
             height="100%"
@@ -110,17 +114,16 @@ export default function ViewScreen(props) {
               value={comment}
               onChange={(e) => setComment(e.target.value)}
             />
-            <Button 
-              onclick={handleComment}
+            <Button
               variant="contained" href="#" 
               sx={{ 'align-self': 'center' }} 
               style={{maxWidth:"20%", top:"50%", transform: "translateY(-50%)"}}>
                Comment
             </Button>
-            
           </div>
         </Stack>
           </div>
+          </form>
         </Stack>
       </div>
       <div>

@@ -137,9 +137,9 @@ function AuthContextProvider(props) {
     }
   };
 
-  auth.comment = async function (userData, store) {
+  auth.getComment = async function (userData, store) {
     try {
-      const response = await api.comment(userData);
+      const response = await api.getComment(userData);
       if (response.status === 200) {
         history.push('/');
       }
