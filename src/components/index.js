@@ -11,7 +11,6 @@ import EditScreen from './EditScreen';
 import ErrorModal from './ErrorModal';
 import ViewScreen from './ViewScreen';
 import MapLayer from './MapLayer';
-import UsernameScreen from './UsernameScreen';
 /*
 	This serves as a module so that we can import
 	all the other components as we wish.
@@ -31,6 +30,5 @@ export {
   ViewScreen,
   EditScreen,
   ErrorModal,
-  MapLayer,
-  UsernameScreen
+  MapLayer
 };
