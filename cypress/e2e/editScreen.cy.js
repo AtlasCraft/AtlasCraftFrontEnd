@@ -3,8 +3,9 @@ beforeEach(() => {
 })
 
 describe('Edit Screen Testing', () => {
-  it('add testing', () => {
-    
+  it.only('add testing', () => {
+    cy.get('.MuiGrid-container > :nth-child(2) > .MuiBox-root').click()
+
   })
 
   it('delete testing', () => {
