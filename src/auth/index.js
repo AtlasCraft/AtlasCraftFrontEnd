@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { EnqueueSnackbar, enqueueSnackbar } from 'notistack';
 import api from '../api';
 
 const AuthContext = createContext();
@@ -88,7 +89,8 @@ function AuthContextProvider(props) {
         history.push('/');
       }
     } catch (err) {
-      store.showErr(err.response.status, err.response.data.errorMessage);
+      // store.showErr(err.response.status, err.response.data.errorMessage);
+      enqueueSnackbar(err.response.data.errorMessage, {variant: "error", autoHideDuration: 5000})
     }
   };
 
@@ -106,7 +108,8 @@ function AuthContextProvider(props) {
         history.push('/home');
       }
     } catch (err) {
-      store.showErr(err.response.status, err.response.data.errorMessage);
+      enqueueSnackbar(err.response.data.errorMessage, {variant: "error", autoHideDuration: 5000})
+
     }
   };
 
