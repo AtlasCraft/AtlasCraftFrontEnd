@@ -15,7 +15,7 @@ import {
   DrawScreen,
   EditScreen,
   RegisterScreen,
-	ViewScreen,
+	ViewScreen
 } from './components';
 /*
 	This is our application's top-level component.

@@ -11,7 +11,7 @@ export const AuthActionType = {
   GET_LOGGED_IN: 'GET_LOGGED_IN',
   REGISTER_USER: 'REGISTER_USER',
   LOGIN_USER: 'LOGIN_USER',
-  LOGOUT_USER: 'LOGOUT_USER',
+  LOGOUT_USER: 'LOGOUT_USER'
 };
 
 function AuthContextProvider(props) {
@@ -112,6 +112,42 @@ function AuthContextProvider(props) {
 
     }
   };
+  
+  auth.forgotPassword = async function (userData, store) {
+    try {
+      const response = await api.forgotPassword(userData);
+      if (response.status === 200) {
+        history.push('/');
+      }
+    } catch (err) {
+      // store.showErr(err.response.status, err.response.data.errorMessage);
+      enqueueSnackbar(err.response.data.errorMessage, {variant: "error", autoHideDuration: 5000})
+    }
+  };
+
+  auth.changePassword = async function (userData, store) {
+    try {
+      const response = await api.changePassword(userData);
+      if (response.status === 200) {
+        history.push('/');
+      }
+    } catch (err) {
+      // store.showErr(err.response.status, err.response.data.errorMessage);
+      enqueueSnackbar(err.response.data.errorMessage, {variant: "error", autoHideDuration: 5000})
+    }
+  };
+
+  auth.getComment = async function (userData, store) {
+    try {
+      const response = await api.getComment(userData);
+      if (response.status === 200) {
+        history.push('/');
+      }
+    } catch (err) {
+      // store.showErr(err.response.status, err.response.data.errorMessage);
+      enqueueSnackbar(err.response.data.errorMessage, {variant: "error", autoHideDuration: 5000})
+    }
+  };
 
   auth.logoutUser = async function (store) {
     try {
@@ -126,9 +162,6 @@ function AuthContextProvider(props) {
     } catch (err) {}
   };
 
-  auth.changePassword = async function (store) {
-    //For build 4
-  };
 
   auth.fakeLogin = async function () {
     setAuth({

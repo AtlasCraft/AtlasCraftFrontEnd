@@ -46,6 +46,7 @@ export const logoutUser = () => api.get(`/logout/`);
 export const getSecurityQuestions = () => api.get('/sq/:username');
 export const forgotPassword = (payload) => api.post('/forgotPassword', payload);
 export const changePassword = (payload) => api.post('/changePassword', payload);
+export const getComment = (payload) => api.post('/comment', payload);
 
 const apis = {
   //map editing info
@@ -65,6 +66,7 @@ const apis = {
   getSecurityQuestions,
   forgotPassword,
   changePassword,
+  getComment
 };
 
 export default apis;
