@@ -12,8 +12,6 @@ export const AuthActionType = {
   REGISTER_USER: 'REGISTER_USER',
   LOGIN_USER: 'LOGIN_USER',
   LOGOUT_USER: 'LOGOUT_USER'
-//  FORGOT_PASSWORD: 'FORGOT_PASSWORD',
-//  CHANGE_PASSWORD: 'CHANGE_PASSWORD'
 };
 
 function AuthContextProvider(props) {
@@ -130,6 +128,18 @@ function AuthContextProvider(props) {
   auth.changePassword = async function (userData, store) {
     try {
       const response = await api.changePassword(userData);
+      if (response.status === 200) {
+        history.push('/');
+      }
+    } catch (err) {
+      // store.showErr(err.response.status, err.response.data.errorMessage);
+      enqueueSnackbar(err.response.data.errorMessage, {variant: "error", autoHideDuration: 5000})
+    }
+  };
+
+  auth.comment = async function (userData, store) {
+    try {
+      const response = await api.comment(userData);
       if (response.status === 200) {
         history.push('/');
       }
