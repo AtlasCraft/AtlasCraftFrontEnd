@@ -14,6 +14,7 @@ import GlobalStoreContext from '../store'
 import {MapZoom, GeomanInit} from './EditScreenComponents';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import { enqueueSnackbar } from 'notistack';
 
 const style = {
   countryStyle: {
@@ -51,10 +52,44 @@ export default function EditScreen() {
   const [tempSelectedVert, setTempSelectedVert] = React.useState([]);
 
   useEffect(()=>{
+    let isSame = false;
     if(tempSelectedVert.length != 0){
-      let coppiedSelectedVerts = JSON.parse(JSON.stringify(selectedVerts)); // is a deep copy
-      coppiedSelectedVerts.push(tempSelectedVert);
-      setVerts(coppiedSelectedVerts);
+      for(let i=0;i<selectedVerts.length;i++){
+        isSame = false;
+        if(isSame) break;
+        for(let j=0;j<selectedVerts[i].length; j++){
+          if(selectedVerts[i][j]!=tempSelectedVert[j]){
+            break;
+          }
+          if(j == selectedVerts[i].length-1) {
+            isSame=true
+            i = selectedVerts.length;
+            break;
+          }
+        }
+      }
+      if(!isSame){
+        let coppiedSelectedVerts = JSON.parse(JSON.stringify(selectedVerts)); // is a deep copy
+        coppiedSelectedVerts.push(tempSelectedVert);
+        setVerts(coppiedSelectedVerts);
+        
+      }else{
+        let coppiedSelectedVerts = JSON.parse(JSON.stringify(selectedVerts)); // is a deep copy
+        let removeIndex = -1;
+        for(let i=0;i<selectedVerts.length;i++){
+          for(let j=0;j<selectedVerts[i].length; j++){
+            if(selectedVerts[i][j]!=tempSelectedVert[j]){
+              break;
+            }
+            if(j = selectedVerts[i].length-1) {
+              removeIndex = i;
+              break;
+            }
+          }
+        }
+        coppiedSelectedVerts.splice(removeIndex, 1);
+        setVerts(coppiedSelectedVerts);
+      }
       console.log(store.geojson)
       setTempSelectedVert([]);
     }
@@ -68,10 +103,11 @@ export default function EditScreen() {
     return(<div>{
       selectedVerts.map((arr, index)=>{//[featureIndex, subregionIdx, coordidx, latlng indx]
         let pos =store.geojson.features[arr[0]].geometry.coordinates[arr[1]][arr[2]][arr[3]]
+        if(store.geojson.features[arr[0]].geometry.type == "Polygon"){
+          pos =store.geojson.features[arr[0]].geometry.coordinates[arr[1]][arr[2]]
+        }
         return <Marker key={index} position={[pos[1],pos[0]]} draggable={false} icon={L.icon({
           iconUrl: require('.././util/MarkerTopLeft.png'),
-          // iconSize:[50,50],
-          shadowUrl: iconShadow,
 
       })}/>
       }) // icon={L.Icon({iconUrl:require('./../util/Marker.png'),iconSize:[35,45]})}
@@ -136,6 +172,20 @@ export default function EditScreen() {
   }
 
   function handleSplit(){
+    if(selectedVerts.length ==2){
+      if(selectedVerts[0][0] != selectedVerts[1][0]){
+        enqueueSnackbar("Selected vertices must be in the same region", {variant: "error", autoHideDuration: 3000});
+        return
+      }
+      if(selectedVerts[0][1] != selectedVerts[1][1]){
+        enqueueSnackbar("Selected vertices must have a direct path between them", {variant: "error", autoHideDuration: 3000});
+        return
+      }
+      store.addSplitRegionTransaction(selectedVerts);
+      setVerts([]);
+    }else{
+      enqueueSnackbar("You must only have 2 vertices selected to split", {variant: "error", autoHideDuration: 3000})
+    }
     //TODO need to check for vertex list size
     //call store function and create a transaction
   }
