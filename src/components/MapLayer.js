@@ -5,7 +5,7 @@ import L from 'leaflet';
 const mapData = require('../test/MapEditingInfo.json');
 const usData = require('../test/us.json');
 
-export default function MapLayer({onEachFeature}) {
+export default function MapLayer({ onEachFeature }) {
   const countryStyle = {
     fillColor: 'yellow',
     color: 'black',
@@ -18,9 +18,13 @@ export default function MapLayer({onEachFeature}) {
   store.mapObject = map;
   map.doubleClickZoom.disable();
 
+  const events = [];
   map.on('pm:create', (e) => {
     e.layer.options.pmIgnore = false;
-    L.PM.reInitLayer(e.layer);
+    // L.PM.reInitLayer(e.layer);
+    console.log('Shape drawn');
+    console.log(e.layer);
+    console.log(e);
   });
 
   console.log(map);
@@ -95,27 +99,16 @@ export default function MapLayer({onEachFeature}) {
     }
   });
 
-  map.on('pm:drawend', (e) => {
-    const { _layers: layers } = e.target;
-    console.log('Finish Draw');
-    console.log(layers);
-    for (const layer in layers) {
-      if (layers[layer]._latlngs) {
-        console.log(layers[layer]);
-      }
-    }
-    // CODE FOR CREATING POLYGON
-    // const poly = L.polygon(
-    //   [getRandomLatLng(), getRandomLatLng(), getRandomLatLng()],
-    //   countryStyle
-    // );
-    // L.featureGroup([poly])
-    //   .bindPopup('Hello world!')
-    //   .on('click', (e) => {
-    //     console.log();
-    //   })
-    //   .addTo(map);
-  });
+  // map.on('pm:drawend', (e) => {
+  //   const { _layers: layers } = e.target;
+  //   console.log('Finish Draw');
+  //   console.log(layers);
+  //   for (const layer in layers) {
+  //     if (layers[layer]._latlngs) {
+  //       console.log(layers[layer]);
+  //     }
+  //   }
+  // });
 
   return (
     <GeoJSON

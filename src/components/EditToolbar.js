@@ -17,7 +17,11 @@ import GlobalStoreContext from '../store';
 import * as turf from '@turf/turf';
 import L from 'leaflet';
 
-export default function EditToolbar({handleGeoUpload, handleShpUpload, handleSplit}) {
+export default function EditToolbar({
+  handleGeoUpload,
+  handleShpUpload,
+  handleSplit,
+}) {
   const { store } = useContext(GlobalStoreContext);
   const [value, setValue] = React.useState('1');
   const handleChange = (event, newValue) => {
@@ -82,6 +86,14 @@ export default function EditToolbar({handleGeoUpload, handleShpUpload, handleSpl
     console.log(unions);
   };
 
+  const handleUndo = () => {
+    store.undo();
+  };
+
+  const handleRedo = () => {
+    store.redo();
+  };
+
   return (
     <div style={{ width: '20%', background: 'white', height: '100%' }}>
       <TabContext value={value}>
@@ -130,13 +142,13 @@ export default function EditToolbar({handleGeoUpload, handleShpUpload, handleSpl
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle}>
+                <Box sx={editIconBoxStyle} onClick={handleUndo}>
                   <UndoIcon sx={editIconStyle} />
                   <p style={editTextStyle}>UNDO</p>
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle}>
+                <Box sx={editIconBoxStyle} onClick={handleRedo}>
                   <RedoIcon sx={editIconStyle} />
                   <p style={editTextStyle}>REDO</p>
                 </Box>
@@ -159,11 +171,22 @@ export default function EditToolbar({handleGeoUpload, handleShpUpload, handleSpl
           <div>
             <Button variant="contained" component="label">
               Upload GeoJson
-              <input hidden accept="file" type="file" onChange={(e)=>handleGeoUpload(e.target.files)}/>
+              <input
+                hidden
+                accept="file"
+                type="file"
+                onChange={(e) => handleGeoUpload(e.target.files)}
+              />
             </Button>
             <Button variant="contained" component="label">
               Upload Shp/Dbf
-              <input hidden accept="file" type="file" onChange={(e)=>handleShpUpload(e.target.files)} multiple/>
+              <input
+                hidden
+                accept="file"
+                type="file"
+                onChange={(e) => handleShpUpload(e.target.files)}
+                multiple
+              />
             </Button>
           </div>
         </TabPanel>
