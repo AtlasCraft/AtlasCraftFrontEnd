@@ -63,19 +63,6 @@ export default function MapLayer() {
         const layer = e.target;
         console.log('Layer Clicked');
         if (layer) {
-          if (!store.selectedRegion.includes(layer)) {
-            console.log('Not in selected');
-            store.selectedRegion.push(layer);
-            layer.setStyle({ fillColor: 'orange' });
-          }
-        }
-      });
-
-      // DELTE
-      layer.on('contextmenu', (e) => {
-        const layer = e.target;
-        console.log('Context Menu Clicked');
-        if (layer) {
           if (store.selectedRegion.includes(layer)) {
             console.log('in selected');
             store.selectedRegion = store.selectedRegion.filter(
@@ -86,6 +73,25 @@ export default function MapLayer() {
           console.log(store.selectedRegion);
         }
       });
+
+      // DELTE
+      layer.on('contextmenu', (e) => {
+        const layer = e.target;
+        console.log('Context Menu Clicked');
+        if (layer) {
+          if (!store.selectedRegion.includes(layer)) {
+            console.log('Not in selected');
+            store.selectedRegion.push(layer);
+            layer.setStyle({ fillColor: 'orange' });
+          }
+        }
+      });
+    }
+  });
+
+  map.on('layerremove', (e) => {
+    if (e.layer && e.layer._latlngs) {
+      console.log(e);
     }
   });
 

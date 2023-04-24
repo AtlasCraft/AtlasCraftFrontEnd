@@ -14,12 +14,21 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import GlobalStoreContext from '../store';
+import * as turf from '@turf/turf';
+import L from 'leaflet';
 
 export default function EditToolbar() {
   const { store } = useContext(GlobalStoreContext);
   const [value, setValue] = React.useState('1');
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const countryStyle = {
+    fillColor: 'yellow',
+    color: 'black',
+    weight: 1,
+    height: '100%',
   };
 
   const editIconBoxStyle = {
@@ -52,6 +61,25 @@ export default function EditToolbar() {
     for (let layer of regions) {
       layer.pm.toggleEdit({ limitMarkersToCount: 20 });
     }
+  };
+
+  const handleMergeRegion = (e) => {
+    const selected = store.selectedRegion;
+    if (selected.length <= 1) return;
+    for (let i = 0; i < selected.length; ++i) {
+      if (i === 0) {
+        var unions = selected[i].toGeoJSON();
+        console.log(selected[i]);
+      } else {
+        unions = turf.union(unions, selected[i].toGeoJSON());
+        // console.log(selected[i].feature.properties);
+        // unions.properties = selected[i].feature.properties;
+      }
+      selected[i].remove();
+    }
+    L.geoJSON(unions, countryStyle).addTo(store.mapObject);
+    store.selectedRegion = [];
+    console.log(unions);
   };
 
   return (
@@ -90,7 +118,7 @@ export default function EditToolbar() {
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle}>
+                <Box sx={editIconBoxStyle} onClick={handleMergeRegion}>
                   <MergeIcon sx={editIconStyle} />
                   <p style={editTextStyle}>MERGE REGION</p>
                 </Box>
