@@ -32,6 +32,7 @@ export const GlobalStoreActionType = {
   SHOW_ERROR: 'SHOW_ERROR',
   HIDE_ERR: 'HIDE_ERR',
   CHANGE_GEO: 'CHANGE_GEO',
+  CHANGE_MAP_NAME: 'CHANGE_MAP_NAME',
 };
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -42,6 +43,7 @@ function GlobalStoreContextProvider(props) {
     geojson: null,
     mapName: null,
     mapId: null,
+    mapObject: null,
     ownedUser: null,
     isMapPublished: false,
     mapcardList: [],
@@ -51,8 +53,8 @@ function GlobalStoreContextProvider(props) {
     selectedRegion: [],
     regionProperty: null,
     editSelection: null,
-	  commentListPairs:[],
-    mapKey:Math.random(),
+    commentListPairs: [],
+    mapKey: Math.random(),
   });
   const history = useHistory();
 
@@ -67,26 +69,25 @@ function GlobalStoreContextProvider(props) {
     const { type, payload } = action;
     switch (type) {
       // LIST UPDATE OF ITS NAME
-	  case GlobalStoreActionType.SET_MAP: {
+      case GlobalStoreActionType.SET_MAP: {
         return setStore({
           ...store,
-		  mapName: payload.mapName,
-		  ownedUser: payload.ownedUser,
-		  comentListPairs:payload.commentListPairs,
-		  mapId:payload._id,
-		  geojson:payload.geojson?payload.geojson:{},
-      isMapPublished:payload.published,
-      mapKey: Math.random(),
+          mapName: payload.mapName,
+          ownedUser: payload.ownedUser,
+          comentListPairs: payload.commentListPairs,
+          mapId: payload._id,
+          geojson: payload.geojson ? payload.geojson : {},
+          isMapPublished: payload.published,
+          mapKey: Math.random(),
         });
       }
       case GlobalStoreActionType.SET_MAPCARDS: {
         return setStore({
           ...store,
-		  mapcardList: payload,
+          mapcardList: payload,
         });
       }
-      case GlobalStoreActionType.SHOW_ERROR: {
-        console.log(payload);
+      case GlobalStoreActionType.SHOW_ERR: {
         return setStore({
           ...store,
           err: payload,
@@ -105,6 +106,13 @@ function GlobalStoreContextProvider(props) {
           mapKey: Math.random(),
         });
       }
+      case GlobalStoreActionType.CHANGE_MAP_NAME: {
+        console.log(payload);
+        return setStore({
+          ...store,
+          mapName: payload,
+        });
+      }
       default:
         return store;
     }
@@ -117,23 +125,23 @@ function GlobalStoreContextProvider(props) {
   // ***ANY FUNCTION NOT FILLED IN MEANS IT IS PLANNED FOR A FUTURE BUILD***
 
   //Mapcard updates
-	store.updateLikes = async function(id){
-		let res = await api.updateCardLikes(id);
-		console.log(res);
-	}
-	store.updateDislikes = async function(id){
-		let res = await api.updateCardDislikes(id);
-		console.log(res);
-	}
-	store.loadMapCards = async function(){
-		let res = await api.getAllMapCards();
-		if(res.data.success){
-			storeReducer({
-				type:GlobalStoreActionType.SET_MAPCARDS,
-				payload:res.data.maps
-			});
-		}
-	}
+  store.updateLikes = async function (id) {
+    let res = await api.updateCardLikes(id);
+    console.log(res);
+  };
+  store.updateDislikes = async function (id) {
+    let res = await api.updateCardDislikes(id);
+    console.log(res);
+  };
+  store.loadMapCards = async function () {
+    let res = await api.getAllMapCards();
+    if (res.data.success) {
+      storeReducer({
+        type: GlobalStoreActionType.SET_MAPCARDS,
+        payload: res.data.maps,
+      });
+    }
+  };
 
   // tps handling functions
   store.canUndo = function () {
@@ -283,32 +291,30 @@ function GlobalStoreContextProvider(props) {
     }
     console.log(geo);
     storeReducer({
-      type:GlobalStoreActionType.CHANGE_GEO,
-      payload:geo
-
+      type: GlobalStoreActionType.CHANGE_GEO,
+      payload: geo,
     });
   };
 
   store.forkMap = async function (id) {
     let res = await api.getMapEditingInfoById(id);
-    if(res.data.success){
+    if (res.data.success) {
       const newMap = {
         mapName: res.data.map.mapName,
         geojson: res.data.map.geojson,
-      } 
+      };
       let res2 = await api.createMapEditingInfo(newMap);
-      if(res2.data.success){
+      if (res2.data.success) {
         storeReducer({
-          type:GlobalStoreActionType.SET_MAP,
-          payload:res2.data.map
+          type: GlobalStoreActionType.SET_MAP,
+          payload: res2.data.map,
         });
         store.loadMapCards();
-        history.push("/edit");
+        history.push('/edit');
       }
     }
     // console.log(res);
   };
-  store.changeMapName = function () {};
   store.saveMap = async function () {
     let payload = {
       mapName:store.mapName,
@@ -323,48 +329,52 @@ function GlobalStoreContextProvider(props) {
     }
     console.log(payload);
   };
+  store.changeMapName = function (name) {
+    storeReducer({
+      type: GlobalStoreActionType.CHANGE_MAP_NAME,
+      payload: name,
+    });
+
+  };
+
   store.deleteMap = function () {};
-  store.publishMap = async function(id){
+  store.publishMap = async function (id) {
     let payload = {
-      mapName:store.mapName,
-      geojson:store.geojson,
-      published:true
-    }
+      mapName: store.mapName,
+      geojson: store.geojson,
+      published: true,
+    };
     let res = await api.updateMapEditingInfoById(store.mapId, payload);
     console.log(res);
-
   };
-  store.createNewMap = async function(){
+  store.createNewMap = async function () {
     const newMap = {
-      mapName: "A New Map",
-      geojson: {type:"FeatureCollection", features:[]},
-    }
+      mapName: 'A New Map',
+      geojson: { type: 'FeatureCollection', features: [] },
+    };
     let res = await api.createMapEditingInfo(newMap);
-    if(res.data.success){
+    if (res.data.success) {
       storeReducer({
-        type:GlobalStoreActionType.SET_MAP,
-        payload:res.data.map
+        type: GlobalStoreActionType.SET_MAP,
+        payload: res.data.map,
       });
       store.loadMapCards();
-      history.push("/edit");
-	  }
+      history.push('/edit');
+    }
   };
-
-  store.loadMap = async function(id, type){
+  store.loadMap = async function (id, type) {
     console.log(id);
     let res = await api.getMapEditingInfoById(id);
-    if(res.data.success){
+    if (res.data.success) {
       storeReducer({
-        type:GlobalStoreActionType.SET_MAP,
-        payload:res.data.map
+        type: GlobalStoreActionType.SET_MAP,
+        payload: res.data.map,
       });
-      if(type == "edit")
-        history.push("/edit");
-      else
-        history.push("/view");
+      if (type == 'edit') history.push('/edit');
+      else history.push('/view');
     }
     // console.log(res);
-  }
+  };
 
   //error info for create user
   store.showErr = function (statusCode, msg) {
@@ -391,7 +401,6 @@ function GlobalStoreContextProvider(props) {
       {props.children}
     </GlobalStoreContext.Provider>
   );
-
 }
 
 export default GlobalStoreContext;

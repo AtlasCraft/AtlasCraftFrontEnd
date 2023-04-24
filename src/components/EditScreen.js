@@ -14,35 +14,9 @@ import GlobalStoreContext from '../store'
 import {MapZoom, GeomanInit} from './EditScreenComponents';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+import MapLayer from './MapLayer';
+import EditToolbar from './EditToolbar';
 import { enqueueSnackbar } from 'notistack';
-
-const style = {
-  countryStyle: {
-    fillColor: 'yellow',
-    color: 'black',
-    weight: 1,
-    height: '100%',
-  },
-  editIconBoxStyle: {
-    width: '100%',
-    'aspect-ratio': '1 / 1',
-    backgroundColor: 'rgb(200,200,200)',
-    'border-radius': '10px',
-    display: 'flex',
-    'flex-direction': 'column',
-    'justify-content': 'center',
-    'align-items': 'center',
-  },
-  editIconStyle: {
-    fontSize: 50,
-    'text-align': 'center',
-  },
-  editTextStyle: {
-    margin: '.5rem 0',
-    'text-align': 'center',
-    fontSize:"16px"
-  }
-}
 
 export default function EditScreen() {
   const { store } = useContext(GlobalStoreContext);
@@ -50,6 +24,7 @@ export default function EditScreen() {
   const [value, setValue] = React.useState('1');
   const [selectedVerts, setVerts] = React.useState([]);
   const [tempSelectedVert, setTempSelectedVert] = React.useState([]);
+  const [mapName, setMapName] = useState(store.mapName);
 
   useEffect(()=>{
     let isSame = false;
@@ -189,6 +164,13 @@ export default function EditScreen() {
     //TODO need to check for vertex list size
     //call store function and create a transaction
   }
+  
+  const updateMapName = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      store.changeMapName(mapName);
+    }
+  };
 
   return (
     <div>
@@ -214,7 +196,11 @@ export default function EditScreen() {
             <TextField
               id="mapname"
               variant="filled"
-              value={store.mapName}
+              value={mapName}
+              onKeyPress={updateMapName}
+              onChange={(e) => {
+                setMapName(e.target.value);
+              }}
               hiddenLabel
             />
             <Button
@@ -223,7 +209,9 @@ export default function EditScreen() {
               sx={{
                 'align-self': 'center',
               }}
-              onClick={()=>{store.saveMap()}}
+              onClick={() => {
+                store.saveMap();
+              }}
             >
               Save
             </Button>
@@ -252,109 +240,16 @@ export default function EditScreen() {
               zoom={7}
             >
               <MapZoom/>
-              <GeomanInit/>
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              {geoComponent}
               {markedVertices}
+
+              <MapLayer />
             </MapContainer>
           </div>
-          <div style={{ width: '20%', background: 'white', height: '100%' }}>
-            <TabContext value={value} style={{width:"100%"}}>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider', width:"100%" }}>
-                <TabList
-                  variant="fullWidth"
-                  onChange={handleChange}
-                  aria-label="Edit Tabs"
-                  // variant="scrollable"
-                  scrollButtons={false}
-                  style={{width:"100%"}}
-                  
-                >
-                  <Tab label="Edit" value="1" style={{maxWidth:"25%"}} />
-                  <Tab label="Properties" value="2" style={{maxWidth:"25%"}} />
-                  <Tab label="Upload" value="3" style={{maxWidth:"25%"}} />
-                  <Tab label="Help" value="4" style={{maxWidth:"25%"}} />
-                </TabList>
-              </Box>
-              <TabPanel value="1">
-                <Box sx={{ width: '100%' }}>
-                  <Grid
-                    container
-                    rowSpacing={1}
-                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                  >
-                    <Grid item xs={6}>
-                      <Box sx={style.editIconBoxStyle}>
-                        <Edit sx={style.editIconStyle} />
-                        <p style={style.editTextStyle}>EDIT</p>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Box sx={style.editIconBoxStyle}>
-                        <LibraryAdd sx={style.editIconStyle} />
-                        <p style={style.editTextStyle}>CREATE REGION</p>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Box sx={style.editIconBoxStyle}>
-                          <Merge sx={style.editIconStyle}/>
-                          <p style={style.editTextStyle}>MERGE REGION</p>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Box sx={style.editIconBoxStyle}>
-                        <IconButton onClick={handleSplit}>
-                          <CallSplit sx={style.editIconStyle} />
-                          <p style={style.editTextStyle}>SPLIT REGION</p>
-                        </IconButton>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Box sx={style.editIconBoxStyle}>
-                        <Undo sx={style.editIconStyle} />
-                        <p style={style.editTextStyle}>UNDO</p>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={6}>
-                      <Box sx={style.editIconBoxStyle}>
-                        <Redo sx={style.editIconStyle} />
-                        <p style={style.editTextStyle}>REDO</p>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Box>
-              </TabPanel>
-              <TabPanel value="2">
-                <div style={{ display: 'flex', 'flex-direction': 'column' }}>
-                  <TextField
-                    id="propForm"
-                    variant="filled"
-                    placeholder="name: value"
-                    hiddenLabel
-                  />
-                  <a>+ Add property</a>
-                </div>
-              </TabPanel>
-              <TabPanel value="3">
-                <div>
-                  <Button variant="contained" component="label">
-                    Upload GeoJson
-                    <input hidden accept="file" type="file" onChange={(e)=>handleGeoUpload(e.target.files)}/>
-                  </Button>
-                  <Button variant="contained" component="label">
-                    Upload Shp/Dbf
-                    <input hidden accept="file" type="file" onChange={(e)=>handleShpUpload(e.target.files)} multiple/>
-                  </Button>
-                </div>
-              </TabPanel>
-              <TabPanel value="4">
-                <a>How to add vertices</a>
-              </TabPanel>
-            </TabContext>
-          </div>
+          <EditToolbar />
         </Stack>
       </div>
       <div>
