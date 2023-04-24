@@ -1,5 +1,7 @@
 import { createContext, useContext, useState } from 'react';
+import { SplitRegion_Transaction } from '../transactions';
 import { useHistory } from 'react-router-dom';
+import { enqueueSnackbar } from 'notistack';
 import api from '../api';
 import jsTPS from '../common/jsTPS';
 import AuthContext from '../auth';
@@ -30,6 +32,7 @@ export const GlobalStoreActionType = {
   SHOW_ERROR: 'SHOW_ERROR',
   HIDE_ERR: 'HIDE_ERR',
   CHANGE_GEO: 'CHANGE_GEO',
+  CHANGE_MAP_NAME: 'CHANGE_MAP_NAME',
 };
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -40,6 +43,7 @@ function GlobalStoreContextProvider(props) {
     geojson: null,
     mapName: null,
     mapId: null,
+    mapObject: null,
     ownedUser: null,
     isMapPublished: false,
     mapcardList: [],
@@ -49,8 +53,8 @@ function GlobalStoreContextProvider(props) {
     selectedRegion: [],
     regionProperty: null,
     editSelection: null,
-	  commentListPairs:[],
-    mapKey:Math.random(),
+    commentListPairs: [],
+    mapKey: Math.random(),
   });
   const history = useHistory();
 
@@ -65,26 +69,25 @@ function GlobalStoreContextProvider(props) {
     const { type, payload } = action;
     switch (type) {
       // LIST UPDATE OF ITS NAME
-	  case GlobalStoreActionType.SET_MAP: {
+      case GlobalStoreActionType.SET_MAP: {
         return setStore({
           ...store,
-		  mapName: payload.mapName,
-		  ownedUser: payload.ownedUser,
-		  comentListPairs:payload.commentListPairs,
-		  mapId:payload._id,
-		  geojson:payload.geojson?payload.geojson:{},
-      isMapPublished:payload.published,
-      mapKey: Math.random(),
+          mapName: payload.mapName,
+          ownedUser: payload.ownedUser,
+          comentListPairs: payload.commentListPairs,
+          mapId: payload._id,
+          geojson: payload.geojson ? payload.geojson : {},
+          isMapPublished: payload.published,
+          mapKey: Math.random(),
         });
       }
       case GlobalStoreActionType.SET_MAPCARDS: {
         return setStore({
           ...store,
-		  mapcardList: payload,
+          mapcardList: payload,
         });
       }
-      case GlobalStoreActionType.SHOW_ERROR: {
-        console.log(payload);
+      case GlobalStoreActionType.SHOW_ERR: {
         return setStore({
           ...store,
           err: payload,
@@ -103,6 +106,13 @@ function GlobalStoreContextProvider(props) {
           mapKey: Math.random(),
         });
       }
+      case GlobalStoreActionType.CHANGE_MAP_NAME: {
+        console.log(payload);
+        return setStore({
+          ...store,
+          mapName: payload,
+        });
+      }
       default:
         return store;
     }
@@ -115,23 +125,23 @@ function GlobalStoreContextProvider(props) {
   // ***ANY FUNCTION NOT FILLED IN MEANS IT IS PLANNED FOR A FUTURE BUILD***
 
   //Mapcard updates
-	store.updateLikes = async function(id){
-		let res = await api.updateCardLikes(id);
-		console.log(res);
-	}
-	store.updateDislikes = async function(id){
-		let res = await api.updateCardDislikes(id);
-		console.log(res);
-	}
-	store.loadMapCards = async function(){
-		let res = await api.getAllMapCards();
-		if(res.data.success){
-			storeReducer({
-				type:GlobalStoreActionType.SET_MAPCARDS,
-				payload:res.data.maps
-			});
-		}
-	}
+  store.updateLikes = async function (id) {
+    let res = await api.updateCardLikes(id);
+    console.log(res);
+  };
+  store.updateDislikes = async function (id) {
+    let res = await api.updateCardDislikes(id);
+    console.log(res);
+  };
+  store.loadMapCards = async function () {
+    let res = await api.getAllMapCards();
+    if (res.data.success) {
+      storeReducer({
+        type: GlobalStoreActionType.SET_MAPCARDS,
+        payload: res.data.maps,
+      });
+    }
+  };
 
   // tps handling functions
   store.canUndo = function () {
@@ -151,8 +161,112 @@ function GlobalStoreContextProvider(props) {
   store.deleteRegion = function () {};
   store.createRegion = function () {};
   store.mergeRegion = function () {};
-  store.splitRegion = function () {};
+  store.addSplitRegionTransaction = function(verts) {
+    verts.sort((vert1, vert2)=>{
+      return vert1[3]-vert2[3]
+    });//  should be in asc order
+    let vert1 = verts[0];
+    let vert2 = verts[1];
+    if(store.geojson.features[vert1[0]].geometry.type == "Polygon"){// need to completely remove subregion 
+      let oldRegion = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]]));
+      let newRegion1 = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]]));//splice this from vert1[3]+1 to vert2[3]-1 (vert2[3] - vert1[3]-1)
+      let newRegion2 = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]]));//slice this from vert1[3] to vert2[3]+1
+      // handle the splice (remove elements inbetween)
+      newRegion1.geometry.coordinates[vert1[1]].splice(vert1[2]+1, (vert2[2]-vert1[2]-1));
+      newRegion1.properties.AtlasCraftRegionID = Math.random();
+      // handle the slice (remove elements outside)
+      newRegion2.geometry.coordinates[vert2[1]] = newRegion2.geometry.coordinates[vert2[1]].slice(vert1[2], vert2[2]+1);
+      newRegion2.properties.AtlasCraftRegionID = Math.random();
+      // make the transaction
+      let transaction = new SplitRegion_Transaction(store, oldRegion,null, newRegion1, newRegion2, 1);//type 1 = polygon
+      tps.addTransaction(transaction);
+
+    }else{//need to "modify the subregion"
+      let oldRegion = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]]));
+      let newOldRegion = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]]));
+      let newRegion1 = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]]));//splice this from vert1[3]+1 to vert2[3]-1 (vert2[3] - vert1[3]-1)
+      let newRegion2 = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]]));//slice this from vert1[3] to vert2[3]+1
+      // handle the splice (remove elements inbetween)
+      newRegion1.geometry.coordinates = newRegion1.geometry.coordinates[vert1[1]]
+      newRegion1.geometry.coordinates[vert1[2]].splice(vert1[3]+1, (vert2[3]-vert1[3]-1));
+      newRegion1.properties.AtlasCraftRegionID = Math.random();
+      newRegion1.geometry.type = "Polygon"
+
+      // handle the slice (remove elements outside)
+      newRegion2.geometry.coordinates = newRegion2.geometry.coordinates[vert2[1]];
+      newRegion2.geometry.coordinates[vert2[2]] = newRegion2.geometry.coordinates[vert2[2]].slice(vert1[3], vert2[3]+1);
+      newRegion2.properties.AtlasCraftRegionID = Math.random();
+      newRegion2.geometry.type = "Polygon"
+
+      //update the newold region (remove new1 and new2 from coords list)
+      newOldRegion.geometry.coordinates.splice(Math.max(vert1[1], vert2[1]), 1)
+      newOldRegion.geometry.coordinates.splice(Math.min(vert1[1], vert2[1]), 1)
+      let transaction = new SplitRegion_Transaction(store, oldRegion,newOldRegion, newRegion1, newRegion2, 2);//type 2 = multipolygon
+      tps.addTransaction(transaction);
+    }
+  };
+  store.splitRegion = function (old, newOld, new1, new2, type, splitType) {
+    //if splitType = 1 then completely remove old region and replace with new1 and new 2
+    //if splitType = 2 then replace old region with newOld and add in new1 and new 2
+    let tempGeo = JSON.parse(JSON.stringify(store.geojson));
+    if(type == "do"){//remove old add in the two new
+      //should have "old" region
+      if(splitType == 1){// a polygon
+        let oldIndex = store.findRegion(old);
+        tempGeo.features.splice(oldIndex, 1);
+        tempGeo.features.push(new1);
+        tempGeo.features.push(new2);
+        storeReducer({
+          type:GlobalStoreActionType.CHANGE_GEO,
+          payload:tempGeo
+        })
+      }else{//a multipolygon
+        let oldIndex = store.findRegion(old);
+        tempGeo.features.splice(oldIndex, 1);
+        tempGeo.features.push(new1);
+        tempGeo.features.push(new2);
+        tempGeo.features.push(newOld);
+        storeReducer({
+          type:GlobalStoreActionType.CHANGE_GEO,
+          payload:tempGeo
+        })
+      }
+    }else{//remove two new add in the old
+      if(splitType == 1){// a polygon
+        let indexList = [store.findRegion(new1), store.findRegion(new2)];
+        indexList.sort((a,b)=>{return a-b});
+        tempGeo.features.splice(indexList[1]);//the largest
+        tempGeo.features.splice(indexList[0]);//the smallest
+        tempGeo.features.push(old);
+        storeReducer({
+          type:GlobalStoreActionType.CHANGE_GEO,
+          payload:tempGeo
+        })
+      }else{//a multipolygon
+        let indexList = [store.findRegion(new1), store.findRegion(new2), store.findRegion(newOld)];
+        indexList.sort((a,b)=>{return a-b});
+        tempGeo.features.splice(indexList[2]);//the largest
+        tempGeo.features.splice(indexList[1]);//the middle
+        tempGeo.features.splice(indexList[0]);//the last
+        tempGeo.features.push(old);
+        storeReducer({
+          type:GlobalStoreActionType.CHANGE_GEO,
+          payload:tempGeo
+        })
+      }
+    }
+    
+  };
   store.selectRegion = function () {};
+
+  store.findRegion = function(feature){
+    for(let i=0; i<store.geojson.features.length; i++){
+      if(store.geojson.features[i].properties.AtlasCraftRegionID == feature.properties.AtlasCraftRegionID){
+        return i;
+      }
+    }
+    return -1;
+  };
 
   //verticies functions
   store.deleteVertices = function () {};
@@ -169,33 +283,38 @@ function GlobalStoreContextProvider(props) {
   store.downloadShp = function () {};
   store.downloadPng = function () {};
   store.uploadMap = function (geo) {
+    console.log(geo);
+    for(let i=0; i<geo.features.length; i++){
+      let tempProp = new Map(Object.entries(geo.features[i].properties));
+      tempProp.set("AtlasCraftRegionID", Math.random());
+      geo.features[i].properties = Object.fromEntries(tempProp);
+    }
+    console.log(geo);
     storeReducer({
-      type:GlobalStoreActionType.CHANGE_GEO,
-      payload:geo
-
+      type: GlobalStoreActionType.CHANGE_GEO,
+      payload: geo,
     });
   };
 
   store.forkMap = async function (id) {
     let res = await api.getMapEditingInfoById(id);
-    if(res.data.success){
+    if (res.data.success) {
       const newMap = {
         mapName: res.data.map.mapName,
         geojson: res.data.map.geojson,
-      } 
+      };
       let res2 = await api.createMapEditingInfo(newMap);
-      if(res2.data.success){
+      if (res2.data.success) {
         storeReducer({
-          type:GlobalStoreActionType.SET_MAP,
-          payload:res2.data.map
+          type: GlobalStoreActionType.SET_MAP,
+          payload: res2.data.map,
         });
         store.loadMapCards();
-        history.push("/edit");
+        history.push('/edit');
       }
     }
     // console.log(res);
   };
-  store.changeMapName = function () {};
   store.saveMap = async function () {
     let payload = {
       mapName:store.mapName,
@@ -203,50 +322,59 @@ function GlobalStoreContextProvider(props) {
       published:store.isMapPublished
     }
     let res = await api.updateMapEditingInfoById(store.mapId, payload);
+    if(res.data.success){
+      enqueueSnackbar("Map Saved",{variant: "success", autoHideDuration: 2000})
+    }else{
+      enqueueSnackbar("Map Save Failed Try Again",{variant: "error", autoHideDuration: 5000})
+    }
     console.log(payload);
   };
+  store.changeMapName = function (name) {
+    storeReducer({
+      type: GlobalStoreActionType.CHANGE_MAP_NAME,
+      payload: name,
+    });
+
+  };
+
   store.deleteMap = function () {};
-  store.publishMap = async function(id){
+  store.publishMap = async function (id) {
     let payload = {
-      mapName:store.mapName,
-      geojson:store.geojson,
-      published:true
-    }
+      mapName: store.mapName,
+      geojson: store.geojson,
+      published: true,
+    };
     let res = await api.updateMapEditingInfoById(store.mapId, payload);
     console.log(res);
-
   };
-  store.createNewMap = async function(){
+  store.createNewMap = async function () {
     const newMap = {
-      mapName: "A New Map",
-      geojson: {type:"FeatureCollection", features:[]},
-    }
+      mapName: 'A New Map',
+      geojson: { type: 'FeatureCollection', features: [] },
+    };
     let res = await api.createMapEditingInfo(newMap);
-    if(res.data.success){
+    if (res.data.success) {
       storeReducer({
-        type:GlobalStoreActionType.SET_MAP,
-        payload:res.data.map
+        type: GlobalStoreActionType.SET_MAP,
+        payload: res.data.map,
       });
       store.loadMapCards();
-      history.push("/edit");
-	  }
+      history.push('/edit');
+    }
   };
-
-  store.loadMap = async function(id, type){
+  store.loadMap = async function (id, type) {
     console.log(id);
     let res = await api.getMapEditingInfoById(id);
-    if(res.data.success){
+    if (res.data.success) {
       storeReducer({
-        type:GlobalStoreActionType.SET_MAP,
-        payload:res.data.map
+        type: GlobalStoreActionType.SET_MAP,
+        payload: res.data.map,
       });
-      if(type == "edit")
-        history.push("/edit");
-      else
-        history.push("/view");
+      if (type == 'edit') history.push('/edit');
+      else history.push('/view');
     }
     // console.log(res);
-  }
+  };
 
   //error info for create user
   store.showErr = function (statusCode, msg) {
@@ -273,7 +401,6 @@ function GlobalStoreContextProvider(props) {
       {props.children}
     </GlobalStoreContext.Provider>
   );
-
 }
 
 export default GlobalStoreContext;

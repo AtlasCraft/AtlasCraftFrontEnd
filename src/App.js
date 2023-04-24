@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { AuthContextProvider } from './auth';
 import { GlobalStoreContextProvider } from './store';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { SnackbarProvider } from 'notistack';
 import {
   NavigationBar,
   HomeScreen,
@@ -43,25 +44,27 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <AuthContextProvider>
-        <GlobalStoreContextProvider>
-          {/* <ThemeProvider theme={theme}> */}
-          <NavigationBar />
-          <AppPaperScreen>
-            <Switch>
-              <Route path="/" exact component={LoginScreen} />
-              <Route path="/home/" exact component={HomeScreen} />
-              <Route path="/draw/" exact component={DrawScreen} />
-              <Route path="/edit/" exact component={EditScreen} />
-              <Route path="/forgotpassword/" exact component={ForgotPasswordScreen} />
-							<Route path="/changepassword/" exact component={ChangePasswordScreen} />
-              <Route path="/register/" exact component={RegisterScreen} />
-							<Route path="/view/" exact component={ViewScreen} />
-            </Switch>
-          </AppPaperScreen>
-          {/* </ThemeProvider> */}
-        </GlobalStoreContextProvider>
-      </AuthContextProvider>
+      <SnackbarProvider>
+        <AuthContextProvider>
+          <GlobalStoreContextProvider>
+            {/* <ThemeProvider theme={theme}> */}
+            <NavigationBar />
+            <AppPaperScreen>
+              <Switch>
+                <Route path="/" exact component={LoginScreen} />
+                <Route path="/home/" exact component={HomeScreen} />
+                <Route path="/draw/" exact component={DrawScreen} />
+                <Route path="/edit/" exact component={EditScreen} />
+                <Route path="/forgotpassword/" exact component={ForgotPasswordScreen} />
+                <Route path="/changepassword/" exact component={ChangePasswordScreen} />
+                <Route path="/register/" exact component={RegisterScreen} />
+                <Route path="/view/" exact component={ViewScreen} />
+              </Switch>
+            </AppPaperScreen>
+            {/* </ThemeProvider> */}
+          </GlobalStoreContextProvider>
+        </AuthContextProvider>
+      </SnackbarProvider>
     </BrowserRouter>
   );
 };
