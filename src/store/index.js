@@ -10,6 +10,8 @@ import { enqueueSnackbar } from 'notistack';
 import api from '../api';
 import jsTPS from '../common/jsTPS';
 import AuthContext from '../auth';
+import * as turf from '@turf/turf';
+
 /*
 	This is our global data store. Note that it uses the Flux design pattern,
 	which makes use of things like actions and reducers. 
@@ -173,18 +175,35 @@ function GlobalStoreContextProvider(props) {
     console.log(layer);
     layer.addTo(store.mapObject);
   };
-  store.mergeRegion = function () {};
-  store.restoreRegion = function () {};
+  store.mergeRegion = function (oldRegions, newRegion) {
+    for (let layer of oldRegions) {
+      layer.remove();
+    }
+    console.log(newRegion);
+    newRegion.addTo(store.mapObject);
+  };
+  store.restoreRegion = function (oldRegions, newRegion) {
+    for (let layer of oldRegions) {
+      layer.addTo(store.mapObject);
+    }
+    newRegion.remove();
+  };
 
   store.addAddRegionTransaction = function (layer) {
     let transaction = new AddRegion_Transaction(store, layer);
     tps.addTransaction(transaction);
     console.log(tps);
   };
+
   store.addDeleteRegionTransaction = function (layer) {
     let transaction = new DeleteRegion_Transaction(store, layer);
     tps.addTransaction(transaction);
     console.log(tps);
+  };
+
+  store.addMergeRegionTransaction = function (oldLayers, newLayer) {
+    let transaction = new MergeRegion_Transaction(store, oldLayers, newLayer);
+    tps.addTransaction(transaction);
   };
 
   store.addSplitRegionTransaction = function (verts) {

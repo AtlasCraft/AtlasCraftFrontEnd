@@ -5,7 +5,6 @@ import L from 'leaflet';
 import {
   AddRegion_Transaction,
   DeleteRegion_Transaction,
-  MergeRegion_Transaction,
 } from '../transactions';
 const mapData = require('../test/MapEditingInfo.json');
 const usData = require('../test/us.json');
