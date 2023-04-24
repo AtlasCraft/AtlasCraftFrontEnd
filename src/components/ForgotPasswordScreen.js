@@ -86,7 +86,7 @@ const PasswordRetrievalPage = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    label="Security Question 1: What was your favorite school teacher’s name?"
+                                    label="Security Answer 1"
                                     fullWidth
                                     value={answer1}
                                     onChange={(e) => setAnswer1(e.target.value)}
@@ -96,7 +96,7 @@ const PasswordRetrievalPage = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <TextField
-                                    label="Security Question 2: What’s your favorite movie?"
+                                    label="Security Answer 2"
                                     fullWidth
                                     value={answer2}
                                     onChange={(e) => setAnswer2(e.target.value)}
