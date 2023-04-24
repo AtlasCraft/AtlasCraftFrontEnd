@@ -5,7 +5,7 @@ import L from 'leaflet';
 const mapData = require('../test/MapEditingInfo.json');
 const usData = require('../test/us.json');
 
-export default function MapLayer() {
+export default function MapLayer({onEachFeature}) {
   const countryStyle = {
     fillColor: 'yellow',
     color: 'black',
@@ -121,6 +121,8 @@ export default function MapLayer() {
     <GeoJSON
       data={store.geojson || usData || mapData.geojson}
       style={countryStyle}
+      onEachFeature={onEachFeature}
+      key={store.mapKey}
     />
   );
 }

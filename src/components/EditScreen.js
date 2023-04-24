@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useMemo} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Box, TextField, Button, Stack, Tab, Grid, IconButton} from '@mui/material';
 import {Edit, LibraryAdd, Merge, CallSplit, Undo, Redo} from '@mui/icons-material';
 import {TabContext, TabList, TabPanel} from '@mui/lab';
@@ -70,9 +70,6 @@ export default function EditScreen() {
     }
   },[tempSelectedVert]);
 
-  const geoComponent = useMemo(()=>{
-    return store.geojson?<GeoJSON key={store.mapKey} data={store.geojson} style={style.countryStyle} onEachFeature={onEachFeature}/>:<></>
-  },[store])
 
   const markedVertices = useMemo(()=>{
     return(<div>{
@@ -246,10 +243,16 @@ export default function EditScreen() {
               />
               {markedVertices}
 
-              <MapLayer />
+              <MapLayer 
+                onEachFeature={onEachFeature}
+              />
             </MapContainer>
           </div>
-          <EditToolbar />
+          <EditToolbar
+            handleGeoUpload = {handleGeoUpload}
+            handleShpUpload = {handleShpUpload}
+            handleSplit = {handleSplit}
+          />
         </Stack>
       </div>
       <div>
