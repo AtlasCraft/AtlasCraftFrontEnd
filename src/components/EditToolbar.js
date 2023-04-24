@@ -17,7 +17,7 @@ import GlobalStoreContext from '../store';
 import * as turf from '@turf/turf';
 import L from 'leaflet';
 
-export default function EditToolbar({handleGeoUpload, handleShpUpload, handleSplit}) {
+export default function EditToolbar({handleGeoUpload, handleShpUpload, handleSplit, setVertexEnabled}) {
   const { store } = useContext(GlobalStoreContext);
   const [value, setValue] = React.useState('1');
   const handleChange = (event, newValue) => {
@@ -53,6 +53,7 @@ export default function EditToolbar({handleGeoUpload, handleShpUpload, handleSpl
   };
 
   const handleCreateRegion = (e) => {
+    setVertexEnabled(false);
     store.mapObject.pm.enableDraw('Polygon');
   };
 
