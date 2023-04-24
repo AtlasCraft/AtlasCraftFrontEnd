@@ -1,4 +1,4 @@
-import React,{useContext} from 'react';
+import React,{useContext, useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -14,6 +14,13 @@ export default function ViewScreen() {
   const { auth } = useContext(AuthContext);
   const tempGeo = require("../util/VaticanTestGeojson.json");
   console.log(tempGeo)
+  const [comment, setComment] = useState('');
+  
+  const handleComment = (e) => {
+    e.preventDefault();
+    setComment('');
+  };
+
   return (
     <div>
       <div>
@@ -89,6 +96,8 @@ export default function ViewScreen() {
               id="comment"
               name="comment"
               label="comment"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
             />
             <Button variant="contained" href="#" sx={{ 'align-self': 'center' }} style={{maxWidth:"20%", top:"50%", transform: "translateY(-50%)"}}>
                Comment

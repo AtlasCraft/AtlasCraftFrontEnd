@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 
 const PasswordRetrievalPage = () => {
     const history = useHistory();
+    const [username, setUsername] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [securityQuestion1, setSecurityQuestion1] = useState('');
@@ -33,6 +34,7 @@ const PasswordRetrievalPage = () => {
         // ...
 
         // Reset form fields
+        setUsername('');
         setNewPassword('');
         setConfirmNewPassword('');
         setSecurityQuestion1('');
@@ -44,6 +46,7 @@ const PasswordRetrievalPage = () => {
 
     const handleFormCancel = () => {
         // Reset form fields
+        setUsername('');
         setNewPassword('');
         setConfirmNewPassword('');
         setSecurityQuestion1('');
@@ -62,6 +65,17 @@ const PasswordRetrievalPage = () => {
                 <Grid item xs={12}>
                     <form onSubmit={handleFormSubmit}>
                         <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                                <TextField
+                                    label="User Name"
+                                    type="username"
+                                    fullWidth
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                    sx={{input:{color:"#F5DEB3"}}}
+                                    InputLabelProps={{sx: {color:"#F5DEB3"}}}
+                                />
+                            </Grid>
                             <Grid item xs={12}>
                                 <TextField
                                     label="New Password"

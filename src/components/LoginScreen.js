@@ -104,7 +104,7 @@ const LoginScreen = () => {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/username" variant="body2">
+                <Link href="/forgotpassword" variant="body2">
                   Forgot Password
                 </Link>
               </Grid>

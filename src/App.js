@@ -15,8 +15,7 @@ import {
   DrawScreen,
   EditScreen,
   RegisterScreen,
-	ViewScreen,
-  UsernameScreen,
+	ViewScreen
 } from './components';
 /*
 	This is our application's top-level component.
@@ -58,7 +57,6 @@ const App = () => {
                 <Route path="/edit/" exact component={EditScreen} />
                 <Route path="/forgotpassword/" exact component={ForgotPasswordScreen} />
                 <Route path="/changepassword/" exact component={ChangePasswordScreen} />
-                <Route path="/username/" exact component={UsernameScreen} />
                 <Route path="/register/" exact component={RegisterScreen} />
                 <Route path="/view/" exact component={ViewScreen} />
               </Switch>
