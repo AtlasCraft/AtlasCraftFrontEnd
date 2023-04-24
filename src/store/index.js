@@ -1,5 +1,10 @@
 import { createContext, useContext, useState } from 'react';
-import { SplitRegion_Transaction } from '../transactions';
+import {
+  SplitRegion_Transaction,
+  AddRegion_Transaction,
+  DeleteRegion_Transaction,
+  MergeRegion_Transaction,
+} from '../transactions';
 import { useHistory } from 'react-router-dom';
 import { enqueueSnackbar } from 'notistack';
 import api from '../api';
@@ -59,6 +64,7 @@ function GlobalStoreContextProvider(props) {
   const history = useHistory();
 
   const tps = new jsTPS();
+  store.tps = tps;
 
   // SINCE WE'VE WRAPPED THE STORE IN THE AUTH CONTEXT WE CAN ACCESS THE USER HERE
   const { auth } = useContext(AuthContext);
@@ -160,10 +166,27 @@ function GlobalStoreContextProvider(props) {
   };
 
   //region functions
-  store.deleteRegion = function () {};
-  store.createRegion = function () {};
+  store.deleteRegion = function (layer) {
+    layer.remove();
+  };
+  store.createRegion = function (layer) {
+    console.log(layer);
+    layer.addTo(store.mapObject);
+  };
   store.mergeRegion = function () {};
   store.restoreRegion = function () {};
+
+  store.addAddRegionTransaction = function (layer) {
+    let transaction = new AddRegion_Transaction(store, layer);
+    tps.addTransaction(transaction);
+    console.log(tps);
+  };
+  store.addDeleteRegionTransaction = function (layer) {
+    let transaction = new DeleteRegion_Transaction(store, layer);
+    tps.addTransaction(transaction);
+    console.log(tps);
+  };
+
   store.addSplitRegionTransaction = function (verts) {
     if (store.geojson.features[verts[0][0]].geometry.type == 'Polygon') {
       // need to completely remove subregion
