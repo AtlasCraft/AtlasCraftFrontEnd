@@ -4,13 +4,13 @@ import {
   AddRegion_Transaction,
   DeleteRegion_Transaction,
   MergeRegion_Transaction,
+  AddVertex_Transaction,
 } from '../transactions';
 import { useHistory } from 'react-router-dom';
 import { enqueueSnackbar } from 'notistack';
 import api from '../api';
 import jsTPS from '../common/jsTPS';
 import AuthContext from '../auth';
-import * as turf from '@turf/turf';
 
 /*
 	This is our global data store. Note that it uses the Flux design pattern,
@@ -169,6 +169,7 @@ function GlobalStoreContextProvider(props) {
 
   //region functions
   store.deleteRegion = function (layer) {
+    layer.pm._initMarkers();
     layer.remove();
   };
   store.createRegion = function (layer) {
@@ -243,6 +244,7 @@ function GlobalStoreContextProvider(props) {
         1
       ); //type 1 = polygon
       tps.addTransaction(transaction);
+      tps.doTransaction();
     } else {
       //need to "modify the subregion" and is a multipolygon
       verts.sort((vert1, vert2) => {
@@ -292,6 +294,7 @@ function GlobalStoreContextProvider(props) {
         2
       ); //type 2 = multipolygon
       tps.addTransaction(transaction);
+      tps.doTransaction();
     }
   };
   store.splitRegion = function (old, newOld, new1, new2, type, splitType) {
@@ -374,10 +377,42 @@ function GlobalStoreContextProvider(props) {
   };
 
   //verticies functions
-  store.deleteVertices = function () {};
-  store.addVertices = function () {};
+  store.deleteVertex = function (indexPath, latlng, layer) {
+    let latlngs = layer._latlngs;
+    console.log('indexPath');
+    console.log(indexPath);
+    console.log('latlngs');
+    console.log(latlngs);
+    for (let i = 0; i < indexPath.length - 1; i++) {
+      latlngs = latlngs[indexPath[i]];
+    }
+    latlngs.splice(indexPath[indexPath.length - 1], 1);
+    layer.setLatLngs(layer._latlngs);
+    layer.pm._initMarkers();
+  };
+
+  store.addVertex = function (indexPath, latlng, layer) {
+    let latlngs = layer._latlngs;
+    console.log('indexPath');
+    console.log(indexPath);
+    console.log('latlngs');
+    console.log(latlngs);
+    for (let i = 0; i < indexPath.length - 1; i++) {
+      latlngs = latlngs[indexPath[i]];
+    }
+    latlngs.splice(indexPath[indexPath.length - 1], 0, latlng);
+    layer.setLatLngs(layer._latlngs);
+    layer.pm._initMarkers();
+  };
   store.moveVertices = function () {};
   store.selectVertices = function () {};
+
+  store.addAddVertexTransaction = function (indexPath, latlng, layer) {
+    let transaction = new AddVertex_Transaction(this, indexPath, latlng, layer);
+    tps.addTransaction(transaction);
+    console.log(tps);
+  };
+  store.addDeleteVertexTransaction = function (indexPath, latlng, layer) {};
 
   //Properties functions
   store.updateProp = function () {};

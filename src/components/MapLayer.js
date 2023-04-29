@@ -5,6 +5,7 @@ import L from 'leaflet';
 import {
   AddRegion_Transaction,
   DeleteRegion_Transaction,
+  AddVertex_Transaction,
 } from '../transactions';
 const mapData = require('../test/MapEditingInfo.json');
 const usData = require('../test/us.json');
@@ -29,7 +30,6 @@ export default function MapLayer({
   map.on('pm:create', (e) => {
     const { layer } = e;
     e.layer.options.pmIgnore = false;
-    // L.PM.reInitLayer(e.layer);
     const trans = store.tps.transactions[store.tps.mostRecentTransaction];
     if (trans instanceof AddRegion_Transaction) {
       // HANDLE DUPLICATES
@@ -79,19 +79,32 @@ export default function MapLayer({
 
   map.on('layeradd', (e) => {
     if (e.layer && e.layer._latlngs) {
-      console.log(e);
+      // console.log(e);
       const { layer } = e;
-      console.log(layer);
+      // console.log(layer);
       layer.on('pm:edit', (e) => {
         const { layer } = e;
         layer.on('pm:vertexadded', (e) => {
-          console.log('Add Vertex');
-          console.log(e);
-          console.log(e.marker._latlng);
+          const { indexPath, latlng } = e;
+          const trans = store.tps.transactions[store.tps.mostRecentTransaction];
+          if (trans instanceof AddVertex_Transaction) {
+            // HANDLE DUPLICATES
+            if (trans.latlng !== latlng) {
+              store.addAddVertexTransaction(indexPath, latlng, layer);
+              console.log('Add Vertex');
+              console.log(e);
+              console.log(e.marker._latlng);
+            }
+          } else {
+            store.addAddVertexTransaction(indexPath, latlng, layer);
+            console.log('Add Vertex');
+            console.log(e);
+            console.log(e.marker._latlng);
+          }
         });
         layer.on('pm:change', (e) => {
-          console.log('Changed Vertex');
-          console.log(e);
+          // console.log('Changed Vertex');
+          // console.log(e);
         });
 
         layer.on('pm:vertexremoved', (e) => {
@@ -121,7 +134,6 @@ export default function MapLayer({
         console.log('Layer Clicked');
         if (layer) {
           if (store.selectedRegion.includes(layer)) {
-            console.log('in selected');
             store.selectedRegion = store.selectedRegion.filter(
               (l) => l !== layer
             );
@@ -137,7 +149,6 @@ export default function MapLayer({
         console.log('Context Menu Clicked');
         if (layer) {
           if (!store.selectedRegion.includes(layer)) {
-            console.log('Not in selected');
             store.selectedRegion.push(layer);
             layer.setStyle({ fillColor: 'orange' });
           }
@@ -149,6 +160,7 @@ export default function MapLayer({
   map.on('layerremove', (e) => {
     if (e.layer && e.layer._latlngs) {
       console.log(e);
+      map.pm.disableDraw();
     }
   });
 
