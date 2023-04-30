@@ -490,7 +490,6 @@ function GlobalStoreContextProvider(props) {
         console.log('NO GEOJSON Found');
       }
     });
-
     // Log GeoJSON collection to console
     store.geojson = collection;
     let payload = {

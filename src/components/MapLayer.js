@@ -31,6 +31,10 @@ export default function MapLayer({
   map.on('pm:create', (e) => {
     const { layer } = e;
     e.layer.options.pmIgnore = false;
+    layer.feature = {
+      type: 'Feature',
+      properties: {},
+    };
     const trans = store.tps.transactions[store.tps.mostRecentTransaction];
     if (trans instanceof AddRegion_Transaction) {
       // HANDLE DUPLICATES
