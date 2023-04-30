@@ -5,6 +5,7 @@ import {
   DeleteRegion_Transaction,
   MergeRegion_Transaction,
   AddVertex_Transaction,
+  DeleteVertex_Transaction,
 } from '../transactions';
 import { useHistory } from 'react-router-dom';
 import { enqueueSnackbar } from 'notistack';
@@ -412,7 +413,16 @@ function GlobalStoreContextProvider(props) {
     tps.addTransaction(transaction);
     console.log(tps);
   };
-  store.addDeleteVertexTransaction = function (indexPath, latlng, layer) {};
+  store.addDeleteVertexTransaction = function (indexPath, latlng, layer) {
+    let transaction = new DeleteVertex_Transaction(
+      this,
+      indexPath,
+      latlng,
+      layer
+    );
+    tps.addTransaction(transaction);
+    console.log(tps);
+  };
 
   //Properties functions
   store.updateProp = function () {};

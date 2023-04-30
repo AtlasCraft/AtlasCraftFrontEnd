@@ -6,6 +6,7 @@ import {
   AddRegion_Transaction,
   DeleteRegion_Transaction,
   AddVertex_Transaction,
+  DeleteVertex_Transaction,
 } from '../transactions';
 const mapData = require('../test/MapEditingInfo.json');
 const usData = require('../test/us.json');
@@ -85,32 +86,48 @@ export default function MapLayer({
       layer.on('pm:edit', (e) => {
         const { layer } = e;
         layer.on('pm:vertexadded', (e) => {
-          const { indexPath, latlng } = e;
+          const { indexPath, latlng, marker } = e;
+          marker.pm.enable({ draggable: true });
           const trans = store.tps.transactions[store.tps.mostRecentTransaction];
           if (trans instanceof AddVertex_Transaction) {
             // HANDLE DUPLICATES
             if (trans.latlng !== latlng) {
               store.addAddVertexTransaction(indexPath, latlng, layer);
-              console.log('Add Vertex');
-              console.log(e);
-              console.log(e.marker._latlng);
             }
           } else {
             store.addAddVertexTransaction(indexPath, latlng, layer);
-            console.log('Add Vertex');
-            console.log(e);
-            console.log(e.marker._latlng);
           }
+
+          marker.on('pm:dragend', (e) => {
+            console.log('pm:dragend');
+            console.log(e);
+          });
         });
         layer.on('pm:change', (e) => {
-          // console.log('Changed Vertex');
           // console.log(e);
         });
 
         layer.on('pm:vertexremoved', (e) => {
-          console.log('Delete Vertex');
-          console.log(e);
-          console.log(e.marker._latlng);
+          const { indexPath, marker } = e;
+          const trans = store.tps.transactions[store.tps.mostRecentTransaction];
+          if (trans instanceof DeleteVertex_Transaction) {
+            // HANDLE DUPLICATES
+            if (trans.latlng !== marker._latlng) {
+              store.addDeleteVertexTransaction(
+                indexPath,
+                marker._latlng,
+                layer
+              );
+              console.log('Delete Vertex');
+              console.log(e);
+              console.log(e.marker._latlng);
+            }
+          } else {
+            store.addDeleteVertexTransaction(indexPath, marker._latlng, layer);
+            console.log('Delete Vertex');
+            console.log(e);
+            console.log(e.marker._latlng);
+          }
         });
         //TODO add split feature to new layer
         // layer.on('pm:vertexclick', (e) => {
@@ -159,7 +176,7 @@ export default function MapLayer({
 
   map.on('layerremove', (e) => {
     if (e.layer && e.layer._latlngs) {
-      console.log(e);
+      // console.log(e);
       map.pm.disableDraw();
     }
   });

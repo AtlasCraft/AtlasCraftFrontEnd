@@ -3,6 +3,7 @@ import AddRegion_Transaction from './AddRegion_Transaction';
 import DeleteRegion_Transaction from './DeleteRegion_Transaction';
 import MergeRegion_Transaction from './MergeRegion_Transaction';
 import AddVertex_Transaction from './AddVertex_Transaction';
+import DeleteVertex_Transaction from './DeleteVertex_Transaction';
 
 export {
   SplitRegion_Transaction,
@@ -10,4 +11,5 @@ export {
   DeleteRegion_Transaction,
   MergeRegion_Transaction,
   AddVertex_Transaction,
+  DeleteVertex_Transaction,
 };
