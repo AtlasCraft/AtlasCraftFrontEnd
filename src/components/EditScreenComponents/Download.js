@@ -1,14 +1,17 @@
+import { useContext } from "react";
 import { Dialog, DialogTitle, Button, Stack } from "@mui/material";
-
+import GlobalStoreContext from '../../store'
 
 export default function Download({setOpen, open}){
-
+    const { store } = useContext(GlobalStoreContext);
     function handleGeo(){
         setOpen(false);
+        store.downloadGeo();
     }
 
     function handleShp(){
         setOpen(false);
+        store.downloadShp();
     }
 
     return (

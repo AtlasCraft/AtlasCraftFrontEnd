@@ -12,7 +12,9 @@ import { enqueueSnackbar } from 'notistack';
 import api from '../api';
 import jsTPS from '../common/jsTPS';
 import AuthContext from '../auth';
-
+import * as shpwrite from 'shp-write';
+import "core-js/stable";
+import { saveAs } from 'file-saver';
 /*
 	This is our global data store. Note that it uses the Flux design pattern,
 	which makes use of things like actions and reducers. 
@@ -429,8 +431,60 @@ function GlobalStoreContextProvider(props) {
   store.createProp = function () {};
 
   //map management
-  store.downloadGeo = function () {};
-  store.downloadShp = function () {};
+  store.downloadGeo = function () {
+    // let element = document.createElement('a');
+    // element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(store.geojson)));
+    // element.setAttribute('download', "download.geojson");
+    // element.style.display = 'none';
+    // document.body.appendChild(element);
+    // element.click();
+    // document.body.removeChild(element);
+
+    let blob = new Blob([JSON.stringify(store.geojson)],{type:'data:text/plain;charset=utf-8'});
+    saveAs(blob, store.mapName.concat(".geojson"));
+
+  };
+  store.downloadShp = function () {
+    (window).process = {
+      browser: true
+    };
+    var options = {
+      folder: 'myshapes',
+      types: {
+          point: 'mypoints',
+          polygon: 'mypolygons',
+          line: 'mylines'
+      }
+    }
+    console.log(store.geojson);
+    // var shpwrite = require('shp-write');
+    shpwrite.download(store.geojson);  
+  //   shpwrite.download({
+  //     type: 'FeatureCollection',
+  //     features: [
+  //       {
+  //           type: 'Feature',
+  //           geometry: {
+  //               type: 'Point',
+  //               coordinates: [0, 0]
+  //           },
+  //           properties: {
+  //               name: 'Foo'
+  //           }
+  //       },
+  //       {
+  //           type: 'Feature',
+  //           geometry: {
+  //               type: 'Point',
+  //               coordinates: [0, 10]
+  //           },
+  //           properties: {
+  //               name: 'Bar'
+  //           }
+  //       }
+  //   ]
+  // }, options);
+  };
   store.downloadPng = function () {};
   store.uploadMap = function (geo) {
     console.log(geo);
