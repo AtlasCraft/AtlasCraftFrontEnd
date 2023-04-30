@@ -180,6 +180,8 @@ export default function MapLayer({
       map.pm.disableDraw();
     }
   });
+  console.log('Store Geojson');
+  console.log(store.geojson);
 
   return (
     <GeoJSON

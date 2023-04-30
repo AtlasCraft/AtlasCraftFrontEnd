@@ -11,7 +11,7 @@ export const AuthActionType = {
   GET_LOGGED_IN: 'GET_LOGGED_IN',
   REGISTER_USER: 'REGISTER_USER',
   LOGIN_USER: 'LOGIN_USER',
-  LOGOUT_USER: 'LOGOUT_USER'
+  LOGOUT_USER: 'LOGOUT_USER',
 };
 
 function AuthContextProvider(props) {
@@ -20,7 +20,6 @@ function AuthContextProvider(props) {
     loggedIn: false,
     error: false,
     errorMsg: null,
-    // guest: false,
   });
   const history = useHistory();
 
@@ -32,15 +31,15 @@ function AuthContextProvider(props) {
   const authReducer = (action) => {
     const { type, payload } = action;
     switch (type) {
-      // case AuthActionType.GET_LOGGED_IN: {
-      //   return setAuth({
-      //     user: payload.user,
-      //     loggedIn: payload.loggedIn,
-      //     error: false,
-      //     errorMsg: null,
-      //     // guest: auth.guest,
-      //   });
-      // }
+      case AuthActionType.GET_LOGGED_IN: {
+        return setAuth({
+          user: payload.user,
+          loggedIn: payload.loggedIn,
+          error: false,
+          errorMsg: null,
+          // guest: auth.guest,
+        });
+      }
       case AuthActionType.LOGIN_USER: {
         return setAuth({
           user: payload.user,
@@ -90,7 +89,10 @@ function AuthContextProvider(props) {
       }
     } catch (err) {
       // store.showErr(err.response.status, err.response.data.errorMessage);
-      enqueueSnackbar(err.response.data.errorMessage, {variant: "error", autoHideDuration: 5000})
+      enqueueSnackbar(err.response.data.errorMessage, {
+        variant: 'error',
+        autoHideDuration: 5000,
+      });
     }
   };
 
@@ -108,11 +110,13 @@ function AuthContextProvider(props) {
         history.push('/home');
       }
     } catch (err) {
-      enqueueSnackbar(err.response.data.errorMessage, {variant: "error", autoHideDuration: 5000})
-
+      enqueueSnackbar(err.response.data.errorMessage, {
+        variant: 'error',
+        autoHideDuration: 5000,
+      });
     }
   };
-  
+
   auth.forgotPassword = async function (userData, store) {
     try {
       const response = await api.forgotPassword(userData);
@@ -121,7 +125,10 @@ function AuthContextProvider(props) {
       }
     } catch (err) {
       // store.showErr(err.response.status, err.response.data.errorMessage);
-      enqueueSnackbar(err.response.data.errorMessage, {variant: "error", autoHideDuration: 5000})
+      enqueueSnackbar(err.response.data.errorMessage, {
+        variant: 'error',
+        autoHideDuration: 5000,
+      });
     }
   };
 
@@ -133,7 +140,10 @@ function AuthContextProvider(props) {
       }
     } catch (err) {
       // store.showErr(err.response.status, err.response.data.errorMessage);
-      enqueueSnackbar(err.response.data.errorMessage, {variant: "error", autoHideDuration: 5000})
+      enqueueSnackbar(err.response.data.errorMessage, {
+        variant: 'error',
+        autoHideDuration: 5000,
+      });
     }
   };
 
@@ -145,7 +155,10 @@ function AuthContextProvider(props) {
       }
     } catch (err) {
       // store.showErr(err.response.status, err.response.data.errorMessage);
-      enqueueSnackbar(err.response.data.errorMessage, {variant: "error", autoHideDuration: 5000})
+      enqueueSnackbar(err.response.data.errorMessage, {
+        variant: 'error',
+        autoHideDuration: 5000,
+      });
     }
   };
 
@@ -161,7 +174,6 @@ function AuthContextProvider(props) {
       }
     } catch (err) {}
   };
-
 
   auth.fakeLogin = async function () {
     setAuth({
