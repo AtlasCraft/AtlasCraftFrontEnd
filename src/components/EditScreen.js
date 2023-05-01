@@ -12,7 +12,7 @@ import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import 'leaflet/dist/leaflet.css';
 import AuthContext from '../auth'
 import GlobalStoreContext from '../store'
-import {MapZoom, GeomanInit} from './EditScreenComponents';
+import {MapZoom, GeomanInit, Download} from './EditScreenComponents';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import MapLayer from './MapLayer';
@@ -27,6 +27,7 @@ export default function EditScreen() {
   const [tempSelectedVert, setTempSelectedVert] = React.useState([]);
   const [mapName, setMapName] = useState(store.mapName);
   const [vertexEnabled, setVertexEnabled] = useState(true);
+  const [downloadOpen, setDownloadOpen] = useState(false);
 
   useEffect(()=>{
     if(!vertexEnabled) return;
@@ -173,6 +174,7 @@ export default function EditScreen() {
   };
   return (
     <div>
+      <Download setOpen={setDownloadOpen} open={downloadOpen}/>
       <div>
         <Box
           component="form"
@@ -216,6 +218,7 @@ export default function EditScreen() {
               variant="contained"
               href="#"
               sx={{ 'align-self': 'center' }}
+              onClick={()=>{setDownloadOpen(true)}}
             >
               Download
             </Button>
