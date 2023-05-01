@@ -68,7 +68,7 @@ function GlobalStoreContextProvider(props) {
   const history = useHistory();
 
   const tps = new jsTPS();
-  store.tps = tps;
+  // store.tps = tps;
 
   // SINCE WE'VE WRAPPED THE STORE IN THE AUTH CONTEXT WE CAN ACCESS THE USER HERE
   const { auth } = useContext(AuthContext);
@@ -133,6 +133,10 @@ function GlobalStoreContextProvider(props) {
   // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
 
   // ***ANY FUNCTION NOT FILLED IN MEANS IT IS PLANNED FOR A FUTURE BUILD***
+
+  store.resetTps = function(){
+    tps.clearAllTransactions();
+  }
 
   //Mapcard updates
   store.updateLikes = async function (id) {
@@ -246,6 +250,8 @@ function GlobalStoreContextProvider(props) {
         1
       ); //type 1 = polygon
       tps.addTransaction(transaction);
+      console.log(tps);
+      tps.decrementMostRecent();
       tps.doTransaction();
     } else {
       //need to "modify the subregion" and is a multipolygon
@@ -286,7 +292,7 @@ function GlobalStoreContextProvider(props) {
 
       //update the newold region (remove new1 and new2 from coords list)
       newOldRegion.geometry.coordinates.splice(Math.max(vert1[1], vert2[1]), 1);
-      newOldRegion.geometry.coordinates.splice(Math.min(vert1[1], vert2[1]), 1);
+      // newOldRegion.geometry.coordinates.splice(Math.min(vert1[1], vert2[1]), 1);
       let transaction = new SplitRegion_Transaction(
         store,
         oldRegion,
@@ -296,6 +302,8 @@ function GlobalStoreContextProvider(props) {
         2
       ); //type 2 = multipolygon
       tps.addTransaction(transaction);
+      console.log(tps);
+      tps.decrementMostRecent();
       tps.doTransaction();
     }
   };
