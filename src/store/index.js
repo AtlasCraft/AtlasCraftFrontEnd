@@ -211,6 +211,7 @@ function GlobalStoreContextProvider(props) {
   store.addMergeRegionTransaction = function (oldLayers, newLayer) {
     let transaction = new MergeRegion_Transaction(store, oldLayers, newLayer);
     tps.addTransaction(transaction);
+    console.log(tps);
   };
 
   store.addSplitRegionTransaction = function (verts) {
@@ -221,24 +222,14 @@ function GlobalStoreContextProvider(props) {
       }); //  should be in asc order
       let vert1 = verts[0];
       let vert2 = verts[1];
-      let oldRegion = JSON.parse(
-        JSON.stringify(store.geojson.features[vert1[0]])
-      );
-      let newRegion1 = JSON.parse(
-        JSON.stringify(store.geojson.features[vert1[0]])
-      ); //splice this from vert1[3]+1 to vert2[3]-1 (vert2[3] - vert1[3]-1)
-      let newRegion2 = JSON.parse(
-        JSON.stringify(store.geojson.features[vert1[0]])
-      ); //slice this from vert1[3] to vert2[3]+1
+      let oldRegion = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]]));
+      let newRegion1 = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]])); //splice this from vert1[3]+1 to vert2[3]-1 (vert2[3] - vert1[3]-1)
+      let newRegion2 = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]])); //slice this from vert1[3] to vert2[3]+1
       // handle the splice (remove elements inbetween)
-      newRegion1.geometry.coordinates[vert1[1]].splice(
-        vert1[2] + 1,
-        vert2[2] - vert1[2] - 1
-      );
+      newRegion1.geometry.coordinates[vert1[1]].splice(vert1[2] + 1,vert2[2] - vert1[2] - 1);
       newRegion1.properties.AtlasCraftRegionID = Math.random();
       // handle the slice (remove elements outside)
-      newRegion2.geometry.coordinates[vert2[1]] =
-        newRegion2.geometry.coordinates[vert2[1]].slice(vert1[2], vert2[2] + 1);
+      newRegion2.geometry.coordinates[vert2[1]] =newRegion2.geometry.coordinates[vert2[1]].slice(vert1[2], vert2[2] + 1);
       newRegion2.properties.AtlasCraftRegionID = Math.random();
       // make the transaction
       let transaction = new SplitRegion_Transaction(
@@ -249,10 +240,19 @@ function GlobalStoreContextProvider(props) {
         newRegion2,
         1
       ); //type 1 = polygon
-      tps.addTransaction(transaction);
       console.log(tps);
-      tps.decrementMostRecent();
+      tps.addTransaction(transaction, true);
+      // console.log("AAAAAAAAAAAAAA")
+      console.log(tps);
+      // tps.decrementMostRecent();
+      // console.log("BBBBBBBBBBBBBB")
+      // console.log(tps);
       tps.doTransaction();
+      console.log(tps);
+
+
+
+      // MULTI POLYGON
     } else {
       //need to "modify the subregion" and is a multipolygon
       verts.sort((vert1, vert2) => {
@@ -260,33 +260,19 @@ function GlobalStoreContextProvider(props) {
       }); //  should be in asc order
       let vert1 = verts[0];
       let vert2 = verts[1];
-      let oldRegion = JSON.parse(
-        JSON.stringify(store.geojson.features[vert1[0]])
-      );
-      let newOldRegion = JSON.parse(
-        JSON.stringify(store.geojson.features[vert1[0]])
-      );
-      let newRegion1 = JSON.parse(
-        JSON.stringify(store.geojson.features[vert1[0]])
-      ); //splice this from vert1[3]+1 to vert2[3]-1 (vert2[3] - vert1[3]-1)
-      let newRegion2 = JSON.parse(
-        JSON.stringify(store.geojson.features[vert1[0]])
-      ); //slice this from vert1[3] to vert2[3]+1
+      let oldRegion = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]]));
+      let newOldRegion = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]]));
+      let newRegion1 = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]])); //splice this from vert1[3]+1 to vert2[3]-1 (vert2[3] - vert1[3]-1)
+      let newRegion2 = JSON.parse(JSON.stringify(store.geojson.features[vert1[0]])); //slice this from vert1[3] to vert2[3]+1
       // handle the splice (remove elements inbetween)
-      newRegion1.geometry.coordinates =
-        newRegion1.geometry.coordinates[vert1[1]];
-      newRegion1.geometry.coordinates[vert1[2]].splice(
-        vert1[3] + 1,
-        vert2[3] - vert1[3] - 1
-      );
+      newRegion1.geometry.coordinates = newRegion1.geometry.coordinates[vert1[1]];
+      newRegion1.geometry.coordinates[vert1[2]].splice(vert1[3] + 1,vert2[3] - vert1[3] - 1);
       newRegion1.properties.AtlasCraftRegionID = Math.random();
       newRegion1.geometry.type = 'Polygon';
 
       // handle the slice (remove elements outside)
-      newRegion2.geometry.coordinates =
-        newRegion2.geometry.coordinates[vert2[1]];
-      newRegion2.geometry.coordinates[vert2[2]] =
-        newRegion2.geometry.coordinates[vert2[2]].slice(vert1[3], vert2[3] + 1);
+      newRegion2.geometry.coordinates =newRegion2.geometry.coordinates[vert2[1]];
+      newRegion2.geometry.coordinates[vert2[2]] =newRegion2.geometry.coordinates[vert2[2]].slice(vert1[3], vert2[3] + 1);
       newRegion2.properties.AtlasCraftRegionID = Math.random();
       newRegion2.geometry.type = 'Polygon';
 
@@ -301,9 +287,9 @@ function GlobalStoreContextProvider(props) {
         newRegion2,
         2
       ); //type 2 = multipolygon
-      tps.addTransaction(transaction);
-      console.log(tps);
-      tps.decrementMostRecent();
+      tps.addTransaction(transaction, true);
+      // console.log(tps);
+      // tps.decrementMostRecent();
       tps.doTransaction();
     }
   };

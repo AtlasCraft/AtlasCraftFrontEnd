@@ -131,7 +131,7 @@ export class jsTPS_Transaction {
      *
      * @param {jsTPS_Transaction} transaction Transaction to add to the stack and do.
      */
-    addTransaction(transaction) {
+    addTransaction(transaction, isSplit=false) {
       // ARE WE BRANCHING?
       if (
         this.mostRecentTransaction < 0 ||
@@ -151,7 +151,8 @@ export class jsTPS_Transaction {
   
       // ADD THE TRANSACTION
       this.transactions[this.mostRecentTransaction + 1] = transaction;
-      this.mostRecentTransaction++;
+      if(!isSplit)
+          this.mostRecentTransaction++;
   
       // AND EXECUTE IT
       // this.doTransaction();
