@@ -45,7 +45,7 @@ describe('undo and redo testing', () => {
     cy.get(':nth-child(6) > .MuiBox-root').click().wait(1000)
   })
 
-  it.only('delete region', () => {
+  it('delete region', () => {
     cy.visit('https://atlascraft.onrender.com/edit')
     cy.get('[title="Remove Layers"] > .leaflet-buttons-control-button > .control-icon').click()
     cy.wait(1000)
