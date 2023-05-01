@@ -13,17 +13,12 @@ import api from '../api';
 import jsTPS from '../common/jsTPS';
 import AuthContext from '../auth';
 import * as shpwrite from 'shp-write';
-// import * as topojsonClient from "topojson-client";
-// import * as topojsonServer from "topojson-server";
-// import * as topojson from 'topojson';
-// import * as topojson from "topojson-simplify";
 import "core-js/stable";
 import { saveAs } from 'file-saver';
 /*
 	This is our global data store. Note that it uses the Flux design pattern,
 	which makes use of things like actions and reducers. 
     
-	@author McKilla Gorilla
 */
 
 // THIS IS THE CONTEXT WE'LL USE TO SHARE OUR STORE
@@ -485,17 +480,18 @@ function GlobalStoreContextProvider(props) {
 
   store.compressMap = function (weight) {
     var topojson = require("topojson")
-    console.log("Before");
-    console.log(store.geojson);
     let topo = topojson.topology({k:store.geojson});
     let preSimplify = topojson.presimplify(topo);
     let postSimplify = topojson.simplify(preSimplify, weight);
-    let newJson = topojson.feature(postSimplify, postSimplify.objects["k"]);
-    console.log("after");
-    console.log(newJson);
+    let geo = topojson.feature(postSimplify, postSimplify.objects["k"]);
+    for (let i = 0; i < geo.features.length; i++) {
+      let tempProp = new Map(Object.entries(geo.features[i].properties));
+      tempProp.set('AtlasCraftRegionID', Math.random());
+      geo.features[i].properties = Object.fromEntries(tempProp);
+    }
     storeReducer({
       type: GlobalStoreActionType.CHANGE_GEO,
-      payload: newJson,
+      payload: geo,
     });
   };
 
