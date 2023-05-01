@@ -14,6 +14,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import GlobalStoreContext from '../store';
+import CompressIcon from '@mui/icons-material/Compress';
+import InfoIcon from '@mui/icons-material/Info';
 import * as turf from '@turf/turf';
 import L from 'leaflet';
 
@@ -37,7 +39,7 @@ export default function EditToolbar({
   };
 
   const editIconBoxStyle = {
-    width: '100%',
+    width: '85%',
     'aspect-ratio': '1 / 1',
     backgroundColor: 'rgb(200,200,200)',
     'border-radius': '10px',
@@ -161,6 +163,18 @@ export default function EditToolbar({
                   <p style={editTextStyle}>REDO</p>
                 </Box>
               </Grid>
+              <Grid item xs={6}>
+                <Box sx={editIconBoxStyle} onClick={()=>{store.compressMap(0.005)}}>
+                  <CompressIcon sx={editIconStyle} />
+                  <p style={editTextStyle}>Compress Map</p>
+                </Box>
+              </Grid>
+              <Grid item xs={6}>
+                <Box sx={editIconBoxStyle} onClick={()=>{}}>
+                  <InfoIcon sx={editIconStyle} />
+                  <p style={editTextStyle}>Help</p>
+                </Box>
+              </Grid>
             </Grid>
           </Box>
         </TabPanel>
@@ -198,9 +212,7 @@ export default function EditToolbar({
             </Button>
           </div>
         </TabPanel>
-        <TabPanel value="4">
-          <a>How to add vertices</a>
-        </TabPanel>
+        
       </TabContext>
     </div>
   );

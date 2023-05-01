@@ -433,42 +433,16 @@ function GlobalStoreContextProvider(props) {
     (window).process = {
       browser: true
     };
-    var options = {
-      folder: 'myshapes',
-      types: {
-          point: 'mypoints',
-          polygon: 'mypolygons',
-          line: 'mylines'
-      }
-    }
-    console.log(store.geojson);
-    // var shpwrite = require('shp-write');
+    // var options = {
+    //   folder: 'myshapes',
+    //   types: {
+    //       point: 'mypoints',
+    //       polygon: 'mypolygons',
+    //       line: 'mylines'
+    //   }
+    // }
+    // console.log(store.geojson);
     shpwrite.download(store.geojson);  
-  //   shpwrite.download({
-  //     type: 'FeatureCollection',
-  //     features: [
-  //       {
-  //           type: 'Feature',
-  //           geometry: {
-  //               type: 'Point',
-  //               coordinates: [0, 0]
-  //           },
-  //           properties: {
-  //               name: 'Foo'
-  //           }
-  //       },
-  //       {
-  //           type: 'Feature',
-  //           geometry: {
-  //               type: 'Point',
-  //               coordinates: [0, 10]
-  //           },
-  //           properties: {
-  //               name: 'Bar'
-  //           }
-  //       }
-  //   ]
-  // }, options);
   };
   store.downloadPng = function () {};
 
