@@ -177,7 +177,7 @@ function GlobalStoreContextProvider(props) {
 
   //region functions
   store.deleteRegion = function (layer) {
-    layer.pm._initMarkers();
+    // layer.pm._initMarkers();
     layer.remove();
   };
   store.createRegion = function (layer) {
