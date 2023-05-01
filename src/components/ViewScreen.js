@@ -7,18 +7,26 @@ import Grid from "@mui/material/Grid";
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
 import {Download} from './EditScreenComponents';
-import AuthContext from '../auth'
-import GlobalStoreContext from '../store'
+import AuthContext from '../auth';
+import GlobalStoreContext from '../store';
 
 
 export default function ViewScreen(props) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const loggedInUser = auth.user?auth.user.username:"";
-  const tempGeo = require("../util/VaticanTestGeojson.json");
+  const mapData = require('../test/MapEditingInfo.json');
+  const usData = require('../test/us.json');
+
   const [comment, setComment] = useState('');
   const [feedComments, setFeedComments] = useState([]);
   const [downloadOpen, setDownloadOpen] = useState(false);
+  const countryStyle = {
+    fillColor: 'yellow',
+    color: 'black',
+    weight: 1,
+    height: '100%',
+  };
 
   const handleComment = (e) => {
     const copyFeedComments = [...feedComments];
@@ -32,7 +40,7 @@ export default function ViewScreen(props) {
       store
     );
   };
-
+  
   const CommentList = props => {
     return (
       <div className="userCommentBox"
@@ -45,10 +53,10 @@ export default function ViewScreen(props) {
       </div>
     );
   };
-  
+
   function handleFork(){
     store.forkMap(props.id);
-  };
+  }
 
   return (
     <div>
@@ -112,7 +120,10 @@ export default function ViewScreen(props) {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <GeoJSON data={tempGeo.features}/>
+              <GeoJSON 
+                data={store.geojson || usData || mapData.geojson}
+                style={countryStyle}
+              />
             </MapContainer>
           </div>
           <div style={{ width: '30%', background: 'white', height: '100%'}}>
