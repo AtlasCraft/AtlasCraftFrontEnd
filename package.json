@@ -17,7 +17,9 @@
 		"@turf/turf": "^6.5.0",
 		"ajv": "^8.12.0",
 		"axios": "^0.22.0",
-		"buffer": "^6.0.3",
+		"core-js": "^3.30.1",
+		"dbf": "^0.1.4",
+		"file-saver": "^2.0.5",
 		"jszip": "^3.10.1",
 		"konva": "^8.4.3",
 		"leaflet": "^1.9.3",
@@ -31,12 +33,26 @@
 		"react-scripts": "^5.0.1",
 		"react-select": "^5.7.2",
 		"react-text": "^3.2.5",
+		"shp-write": "github:ngunner/shp-write-multipolygon",
 		"shpjs": "^4.0.4",
+		"topojson": "^3.0.2",
+		"topojson-client": "^3.1.0",
+		"topojson-server": "^3.0.1",
+		"topojson-simplify": "^3.0.3",
 		"web-vitals": "^1.1.2"
 	},
 	"devDependencies": {
+		"assert": "^2.0.0",
+		"buffer": "^6.0.3",
+		"crypto-browserify": "^3.12.0",
 		"cypress": "^12.9.0",
-		"react-app-rewired": "^2.2.1"
+		"https-browserify": "^1.0.0",
+		"os-browserify": "^0.3.0",
+		"process": "^0.11.10",
+		"react-app-rewired": "^2.2.1",
+		"stream-browserify": "^3.0.0",
+		"stream-http": "^3.2.0",
+		"url": "^0.11.0"
 	},
 	"scripts": {
 		"start": "react-app-rewired start",
