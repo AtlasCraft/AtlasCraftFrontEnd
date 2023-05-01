@@ -35,6 +35,10 @@
 		"react-text": "^3.2.5",
 		"shp-write": "github:ngunner/shp-write-multipolygon",
 		"shpjs": "^4.0.4",
+		"topojson": "^3.0.2",
+		"topojson-client": "^3.1.0",
+		"topojson-server": "^3.0.1",
+		"topojson-simplify": "^3.0.3",
 		"web-vitals": "^1.1.2"
 	},
 	"devDependencies": {

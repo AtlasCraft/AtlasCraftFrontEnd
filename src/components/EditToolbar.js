@@ -94,7 +94,8 @@ export default function EditToolbar({
   };
 
   const handleUndo = () => {
-    store.undo();
+    // store.undo();
+    store.compressMap(0.0005);
   };
 
   const handleRedo = () => {

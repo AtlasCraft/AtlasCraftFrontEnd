@@ -110,7 +110,7 @@ export default class jsTPS {
    * there are transactions on the stack that can be redone.
    */
   hasTransactionToRedo() {
-    return this.mostRecentTransaction + 1 < this.numTransactions;
+    return this.mostRecentTransaction < this.numTransactions;
   }
 
   /**
@@ -167,7 +167,7 @@ export default class jsTPS {
   doTransaction() {
     if (this.hasTransactionToRedo()) {
       this.performingDo = true;
-      let transaction = this.transactions[this.mostRecentTransaction + 1];
+      let transaction = this.transactions[this.mostRecentTransaction];
       transaction.doTransaction();
       this.mostRecentTransaction++;
       this.performingDo = false;

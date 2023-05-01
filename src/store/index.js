@@ -13,6 +13,10 @@ import api from '../api';
 import jsTPS from '../common/jsTPS';
 import AuthContext from '../auth';
 import * as shpwrite from 'shp-write';
+// import * as topojsonClient from "topojson-client";
+// import * as topojsonServer from "topojson-server";
+// import * as topojson from 'topojson';
+// import * as topojson from "topojson-simplify";
 import "core-js/stable";
 import { saveAs } from 'file-saver';
 /*
@@ -432,14 +436,6 @@ function GlobalStoreContextProvider(props) {
 
   //map management
   store.downloadGeo = function () {
-    // let element = document.createElement('a');
-    // element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(store.geojson)));
-    // element.setAttribute('download', "download.geojson");
-    // element.style.display = 'none';
-    // document.body.appendChild(element);
-    // element.click();
-    // document.body.removeChild(element);
-
     let blob = new Blob([JSON.stringify(store.geojson)],{type:'data:text/plain;charset=utf-8'});
     saveAs(blob, store.mapName.concat(".geojson"));
 
@@ -486,6 +482,23 @@ function GlobalStoreContextProvider(props) {
   // }, options);
   };
   store.downloadPng = function () {};
+
+  store.compressMap = function (weight) {
+    var topojson = require("topojson")
+    console.log("Before");
+    console.log(store.geojson);
+    let topo = topojson.topology({k:store.geojson});
+    let preSimplify = topojson.presimplify(topo);
+    let postSimplify = topojson.simplify(preSimplify, weight);
+    let newJson = topojson.feature(postSimplify, postSimplify.objects["k"]);
+    console.log("after");
+    console.log(newJson);
+    storeReducer({
+      type: GlobalStoreActionType.CHANGE_GEO,
+      payload: newJson,
+    });
+  };
+
   store.uploadMap = function (geo) {
     console.log(geo);
     for (let i = 0; i < geo.features.length; i++) {
