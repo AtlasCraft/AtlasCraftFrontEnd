@@ -21,7 +21,7 @@ export default function ViewScreen(props) {
   
   const handleComment = (e) => {
     const copyFeedComments = [...feedComments];
-    copyFeedComments.push(comment);
+    copyFeedComments.push([loggedInUser, comment]);
     setFeedComments(copyFeedComments);
     setComment('');
   };
@@ -39,7 +39,6 @@ export default function ViewScreen(props) {
     );
   };
   
-
   function handleFork(){
     store.forkMap(props.id);
   };
@@ -118,7 +117,7 @@ export default function ViewScreen(props) {
               return(
                 <CommentList
                   userName={loggedInUser}
-                  userComment={commentArr}
+                  userComment={commentArr[1]}
                   key={i}
                 />
               );
