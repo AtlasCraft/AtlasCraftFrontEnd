@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack';
 import Grid from "@mui/material/Grid";
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
+import {Download} from './EditScreenComponents';
 import AuthContext from '../auth'
 import GlobalStoreContext from '../store'
 
@@ -17,7 +18,7 @@ export default function ViewScreen(props) {
   const tempGeo = require("../util/VaticanTestGeojson.json");
   const [comment, setComment] = useState('');
   const [feedComments, setFeedComments] = useState([]);
-  
+  const [downloadOpen, setDownloadOpen] = useState(false);
 
   const handleComment = (e) => {
     const copyFeedComments = [...feedComments];
@@ -51,6 +52,7 @@ export default function ViewScreen(props) {
 
   return (
     <div>
+      <Download setOpen={setDownloadOpen} open={downloadOpen}/>
       <div>
         <Box
           component="form"
@@ -85,6 +87,7 @@ export default function ViewScreen(props) {
               variant="contained"
               href="#"
               sx={{ 'align-self': 'center' }}
+              onClick={()=>{setDownloadOpen(true)}}
             >
               Download
             </Button>
