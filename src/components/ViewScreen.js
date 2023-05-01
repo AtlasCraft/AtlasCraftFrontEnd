@@ -34,19 +34,9 @@ export default function ViewScreen(props) {
         <p className="userName">{props.userName}</p>
         <div className="userComment"
         style = {{fontSize:"10pt"}}
-        >{props.userComment}</div>
+        >{props.userComment}</div>  
       </div>
     );
-  }
-
-  const isValid = true;
-
-  function setIsValid(){
-    if(false){
-      isValid = false;
-    } else{
-      isValid = true;
-    }
   };
   
 
@@ -117,24 +107,24 @@ export default function ViewScreen(props) {
               <GeoJSON data={tempGeo.features}/>
             </MapContainer>
           </div>
-          <div style={{ width: '30%', background: 'white', height: '100%' }}>
+          <div style={{ width: '30%', background: 'white', height: '100%'}}>
           <Stack
-            direction="column-reverse"
+            direction="column"
             height="100%"
             justifyContent="space-between"
           >
-          <div style={{ background: 'rgb(192,192,192)'}}>
-            <div id="comment-container" style={{scrollBehavior: 'smooth'}}>
-              {feedComments.map((commentArr, i) => {
-                return(
-                  <CommentList
-                    userName={loggedInUser}
-                    userComment={commentArr}
-                    key={i}
-                  />
-                );
-              })}
+            <div style={{background: 'white', overflowY: 'scroll', scrollBehavior: 'smooth'}}>
+            {feedComments.map((commentArr, i) => {
+              return(
+                <CommentList
+                  userName={loggedInUser}
+                  userComment={commentArr}
+                  key={i}
+                />
+              );
+            })}
             </div>
+          <div style={{ background: 'rgb(192,192,192)'}}>
             <TextField
               style={{width:"80%"}}
               id="comment"
@@ -142,18 +132,13 @@ export default function ViewScreen(props) {
               label="comment"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              onKeyup={e => {
-                e.target.value.length > 0 ? setIsValid(true) : setIsValid(false);}}
             />
             <Button
               variant="contained" href="#" 
               sx={{ 'align-self': 'center' }} 
               style={{maxWidth:"20%", transform: "translateY(25%)"}}
-              className = {
-                comment.length > 0 ? 'submitCommentActive' : 'submitCommentInactive'
-              }
               onClick={handleComment}
-              disabled={isValid ? false : true}
+              disabled={comment.length > 0  ? false : true}
               >
                Comment
               
