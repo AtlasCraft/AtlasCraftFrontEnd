@@ -15,6 +15,8 @@ import AuthContext from '../auth';
 import * as shpwrite from 'shp-write';
 import "core-js/stable";
 import { saveAs } from 'file-saver';
+import L from 'leaflet';
+
 /*
 	This is our global data store. Note that it uses the Flux design pattern,
 	which makes use of things like actions and reducers. 
@@ -497,6 +499,31 @@ function GlobalStoreContextProvider(props) {
     // console.log(res);
   };
   store.saveMap = async function () {
+    // Create an empty GeoJSON collection
+    var collection = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+
+    // Iterate the layers of the map
+    store.mapObject.eachLayer(function (layer) {
+      // Create GeoJSON object from marker
+      console.log(layer);
+      try {
+        if (
+          layer._drawnByGeoman ||
+          (layer.feature && layer.feature.type !== 'FeatureCollection')
+        ) {
+          const geojson = layer.toGeoJSON();
+          // Push GeoJSON object to collection
+          collection.features.push(geojson);
+        }
+      } catch (e) {
+        console.log('NO GEOJSON Found');
+      }
+    });
+    // Log GeoJSON collection to console
+    store.geojson = collection;
     let payload = {
       mapName: store.mapName,
       geojson: store.geojson,
