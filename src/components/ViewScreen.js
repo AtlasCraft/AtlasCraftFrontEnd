@@ -16,23 +16,43 @@ export default function ViewScreen(props) {
   const tempGeo = require("../util/VaticanTestGeojson.json");
   console.log(tempGeo)
   const [comment, setComment] = useState('');
-  const [comments, setComments] = useState([]);
-
+  const [feedComments, setFeedComments] = useState([]);
+  
   
   const handleComment = (e) => {
-    e.preventDefault();
+    const copyFeedComments = [...feedComments];
+    copyFeedComments.push(comment);
+    setFeedComments(copyFeedComments);
     setComment('');
-    auth.getComment({
-      ownedUser: loggedInUser,
-      body: comment
-    }, store
-    )
-    setComment("");
   };
+
+  const CommentList = props => {
+    return (
+      <div className="userCommentBox"
+      style = {{fontSize:"12pt"}}
+      >
+        <p className="userName">{props.userName}</p>
+        <div className="userComment"
+        style = {{fontSize:"10pt"}}
+        >{props.userComment}</div>
+      </div>
+    );
+  }
+
+  const isValid = true;
+
+  function setIsValid(){
+    if(false){
+      isValid = false;
+    } else{
+      isValid = true;
+    }
+  };
+  
 
   function handleFork(){
     store.forkMap(props.id);
-  }
+  };
 
   return (
     <div>
@@ -97,15 +117,24 @@ export default function ViewScreen(props) {
               <GeoJSON data={tempGeo.features}/>
             </MapContainer>
           </div>
-          <form onSubmit={handleComment}>
-          <div style={{ width: '150%', background: 'white', height: '100%' }}>
-
+          <div style={{ width: '30%', background: 'white', height: '100%' }}>
           <Stack
             direction="column-reverse"
             height="100%"
             justifyContent="space-between"
           >
           <div style={{ background: 'rgb(192,192,192)'}}>
+            <div id="comment-container" style={{scrollBehavior: 'smooth'}}>
+              {feedComments.map((commentArr, i) => {
+                return(
+                  <CommentList
+                    userName={loggedInUser}
+                    userComment={commentArr}
+                    key={i}
+                  />
+                );
+              })}
+            </div>
             <TextField
               style={{width:"80%"}}
               id="comment"
@@ -113,17 +142,26 @@ export default function ViewScreen(props) {
               label="comment"
               value={comment}
               onChange={(e) => setComment(e.target.value)}
+              onKeyup={e => {
+                e.target.value.length > 0 ? setIsValid(true) : setIsValid(false);}}
             />
             <Button
               variant="contained" href="#" 
               sx={{ 'align-self': 'center' }} 
-              style={{maxWidth:"20%", top:"50%", transform: "translateY(-50%)"}}>
+              style={{maxWidth:"20%", transform: "translateY(25%)"}}
+              className = {
+                comment.length > 0 ? 'submitCommentActive' : 'submitCommentInactive'
+              }
+              onClick={handleComment}
+              disabled={isValid ? false : true}
+              >
                Comment
+              
             </Button>
+            {console.log({feedComments})}
           </div>
         </Stack>
           </div>
-          </form>
         </Stack>
       </div>
       <div>
