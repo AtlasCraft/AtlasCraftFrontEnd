@@ -9,21 +9,27 @@ import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
 import AuthContext from '../auth'
 import GlobalStoreContext from '../store'
 
+
 export default function ViewScreen(props) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const loggedInUser = auth.user?auth.user.username:"";
   const tempGeo = require("../util/VaticanTestGeojson.json");
-  console.log(tempGeo)
   const [comment, setComment] = useState('');
   const [feedComments, setFeedComments] = useState([]);
   
-  
+
   const handleComment = (e) => {
     const copyFeedComments = [...feedComments];
     copyFeedComments.push([loggedInUser, comment]);
     setFeedComments(copyFeedComments);
     setComment('');
+    auth.getComment(
+      {
+        commentListPairs: copyFeedComments
+      },
+      store
+    );
   };
 
   const CommentList = props => {
