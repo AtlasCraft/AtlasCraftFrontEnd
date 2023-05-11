@@ -6,28 +6,52 @@ import Stack from '@mui/material/Stack';
 import Grid from "@mui/material/Grid";
 import 'leaflet/dist/leaflet.css';
 import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
-import AuthContext from '../auth'
-import GlobalStoreContext from '../store'
+import {Download} from './EditScreenComponents';
+import AuthContext from '../auth';
+import GlobalStoreContext from '../store';
+
 
 export default function ViewScreen(props) {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const loggedInUser = auth.user?auth.user.username:"";
-  const tempGeo = require("../util/VaticanTestGeojson.json");
-  console.log(tempGeo)
-  const [comment, setComment] = useState('');
-  const [comments, setComments] = useState([]);
+  const mapData = require('../test/MapEditingInfo.json');
+  const usData = require('../test/us.json');
 
-  
+  const [comment, setComment] = useState('');
+  const [feedComments, setFeedComments] = useState([]);
+  const [downloadOpen, setDownloadOpen] = useState(false);
+  const countryStyle = {
+    fillColor: 'yellow',
+    color: 'black',
+    weight: 1,
+    height: '100%',
+  };
+
   const handleComment = (e) => {
-    e.preventDefault();
+    const copyFeedComments = [...feedComments];
+    copyFeedComments.push([loggedInUser, comment]);
+    setFeedComments(copyFeedComments);
     setComment('');
-    auth.getComment({
-      ownedUser: loggedInUser,
-      body: comment
-    }, store
-    )
-    setComment("");
+    auth.getComment(
+      {
+        commentListPairs: copyFeedComments
+      },
+      store
+    );
+  };
+  
+  const CommentList = props => {
+    return (
+      <div className="userCommentBox"
+      style = {{fontSize:"12pt"}}
+      >
+        <p className="userName">{props.userName}</p>
+        <div className="userComment"
+        style = {{fontSize:"10pt"}}
+        >{props.userComment}</div>  
+      </div>
+    );
   };
 
   function handleFork(){
@@ -36,6 +60,7 @@ export default function ViewScreen(props) {
 
   return (
     <div>
+      <Download setOpen={setDownloadOpen} open={downloadOpen}/>
       <div>
         <Box
           component="form"
@@ -70,6 +95,7 @@ export default function ViewScreen(props) {
               variant="contained"
               href="#"
               sx={{ 'align-self': 'center' }}
+              onClick={()=>{setDownloadOpen(true)}}
             >
               Download
             </Button>
@@ -94,17 +120,29 @@ export default function ViewScreen(props) {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <GeoJSON data={tempGeo.features}/>
+              <GeoJSON 
+                data={store.geojson || usData || mapData.geojson}
+                style={countryStyle}
+              />
             </MapContainer>
           </div>
-          <form onSubmit={handleComment}>
-          <div style={{ width: '150%', background: 'white', height: '100%' }}>
-
+          <div style={{ width: '30%', background: 'white', height: '100%'}}>
           <Stack
-            direction="column-reverse"
+            direction="column"
             height="100%"
             justifyContent="space-between"
           >
+            <div style={{background: 'white', overflowY: 'scroll', scrollBehavior: 'smooth'}}>
+            {feedComments.map((commentArr, i) => {
+              return(
+                <CommentList
+                  userName={loggedInUser}
+                  userComment={commentArr[1]}
+                  key={i}
+                />
+              );
+            })}
+            </div>
           <div style={{ background: 'rgb(192,192,192)'}}>
             <TextField
               style={{width:"80%"}}
@@ -117,13 +155,17 @@ export default function ViewScreen(props) {
             <Button
               variant="contained" href="#" 
               sx={{ 'align-self': 'center' }} 
-              style={{maxWidth:"20%", top:"50%", transform: "translateY(-50%)"}}>
+              style={{maxWidth:"20%", transform: "translateY(25%)"}}
+              onClick={handleComment}
+              disabled={comment.length > 0  ? false : true}
+              >
                Comment
+              
             </Button>
+            {console.log({feedComments})}
           </div>
         </Stack>
           </div>
-          </form>
         </Stack>
       </div>
       <div>
