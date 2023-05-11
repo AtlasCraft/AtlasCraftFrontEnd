@@ -6,10 +6,10 @@ import GlobalStoreContext from '../store'
 
 const style = {
     cardContainer: {
-        width: "90%",
-        height:"20%",
+        width: "29%",
+        height:"60%",
         backgroundColor:"#1C353D",
-        left:"5%",
+        left:"0%",
         position:"relative",
         borderRadius:"25px",
         marginTop:"1rem",
@@ -19,22 +19,22 @@ const style = {
         width:"96%",
         top:"7%",
         left:"2%",
-        height:"50%",
+        height:"80%",
         position:"absolute"
     },
     bottomDivContainer:{
         width:"96%",
-        top:"50%",
+        top:"80%",
         left:"2%",
         height:"50%",
         position:"absolute"
     },
     leftDivContainer:{
         height:"100%", 
-        width:"50%", 
+        width:"100%", 
         position:"absolute",
-        fontSize: "24px",
-        color: "#F5DEB3",
+        // fontSize: "24px",
+        // color: "#F5DEB3",
         // backgroundColor:"black"
     },
     rightDiveContainer:{
@@ -49,7 +49,17 @@ const style = {
     iconButtons:{
         transform:"scale(1.2)",
         color: "#F5DEB3"
-    }
+    },
+    mapText:{
+        fontSize: "24px",
+        color: "#F5DEB3",
+        textAlign:"left"
+    },
+    userText:{
+        fontSize: "18px",
+        color: "#F5DEB3",
+        textAlign:"left"
+    },
 
 }
 export default function MapCard(props){
@@ -95,15 +105,6 @@ export default function MapCard(props){
             //update backend liked
             store.updateLikes(props.cardId);
         }
-
-        //Temp stuff
-        // if(!dislikedUsers.includes(loggedInUser) && !likedUsers.includes(loggedInUser)){
-        //     //not in either
-        //     let temp = [...likedUsers];
-        //     temp.push(loggedInUser);
-        //     setLiked(temp);
-        //     store.updateLikes(props.cardId);
-        // }
     }
     function handleDislike(){
         if(dislikedUsers.includes(loggedInUser)){
@@ -134,15 +135,6 @@ export default function MapCard(props){
             //TODO update backend liked
             store.updateDislikes(props.cardId);
         }
-
-
-        //TEMP STUFF
-        // if(!dislikedUsers.includes(loggedInUser) && !likedUsers.includes(loggedInUser)){
-        //     let temp = [...dislikedUsers];
-        //     temp.push(loggedInUser);
-        //     setDisliked(temp);
-        //     store.updateDislikes(props.cardId);
-        // }
         
     }
 
@@ -178,10 +170,8 @@ export default function MapCard(props){
         <ListItem style={style.cardContainer}>
             <div style={style.topDivContainer}>
                 <div style={style.leftDivContainer}>
-                    {mapName}
-                </div>
-                <div style={style.rightDiveContainer}>
-                    {ownedUser}
+                    <div style={style.mapText}>{mapName}</div>
+                    <div style={style.userText}>{ownedUser}</div>
                 </div>
             </div>
             <div style={style.bottomDivContainer}>

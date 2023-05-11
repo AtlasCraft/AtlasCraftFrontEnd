@@ -39,8 +39,16 @@ const style = {
 		width: "100%",
 		height: "96%",
 		display: "flex",
-		flexDirection: "column",
 		overflow: "auto",
+	},
+	MapCardInnerListContainer:{
+		height:"100%", 
+		width:"100%",
+		display:"flex",
+		flexDirection: "row",
+		flexWrap:"wrap",
+		// backgroundColor:"black",
+		justifyContent:"space-evenly"
 	}
 };
 
@@ -99,7 +107,7 @@ export default function HomeScreen() {
 		useMemo(()=>{
 			return(
 				<div style={style.MapCardListContainer}>
-					<List style={{height:"100%", width:"100%"}}>
+					<List style={style.MapCardInnerListContainer}>
 						{
 							mapCardList.map((card)=>{
 								if(allUserSelected && searchText != "" && card.mapName.includes(searchText) && card.published == true)
