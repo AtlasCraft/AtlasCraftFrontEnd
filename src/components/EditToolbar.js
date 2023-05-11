@@ -8,8 +8,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import MergeIcon from '@mui/icons-material/Merge';
 import CallSplitIcon from '@mui/icons-material/CallSplit';
-import UndoIcon from '@mui/icons-material/Undo';
-import RedoIcon from '@mui/icons-material/Redo';
+
+import DownloadIcon from '@mui/icons-material/Download'
+import SaveIcon from '@mui/icons-material/Save'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -24,6 +25,7 @@ export default function EditToolbar({
   handleShpUpload,
   handleSplit,
   setVertexEnabled,
+  setDownloadOpen,
 }) {
   const { store } = useContext(GlobalStoreContext);
   const [value, setValue] = React.useState('1');
@@ -117,7 +119,7 @@ export default function EditToolbar({
             <Tab label="Edit" value="1" />
             <Tab label="Properties" value="2" />
             <Tab label="Upload" value="3" />
-            <Tab label="Help" value="4" />
+
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -152,15 +154,15 @@ export default function EditToolbar({
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle} onClick={handleUndo}>
-                  <UndoIcon sx={editIconStyle} />
-                  <p style={editTextStyle}>UNDO</p>
+                <Box sx={editIconBoxStyle} onClick={setDownloadOpen}>
+                  <DownloadIcon sx={editIconStyle} />
+                  <p style={editTextStyle}>Downlaod</p>
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle} onClick={handleRedo}>
-                  <RedoIcon sx={editIconStyle} />
-                  <p style={editTextStyle}>REDO</p>
+                <Box sx={editIconBoxStyle} onClick={()=>{store.saveMap()}}>
+                  <SaveIcon sx={editIconStyle} />
+                  <p style={editTextStyle}>Save</p>
                 </Box>
               </Grid>
               <Grid item xs={6}>

@@ -23,6 +23,7 @@
 		"jszip": "^3.10.1",
 		"konva": "^8.4.3",
 		"leaflet": "^1.9.3",
+		"leaflet-simple-map-screenshoter": "^0.5.0",
 		"notistack": "^3.0.1",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",

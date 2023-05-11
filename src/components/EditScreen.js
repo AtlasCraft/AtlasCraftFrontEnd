@@ -1,7 +1,7 @@
 
 import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {Box, TextField, Button, Stack, Tab, Grid, IconButton} from '@mui/material';
-import {Edit, LibraryAdd, Merge, CallSplit, Undo, Redo} from '@mui/icons-material';
+import {Undo, Redo} from '@mui/icons-material';
 import {TabContext, TabList, TabPanel} from '@mui/lab';
 import { MapContainer, GeoJSON, TileLayer, Marker } from 'react-leaflet';
 import shp from 'shpjs';
@@ -18,6 +18,19 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import MapLayer from './MapLayer';
 import EditToolbar from './EditToolbar';
 import { enqueueSnackbar } from 'notistack';
+
+const style ={
+  enabledTransaction:{
+      color:"Black",
+      transform:"scale(1.6)",
+  },
+  disabledTransaction:{
+    color:"Black",
+    transform:"scale(1.6)",
+    opacity:"50%",
+  }
+}
+
 
 export default function EditScreen() {
   const { store } = useContext(GlobalStoreContext);
@@ -204,24 +217,24 @@ export default function EditScreen() {
               }}
               hiddenLabel
             />
-            <Button
-              variant="contained"
+            <IconButton
               href="#"
               sx={{
                 'align-self': 'center',
               }}
-              onClick={()=>{store.saveMap()}}
+              disabled={!store.canUndo()}
+              onClick={()=>{store.undo()}}
             >
-              Save
-            </Button>
-            <Button
-              variant="contained"
+              <Undo style={store.canUndo()?style.enabledTransaction:style.disabledTransaction}/>
+            </IconButton>
+            <IconButton
               href="#"
               sx={{ 'align-self': 'center' }}
-              onClick={()=>{setDownloadOpen(true)}}
+              disabled={!store.canRedo()}
+              onClick={()=>{store.redo()}}
             >
-              Download
-            </Button>
+              <Redo style={store.canRedo()?style.enabledTransaction:style.disabledTransaction}/>
+            </IconButton>
           </Stack>
         </Box>
       </div>
@@ -260,6 +273,7 @@ export default function EditScreen() {
             handleShpUpload = {handleShpUpload}
             handleSplit = {handleSplit}
             setVertexEnabled = {setVertexEnabled}
+            setDownloadOpen={setDownloadOpen}
           />
         </Stack>
       </div>

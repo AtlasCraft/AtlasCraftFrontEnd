@@ -56,7 +56,7 @@ export default function HomeScreen() {
 	
 	useEffect(()=>{
 		setMapCardList(store.mapcardList);
-		// store.resetTps();
+		store.resetTps();
 	},[store]);
 
 	const loggedInUser = auth.user?auth.user.username:"";

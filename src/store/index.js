@@ -66,11 +66,12 @@ function GlobalStoreContextProvider(props) {
     editSelection: null,
     commentListPairs: [],
     mapKey: Math.random(),
+    tps: new jsTPS(),
   });
   const history = useHistory();
 
-  const tps = new jsTPS();
-  store.tps = tps;
+  // const tps = new jsTPS();
+  // store.tps = tps;
 
   // SINCE WE'VE WRAPPED THE STORE IN THE AUTH CONTEXT WE CAN ACCESS THE USER HERE
   const { auth } = useContext(AuthContext);
@@ -91,24 +92,28 @@ function GlobalStoreContextProvider(props) {
           geojson: payload.geojson ? payload.geojson : {},
           isMapPublished: payload.published,
           mapKey: Math.random(),
+          // tps: tps,
         });
       }
       case GlobalStoreActionType.SET_MAPCARDS: {
         return setStore({
           ...store,
           mapcardList: payload,
+          // tps: tps,
         });
       }
       case GlobalStoreActionType.SHOW_ERR: {
         return setStore({
           ...store,
           err: payload,
+          // tps: tps,
         });
       }
       case GlobalStoreActionType.HIDE_ERR: {
         return setStore({
           ...store,
           err: null,
+          // tps: tps,
         });
       }
       case GlobalStoreActionType.CHANGE_GEO: {
@@ -116,6 +121,7 @@ function GlobalStoreContextProvider(props) {
           ...store,
           geojson: payload,
           mapKey: Math.random(),
+          // tps: tps,
         });
       }
       case GlobalStoreActionType.CHANGE_MAP_NAME: {
@@ -123,6 +129,7 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           ...store,
           mapName: payload,
+          // tps: tps,
         });
       }
       default:
@@ -137,7 +144,7 @@ function GlobalStoreContextProvider(props) {
   // ***ANY FUNCTION NOT FILLED IN MEANS IT IS PLANNED FOR A FUTURE BUILD***
 
   store.resetTps = function () {
-    tps.clearAllTransactions();
+    store.tps.clearAllTransactions();
   };
 
   //Mapcard updates
@@ -161,18 +168,18 @@ function GlobalStoreContextProvider(props) {
 
   // tps handling functions
   store.canUndo = function () {
-    return tps.hasTransactionToUndo();
+    return store.tps.hasTransactionToUndo();
   };
   store.canRedo = function () {
-    return tps.hasTransactionToRedo();
+    return store.tps.hasTransactionToRedo();
   };
   store.undo = function () {
     console.log('undo');
-    tps.undoTransaction();
+    store.tps.undoTransaction();
   };
   store.redo = function () {
     console.log('redo');
-    tps.doTransaction();
+    store.tps.doTransaction();
   };
 
   //region functions
@@ -200,20 +207,20 @@ function GlobalStoreContextProvider(props) {
 
   store.addAddRegionTransaction = function (layer) {
     let transaction = new AddRegion_Transaction(store, layer);
-    tps.addTransaction(transaction);
-    console.log(tps);
+    store.tps.addTransaction(transaction);
+    console.log(store.tps);
   };
 
   store.addDeleteRegionTransaction = function (layer) {
     let transaction = new DeleteRegion_Transaction(store, layer);
-    tps.addTransaction(transaction);
-    console.log(tps);
+    store.tps.addTransaction(transaction);
+    console.log(store.tps);
   };
 
   store.addMergeRegionTransaction = function (oldLayers, newLayer) {
     let transaction = new MergeRegion_Transaction(store, oldLayers, newLayer);
-    tps.addTransaction(transaction);
-    console.log(tps);
+    store.tps.addTransaction(transaction);
+    console.log(store.tps);
   };
 
   store.addSplitRegionTransaction = function (verts) {
@@ -252,15 +259,15 @@ function GlobalStoreContextProvider(props) {
         newRegion2,
         1
       ); //type 1 = polygon
-      console.log(tps);
-      tps.addTransaction(transaction, true);
+      console.log(store.tps);
+      store.tps.addTransaction(transaction, true);
       // console.log("AAAAAAAAAAAAAA")
-      console.log(tps);
+      console.log(store.tps);
       // tps.decrementMostRecent();
       // console.log("BBBBBBBBBBBBBB")
       // console.log(tps);
-      tps.doTransaction();
-      console.log(tps);
+      store.tps.doTransaction();
+      console.log(store.tps);
 
       // MULTI POLYGON
     } else {
@@ -311,10 +318,10 @@ function GlobalStoreContextProvider(props) {
         newRegion2,
         2
       ); //type 2 = multipolygon
-      tps.addTransaction(transaction, true);
+      store.tps.addTransaction(transaction, true);
       // console.log(tps);
       // tps.decrementMostRecent();
-      tps.doTransaction();
+      store.tps.doTransaction();
     }
   };
   store.splitRegion = function (old, newOld, new1, new2, type, splitType) {
@@ -330,10 +337,12 @@ function GlobalStoreContextProvider(props) {
         tempGeo.features.splice(oldIndex, 1);
         tempGeo.features.push(new1);
         tempGeo.features.push(new2);
+        console.log(store.tps);
         storeReducer({
           type: GlobalStoreActionType.CHANGE_GEO,
           payload: tempGeo,
         });
+        console.log(store.tps);
       } else {
         //a multipolygon
         let oldIndex = store.findRegion(old);
@@ -429,8 +438,8 @@ function GlobalStoreContextProvider(props) {
 
   store.addAddVertexTransaction = function (indexPath, latlng, layer) {
     let transaction = new AddVertex_Transaction(this, indexPath, latlng, layer);
-    tps.addTransaction(transaction);
-    console.log(tps);
+    store.tps.addTransaction(transaction);
+    console.log(store.tps);
   };
   store.addDeleteVertexTransaction = function (indexPath, latlng, layer) {
     let transaction = new DeleteVertex_Transaction(
@@ -439,8 +448,8 @@ function GlobalStoreContextProvider(props) {
       latlng,
       layer
     );
-    tps.addTransaction(transaction);
-    console.log(tps);
+    store.tps.addTransaction(transaction);
+    console.log(store.tps);
   };
 
   //Properties functions
