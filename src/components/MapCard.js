@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import {ListItem, IconButton, Tooltip} from "@mui/material";
-import {Visibility, FileCopy, Download, Edit, ThumbUp, ThumbDown, ThumbDownAltOutlined, ThumbUpAltOutlined} from '@mui/icons-material';
+import {Visibility, FileCopy, Download, Edit, ThumbUp, ThumbDown, ThumbDownAltOutlined, ThumbUpAltOutlined, Delete} from '@mui/icons-material';
 import AuthContext from '../auth'
 import GlobalStoreContext from '../store'
 
@@ -39,8 +39,8 @@ const style = {
     },
     rightDiveContainer:{
         height:"100%", 
-        width:"50%", 
-        left:"50%", 
+        width:"45%", 
+        left:"55%", 
         position:"absolute",
         fontSize: "24px",
         color: "#F5DEB3",
@@ -192,11 +192,17 @@ export default function MapCard(props){
                         </IconButton>
                     </Tooltip>
                     {loggedInUser == ownedUser?
+                    <>
                         <Tooltip title="Edit Map">
                             <IconButton onClick={()=>{store.loadMap(props.id, "edit");}}>
                                 <Edit style={style.iconButtons}/>
                             </IconButton>
                         </Tooltip>
+                        <Tooltip title="Delete Map">
+                            <IconButton onClick={()=>{store.deleteMap(props.id);}}>
+                                <Delete style={style.iconButtons}/>
+                            </IconButton>
+                        </Tooltip></>
                         :<></>}
                 </div>
                 <div style={style.rightDiveContainer}>

@@ -25,13 +25,10 @@ const api = axios.create({
 // CUSTOM FILTERS FOR QUERIES
 
 // Map Editing info
-export const createMapEditingInfo = (payload) =>
-  api.post('/mapeditinginfo', payload);
-export const deleteMapEditingInfo = (payload) =>
-  api.delete('/mapeditinginfo', payload);
+export const createMapEditingInfo = (payload) => api.post('/mapeditinginfo', payload);
+export const deleteMapEditingInfo = (id) => api.delete(`/mapeditinginfo/${id}`);
 export const getMapEditingInfoById = (id) => api.get(`/mapeditinginfo/${id}`);
-export const updateMapEditingInfoById = (id, payload) =>
-  api.post(`/mapeditinginfo/${id}`, payload);
+export const updateMapEditingInfoById = (id, payload) => api.post(`/mapeditinginfo/${id}`, payload);
 
 // Map Cards
 export const getAllMapCards = ()=>api.get(`/mapcard`);

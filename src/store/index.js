@@ -582,7 +582,15 @@ function GlobalStoreContextProvider(props) {
     });
   };
 
-  store.deleteMap = function () {};
+  store.deleteMap = async function (id) {
+    let res = await api.deleteMapEditingInfo(id);
+    if(res.data.success){
+      enqueueSnackbar('Map Deleted', {variant: 'success', autoHideDuration: 2000,});
+      store.loadMapCards();
+    }else{
+      enqueueSnackbar('Map Delete Failed', {variant: 'error', autoHideDuration: 2000,});
+    }
+  };
   store.publishMap = async function (id) {
     let payload = {
       mapName: store.mapName,
