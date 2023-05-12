@@ -143,28 +143,34 @@ export default function MapCard(props){
     }
 
     let likeButton = 
+        likedUsers.includes(loggedInUser)?
+            <Tooltip title="Remove Like">
+                <IconButton onClick={handleLike}>
+                    <ThumbUp style={style.iconButtons}/>
+                </IconButton>
+            </Tooltip>:
+            <Tooltip title="Like Map">
+                <IconButton onClick={handleLike}>
+                    <ThumbUpAltOutlined style={style.iconButtons}/>
+                </IconButton>
+            </Tooltip>
+        
     
-    <Tooltip title="Like Map">
-        {likedUsers.includes(loggedInUser)?
-            <IconButton onClick={handleLike}>
-                <ThumbUp style={style.iconButtons}/>
-            </IconButton>:
-            <IconButton onClick={handleLike}>
-                <ThumbUpAltOutlined style={style.iconButtons}/>
-            </IconButton>
-        }
-    </Tooltip>
     let dislikeButton = 
-    <Tooltip title="Dislike Map">
-        {dislikedUsers.includes(loggedInUser)?
-            <IconButton onClick={handleDislike}>
-                <ThumbDown style={style.iconButtons}/>
-            </IconButton>:
-            <IconButton onClick={handleDislike}>
-                <ThumbDownAltOutlined style={style.iconButtons}/>
-            </IconButton>
-        }
-    </Tooltip>
+    
+        dislikedUsers.includes(loggedInUser)?
+            <Tooltip title="Remove Dislike">
+                <IconButton onClick={handleDislike}>
+                    <ThumbDown style={style.iconButtons}/>
+                </IconButton>
+            </Tooltip>:
+            <Tooltip title="Dislike Map">
+                <IconButton onClick={handleDislike}>
+                    <ThumbDownAltOutlined style={style.iconButtons}/>
+                </IconButton>
+            </Tooltip>
+        
+    
 
     return(
         <ListItem style={style.cardContainer}>

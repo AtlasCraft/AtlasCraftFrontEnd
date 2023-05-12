@@ -121,7 +121,7 @@ function GlobalStoreContextProvider(props) {
           ...store,
           geojson: payload,
           mapKey: Math.random(),
-          // tps: tps,
+          // tps: store.tps,
         });
       }
       case GlobalStoreActionType.CHANGE_MAP_NAME: {
@@ -175,11 +175,11 @@ function GlobalStoreContextProvider(props) {
   };
   store.undo = function () {
     console.log('undo');
-    store.tps.undoTransaction();
+    store.tps.undoTransaction(store);
   };
   store.redo = function () {
     console.log('redo');
-    store.tps.doTransaction();
+    store.tps.doTransaction(store);
   };
 
   //region functions
@@ -342,6 +342,7 @@ function GlobalStoreContextProvider(props) {
           type: GlobalStoreActionType.CHANGE_GEO,
           payload: tempGeo,
         });
+        console.log(store.geojson);
         console.log(store.tps);
       } else {
         //a multipolygon
