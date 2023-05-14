@@ -62,11 +62,13 @@ function GlobalStoreContextProvider(props) {
     editable: false,
     graphicState: [],
     selectedRegion: [],
+    selectedMap: new Map(),
     regionProperty: null,
     editSelection: null,
     commentListPairs: [],
     mapKey: Math.random(),
     tps: new jsTPS(),
+    layers: new Map(),
   });
   const history = useHistory();
 
@@ -129,7 +131,16 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           ...store,
           mapName: payload,
+          mapKey: Math.random(),
           // tps: tps,
+        });
+      }
+      case GlobalStoreActionType.UPDATE_PROP: {
+        console.log(payload);
+        return setStore({
+          ...store,
+          regionProperty: payload,
+          mapKey: Math.random(),
         });
       }
       default:
@@ -453,7 +464,12 @@ function GlobalStoreContextProvider(props) {
   };
 
   //Properties functions
-  store.updateProp = function () {};
+  store.updateProp = function (properties) {
+    storeReducer({
+      type: GlobalStoreActionType.UPDATE_PROP,
+      payload: properties,
+    });
+  };
   store.createProp = function () {};
 
   //map management
@@ -530,9 +546,9 @@ function GlobalStoreContextProvider(props) {
     }
     // console.log(res);
   };
-  store.saveMap = async function () {
-    // Create an empty GeoJSON collection
-    var collection = {
+
+  const mapToGeojson = () => {
+    const collection = {
       type: 'FeatureCollection',
       features: [],
     };
@@ -554,7 +570,12 @@ function GlobalStoreContextProvider(props) {
         console.log('NO GEOJSON Found');
       }
     });
+    return collection;
+  };
+  store.saveMap = async function () {
+    // Create an empty GeoJSON collection
     // Log GeoJSON collection to console
+    const collection = mapToGeojson();
     store.geojson = collection;
     let payload = {
       mapName: store.mapName,

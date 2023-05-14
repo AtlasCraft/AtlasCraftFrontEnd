@@ -39,9 +39,11 @@ export default function MapLayer({
     if (trans instanceof AddRegion_Transaction) {
       // HANDLE DUPLICATES
       if (trans.layer !== layer) {
+        layer.feature.properties.AtlasCraftRegionID = Math.random();
         store.addAddRegionTransaction(layer);
       }
     } else {
+      layer.feature.properties.AtlasCraftRegionID = Math.random();
       store.addAddRegionTransaction(layer);
     }
   });
@@ -86,7 +88,18 @@ export default function MapLayer({
     if (e.layer && e.layer._latlngs) {
       // console.log(e);
       const { layer } = e;
-      // console.log(layer);
+      if (layer.feature.properties) {
+        store.layers.set(layer.feature.properties.AtlasCraftRegionID, layer);
+        if (
+          store.selectedMap.has(layer.feature.properties.AtlasCraftRegionID)
+        ) {
+          store.selectedRegion[
+            store.selectedMap.get(layer.feature.properties.AtlasCraftRegionID)
+          ] = layer;
+          layer.setStyle({ fillColor: 'orange' });
+          console.log('SELECTED');
+        }
+      }
       layer.on('pm:edit', (e) => {
         const { layer } = e;
         layer.on('pm:vertexadded', (e) => {
@@ -152,25 +165,34 @@ export default function MapLayer({
       //SELECT REGION
       layer.on('dblclick', (e) => {
         const layer = e.target;
-        console.log('Layer Clicked');
         if (layer) {
           if (store.selectedRegion.includes(layer)) {
             store.selectedRegion = store.selectedRegion.filter(
               (l) => l !== layer
             );
             layer.setStyle({ fillColor: 'yellow' });
+            store.selectedMap.delete(
+              layer.feature.properties.AtlasCraftRegionID
+            );
+            store.updateProp(null);
           }
-          console.log(store.selectedRegion);
         }
       });
 
       // DELTE
       layer.on('contextmenu', (e) => {
         const layer = e.target;
-        console.log('Context Menu Clicked');
         if (layer) {
           if (!store.selectedRegion.includes(layer)) {
+            store.selectedMap.set(
+              layer.feature.properties.AtlasCraftRegionID,
+              store.selectedRegion.length
+            );
             store.selectedRegion.push(layer);
+            store.updateProp(layer.feature.properties);
+            if (store.selectedRegion.length === 1) {
+            }
+            layer.selected = true;
             layer.setStyle({ fillColor: 'orange' });
           }
         }
@@ -184,8 +206,6 @@ export default function MapLayer({
       map.pm.disableDraw();
     }
   });
-  console.log('Store Geojson');
-  console.log(store.geojson);
 
   return (
     <GeoJSON

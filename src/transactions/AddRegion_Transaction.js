@@ -6,10 +6,11 @@ import jsTPS_Transaction from '../common/jsTPS.js';
  * and drop. It will be managed by the transaction stack.
  */
 export default class AddRegion_Transaction extends jsTPS_Transaction {
-  constructor(initStore, layer) {
+  constructor(initStore, layer, regionId) {
     super();
     this.store = initStore;
     this.layer = layer;
+    this.regionId = regionId;
   }
 
   doTransaction() {

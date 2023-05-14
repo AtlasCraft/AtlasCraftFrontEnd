@@ -9,8 +9,8 @@ import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import MergeIcon from '@mui/icons-material/Merge';
 import CallSplitIcon from '@mui/icons-material/CallSplit';
 
-import DownloadIcon from '@mui/icons-material/Download'
-import SaveIcon from '@mui/icons-material/Save'
+import DownloadIcon from '@mui/icons-material/Download';
+import SaveIcon from '@mui/icons-material/Save';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -19,6 +19,7 @@ import CompressIcon from '@mui/icons-material/Compress';
 import InfoIcon from '@mui/icons-material/Info';
 import * as turf from '@turf/turf';
 import L from 'leaflet';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function EditToolbar({
   handleGeoUpload,
@@ -29,8 +30,43 @@ export default function EditToolbar({
 }) {
   const { store } = useContext(GlobalStoreContext);
   const [value, setValue] = React.useState('1');
+  const [propValue, setPropValue] = React.useState('');
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleChangePropValue = (event) => {
+    setPropValue(event.target.value);
+  };
+
+  const handleAddProp = (event) => {
+    event.preventDefault();
+    const p = propValue.split(':', 2);
+    const name = p[0];
+    const val = p[1];
+    if (store.regionProperty && store.regionProperty[name]) {
+      console.log('Property exist');
+      return;
+    }
+    console.log(p);
+    if (p.length === 2) {
+      const newProp = { ...store.regionProperty };
+      newProp[name] = val;
+      store.updateProp(newProp);
+      setPropValue('');
+    } else {
+      console.log('Please use name:value format');
+    }
+  };
+
+  const deleteHandler = (event, key) => {
+    event.preventDefault();
+    console.log(key);
+    if (store.regionProperty) {
+      const newProp = { ...store.regionProperty };
+      delete newProp[key];
+      store.updateProp(newProp);
+    }
   };
 
   const countryStyle = {
@@ -106,6 +142,7 @@ export default function EditToolbar({
     store.redo();
   };
 
+  console.log(store.regionProperty);
   return (
     <div style={{ width: '20%', background: 'white', height: '100%' }}>
       <TabContext value={value}>
@@ -119,7 +156,6 @@ export default function EditToolbar({
             <Tab label="Edit" value="1" />
             <Tab label="Properties" value="2" />
             <Tab label="Upload" value="3" />
-
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -160,19 +196,29 @@ export default function EditToolbar({
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle} onClick={()=>{store.saveMap()}}>
+                <Box
+                  sx={editIconBoxStyle}
+                  onClick={() => {
+                    store.saveMap();
+                  }}
+                >
                   <SaveIcon sx={editIconStyle} />
                   <p style={editTextStyle}>Save</p>
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle} onClick={()=>{store.compressMap(0.005)}}>
+                <Box
+                  sx={editIconBoxStyle}
+                  onClick={() => {
+                    store.compressMap(0.005);
+                  }}
+                >
                   <CompressIcon sx={editIconStyle} />
                   <p style={editTextStyle}>Compress Map</p>
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle} onClick={()=>{}}>
+                <Box sx={editIconBoxStyle} onClick={() => {}}>
                   <InfoIcon sx={editIconStyle} />
                   <p style={editTextStyle}>Help</p>
                 </Box>
@@ -182,13 +228,38 @@ export default function EditToolbar({
         </TabPanel>
         <TabPanel value="2">
           <div style={{ display: 'flex', 'flex-direction': 'column' }}>
+            {store.regionProperty
+              ? Object.keys(store.regionProperty).map((key) => {
+                  const val = key + ':' + store.regionProperty[key];
+                  return (
+                    <div style={{ display: 'flex' }}>
+                      <TextField
+                        id="propForm"
+                        variant="filled"
+                        placeholder="name: value"
+                        value={val}
+                        hiddenLabel
+                      />
+                      <Button
+                        onClick={(e) => {
+                          deleteHandler(e, key);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </Button>
+                    </div>
+                  );
+                })
+              : null}
             <TextField
               id="propForm"
               variant="filled"
               placeholder="name: value"
               hiddenLabel
+              value={propValue}
+              onChange={handleChangePropValue}
             />
-            <a>+ Add property</a>
+            <a onClick={handleAddProp}>+ Add property</a>
           </div>
         </TabPanel>
         <TabPanel value="3">
@@ -214,7 +285,6 @@ export default function EditToolbar({
             </Button>
           </div>
         </TabPanel>
-        
       </TabContext>
     </div>
   );
