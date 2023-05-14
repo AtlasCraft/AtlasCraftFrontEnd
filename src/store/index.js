@@ -63,6 +63,7 @@ function GlobalStoreContextProvider(props) {
     graphicState: [],
     selectedRegion: [],
     regionProperty: null,
+    wholeMapProps: null,
     editSelection: null,
     commentListPairs: [],
     mapKey: Math.random(),
