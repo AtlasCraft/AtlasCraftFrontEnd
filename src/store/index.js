@@ -44,6 +44,7 @@ export const GlobalStoreActionType = {
   HIDE_ERR: 'HIDE_ERR',
   CHANGE_GEO: 'CHANGE_GEO',
   CHANGE_MAP_NAME: 'CHANGE_MAP_NAME',
+  UPLOAD_MAP: 'UPLOAD_MAP',
 };
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -67,6 +68,7 @@ function GlobalStoreContextProvider(props) {
     commentListPairs: [],
     mapKey: Math.random(),
     tps: new jsTPS(),
+    wholeMapProp: {},
   });
   const history = useHistory();
 
@@ -92,6 +94,7 @@ function GlobalStoreContextProvider(props) {
           geojson: payload.geojson ? payload.geojson : {},
           isMapPublished: payload.published,
           mapKey: Math.random(),
+          wholeMapProp: payload.mapProperties ? payload.mapProperties: {},
           // tps: tps,
         });
       }
@@ -120,6 +123,15 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           ...store,
           geojson: payload,
+          mapKey: Math.random(),
+          // tps: store.tps,
+        });
+      }
+      case GlobalStoreActionType.UPLOAD_MAP: {
+        return setStore({
+          ...store,
+          geojson: payload.geojson,
+          wholeMapProp: payload.props?payload.props:{},
           mapKey: Math.random(),
           // tps: store.tps,
         });
@@ -459,7 +471,9 @@ function GlobalStoreContextProvider(props) {
 
   //map management
   store.downloadGeo = function () {
-    let blob = new Blob([JSON.stringify(store.geojson)], {
+    let tempGeo = JSON.parse(JSON.stringify(store.geojson));
+    tempGeo["properties"] = store.wholeMapProp;
+    let blob = new Blob([JSON.stringify(tempGeo)], {
       type: 'data:text/plain;charset=utf-8',
     });
     saveAs(blob, store.mapName.concat('.geojson'));
@@ -507,8 +521,11 @@ function GlobalStoreContextProvider(props) {
     }
     console.log(geo);
     storeReducer({
-      type: GlobalStoreActionType.CHANGE_GEO,
-      payload: geo,
+      type: GlobalStoreActionType.UPLOAD_MAP,
+      payload: {
+        geojson:geo,
+        props:geo.properties
+      }
     });
   };
 
