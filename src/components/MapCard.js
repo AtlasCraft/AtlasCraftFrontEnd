@@ -192,11 +192,6 @@ export default function MapCard(props){
                             <FileCopy style={style.iconButtons} />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Download Map">
-                        <IconButton>
-                            <Download style={style.iconButtons}/>
-                        </IconButton>
-                    </Tooltip>
                     {loggedInUser == ownedUser?
                     <>
                         <Tooltip title="Edit Map">

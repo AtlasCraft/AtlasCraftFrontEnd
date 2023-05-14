@@ -16,6 +16,7 @@ import * as shpwrite from 'shp-write';
 import 'core-js/stable';
 import { saveAs } from 'file-saver';
 import L from 'leaflet';
+import * as turf from '@turf/turf';
 
 /*
 	This is our global data store. Note that it uses the Flux design pattern,
@@ -243,6 +244,19 @@ function GlobalStoreContextProvider(props) {
       }); //  should be in asc order
       let vert1 = verts[0];
       let vert2 = verts[1];
+
+      let poly = store.geojson.features[vert2[0]];
+      let line = turf.lineString([store.geojson.features[vert1[0]].geometry.coordinates[vert1[1]][vert1[2]], store.geojson.features[vert2[0]].geometry.coordinates[vert2[1]][vert2[2]]])
+      // console.log("AAAAAAAAAAAAAA");
+      // console.log(turf.booleanWithin(line,poly));
+      if(!turf.booleanWithin(line,poly)){
+        enqueueSnackbar('Line must be contained in original shape', {
+          variant: 'error',
+          autoHideDuration: 5000,
+        });
+        return;
+      }
+
       let oldRegion = JSON.parse(
         JSON.stringify(store.geojson.features[vert1[0]])
       );
@@ -289,6 +303,19 @@ function GlobalStoreContextProvider(props) {
       }); //  should be in asc order
       let vert1 = verts[0];
       let vert2 = verts[1];
+
+      let poly = turf.polygon(store.geojson.features[vert2[0]].geometry.coordinates[vert1[1]]);
+      let line = turf.lineString([store.geojson.features[vert1[0]].geometry.coordinates[vert1[1]][vert1[2]][vert1[3]], store.geojson.features[vert2[0]].geometry.coordinates[vert2[1]][vert2[2]][vert2[3]]])
+      // console.log("AAAAAAAAAAAAAA");
+      // console.log(turf.booleanWithin(line,poly));
+      if(!turf.booleanWithin(line,poly)){
+        enqueueSnackbar('Line must be contained in original shape', {
+          variant: 'error',
+          autoHideDuration: 5000,
+        });
+        return;
+      }
+
       let oldRegion = JSON.parse(
         JSON.stringify(store.geojson.features[vert1[0]])
       );
