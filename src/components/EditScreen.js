@@ -43,6 +43,26 @@ export default function EditScreen() {
   const [downloadOpen, setDownloadOpen] = useState(false);
 
   useEffect(()=>{
+    document.addEventListener("keydown", handleKeyDown, true);
+    return ()=>{document.removeEventListener("keydown", handleKeyDown, true);}
+  });
+  function handleKeyDown(e){
+    console.log(e)
+    if(!e.ctrlKey) return;
+    switch(e.code){
+      case "KeyZ":
+        store.undo();
+        break;
+      case "KeyY":
+        store.redo();
+        break;
+      // case "KeyS":
+      //   handleSave();
+      //   break;
+    }
+  }
+
+  useEffect(()=>{
     if(!vertexEnabled) return;
     let isSame = false;
     if(tempSelectedVert.length != 0){
@@ -128,6 +148,12 @@ export default function EditScreen() {
       }
     }
     return -1;
+  }
+
+
+
+  function handleSave(){
+    store.saveMap();
   }
 
   function handleChange(event, newValue){
@@ -274,6 +300,7 @@ export default function EditScreen() {
             handleSplit = {handleSplit}
             setVertexEnabled = {setVertexEnabled}
             setDownloadOpen={setDownloadOpen}
+            handleSave={handleSave}
           />
         </Stack>
       </div>

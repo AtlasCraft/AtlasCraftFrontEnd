@@ -26,6 +26,7 @@ export default function EditToolbar({
   handleSplit,
   setVertexEnabled,
   setDownloadOpen,
+  handleSave,
 }) {
   const { store } = useContext(GlobalStoreContext);
   const [value, setValue] = React.useState('1');
@@ -160,7 +161,7 @@ export default function EditToolbar({
                 </Box>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle} onClick={()=>{store.saveMap()}}>
+                <Box sx={editIconBoxStyle} onClick={handleSave}>
                   <SaveIcon sx={editIconStyle} />
                   <p style={editTextStyle}>Save</p>
                 </Box>
