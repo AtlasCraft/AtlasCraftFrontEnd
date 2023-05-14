@@ -170,6 +170,12 @@ export default function MapLayer({
         console.log('Context Menu Clicked');
         if (layer) {
           if (!store.selectedRegion.includes(layer)) {
+            if (store.editSelection === 'properties') {
+              store.selectedRegion.forEach((region) => {
+                region.setStyle({ fillColor: 'yellow' });
+              });
+              store.selectedRegion = [];
+            }
             store.selectedRegion.push(layer);
             layer.setStyle({ fillColor: 'orange' });
           }
