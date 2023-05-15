@@ -158,6 +158,10 @@ function GlobalStoreContextProvider(props) {
       });
     }
   };
+  store.getComment = async function (id, payload) {
+    let res = await api.getComment(id);
+    console.log(res);
+  }
 
   // tps handling functions
   store.canUndo = function () {
@@ -454,20 +458,21 @@ function GlobalStoreContextProvider(props) {
     });
     saveAs(blob, store.mapName.concat('.geojson'));
   };
+  
   store.downloadShp = function () {
     window.process = {
       browser: true,
     };
-    // var options = {
-    //   folder: 'myshapes',
-    //   types: {
-    //       point: 'mypoints',
-    //       polygon: 'mypolygons',
-    //       line: 'mylines'
-    //   }
-    // }
-    // console.log(store.geojson);
-    shpwrite.download(store.geojson);
+    var options = {
+      folder: 'myshapes',
+      types: {
+          point: 'mypoints',
+          polygon: 'mypolygons',
+          line: 'mylines',
+          crs: 2154
+      }
+    }
+    shpwrite.download(store.geojson, options);
   };
   store.downloadPng = function () {};
 

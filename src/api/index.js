@@ -37,6 +37,8 @@ export const updateMapEditingInfoById = (id, payload) =>
 export const getAllMapCards = ()=>api.get(`/mapcard`);
 export const updateCardLikes = (id)=>api.post(`/mapcard/${id}/likes`);
 export const updateCardDislikes = (id)=>api.post(`/mapcard/${id}/dislikes`);
+export const getComment = (id, payload) => api.post(`/getComment/${id}`, payload);
+
 
 // Auth
 export const getLoggedIn = () => api.get(`/loggedIn/`);
@@ -46,8 +48,6 @@ export const logoutUser = () => api.get(`/logout/`);
 export const getSecurityQuestions = () => api.get('/sq/:username');
 export const forgotPassword = (payload) => api.post('/forgotPassword', payload);
 export const changePassword = (payload) => api.post('/changePassword', payload);
-export const getComment = (payload) => api.post('/getComment', payload);
-
 const apis = {
   //map editing info
   createMapEditingInfo,

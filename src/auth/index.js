@@ -147,18 +147,6 @@ function AuthContextProvider(props) {
     }
   };
 
-  auth.getComment = async function (userData, store) {
-    try {
-      const response = await api.getComment(userData);
-    } catch (err) {
-      // store.showErr(err.response.status, err.response.data.errorMessage);
-      enqueueSnackbar(err.response.data.errorMessage, {
-        variant: 'error',
-        autoHideDuration: 5000,
-      });
-    }
-  };
-
   auth.logoutUser = async function (store) {
     try {
       const response = await api.logoutUser();

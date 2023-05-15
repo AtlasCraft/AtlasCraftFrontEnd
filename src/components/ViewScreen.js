@@ -11,7 +11,8 @@ import AuthContext from '../auth';
 import GlobalStoreContext from '../store';
 
 
-export default function ViewScreen(props) {
+export default function ViewScreen(prop) {
+  const mapId = prop;
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const loggedInUser = auth.user?auth.user.username:"";
@@ -33,12 +34,7 @@ export default function ViewScreen(props) {
     copyFeedComments.push([loggedInUser, comment]);
     setFeedComments(copyFeedComments);
     setComment('');
-    auth.getComment(
-      {
-        commentListPairs: copyFeedComments
-      },
-      store
-    );
+    store.getComment(mapId, copyFeedComments);
   };
   
   const CommentList = props => {
@@ -55,7 +51,7 @@ export default function ViewScreen(props) {
   };
 
   function handleFork(){
-    store.forkMap(props.id);
+    store.forkMap(mapId);
   }
 
   return (
