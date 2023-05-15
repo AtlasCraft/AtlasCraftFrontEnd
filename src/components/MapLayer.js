@@ -31,17 +31,23 @@ export default function MapLayer({
   map.on('pm:create', (e) => {
     const { layer } = e;
     e.layer.options.pmIgnore = false;
-    layer.feature = {
-      type: 'Feature',
-      properties: {},
-    };
     const trans = store.tps.transactions[store.tps.mostRecentTransaction];
     if (trans instanceof AddRegion_Transaction) {
       // HANDLE DUPLICATES
       if (trans.layer !== layer) {
+        layer.feature = {
+          type: 'Feature',
+          properties: {},
+        };
+        layer.feature.properties.AtlasCraftRegionID = Math.random();
         store.addAddRegionTransaction(layer);
       }
     } else {
+      layer.feature = {
+        type: 'Feature',
+        properties: {},
+      };
+      layer.feature.properties.AtlasCraftRegionID = Math.random();
       store.addAddRegionTransaction(layer);
     }
   });
