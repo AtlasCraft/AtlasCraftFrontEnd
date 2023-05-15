@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useMap, GeoJSON } from 'react-leaflet';
 import GlobalStoreContext from '../store';
 import L from 'leaflet';
@@ -8,6 +8,7 @@ import {
   AddVertex_Transaction,
   DeleteVertex_Transaction,
 } from '../transactions';
+import { SimpleMapScreenshoter } from "leaflet-simple-map-screenshoter";
 const mapData = require('../test/MapEditingInfo.json');
 const usData = require('../test/us.json');
 
@@ -15,6 +16,9 @@ export default function MapLayer({
   onEachFeature,
   setVertexEnabled,
   setTempSelectedVert,
+  georef,
+  setScreenshot,
+  setMapref,
 }) {
   const countryStyle = {
     fillColor: 'yellow',
@@ -27,7 +31,10 @@ export default function MapLayer({
   const map = useMap();
   store.mapObject = map;
   map.doubleClickZoom.disable();
-
+  useEffect(()=>{
+    setScreenshot(L.simpleMapScreenshoter().addTo(map));
+    setMapref(map);
+  },[]);
   map.on('pm:create', (e) => {
     const { layer } = e;
     e.layer.options.pmIgnore = false;
@@ -193,6 +200,7 @@ export default function MapLayer({
       style={countryStyle}
       onEachFeature={onEachFeature}
       key={store.mapKey}
+      ref={georef}
     />
   );
 }

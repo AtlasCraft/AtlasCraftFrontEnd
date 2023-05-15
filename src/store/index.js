@@ -575,7 +575,7 @@ function GlobalStoreContextProvider(props) {
     }
     // console.log(res);
   };
-  store.saveMap = async function () {
+  store.saveMap = async function (thumbnail = null) {
     // Create an empty GeoJSON collection
     var collection = {
       type: 'FeatureCollection',
@@ -604,7 +604,9 @@ function GlobalStoreContextProvider(props) {
     let payload = {
       mapName: store.mapName,
       geojson: store.geojson,
+      mapProperties:store.wholeMapProp,
       published: store.isMapPublished,
+      thumbnail: thumbnail,
     };
     let res = await api.updateMapEditingInfoById(store.mapId, payload);
     if (res.data.success) {
@@ -618,7 +620,7 @@ function GlobalStoreContextProvider(props) {
         autoHideDuration: 5000,
       });
     }
-    console.log(payload);
+    store.loadMapCards();
   };
   store.changeMapName = function (name) {
     storeReducer({
@@ -643,6 +645,10 @@ function GlobalStoreContextProvider(props) {
       published: true,
     };
     let res = await api.updateMapEditingInfoById(store.mapId, payload);
+    enqueueSnackbar('Map Published', {
+      variant: 'success',
+      autoHideDuration: 2000,
+    });
     console.log(res);
   };
   store.createNewMap = async function () {

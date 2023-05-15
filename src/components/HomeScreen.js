@@ -65,6 +65,7 @@ export default function HomeScreen() {
 	useEffect(()=>{
 		setMapCardList(store.mapcardList);
 		store.resetTps();
+		console.log(store.mapcardList)
 	},[store]);
 
 	const loggedInUser = auth.user?auth.user.username:"";
@@ -118,6 +119,7 @@ export default function HomeScreen() {
 										ownedUser = {card.ownedUser}
 										likedUsers = {card.likedUsers}
 										dislikedUsers = {card.dislikedUsers}
+										thumbnail = {card.thumbnail?card.thumbnail:null}
 
 									/>
 								else if (allUserSelected && searchText == "" && card.published == true)

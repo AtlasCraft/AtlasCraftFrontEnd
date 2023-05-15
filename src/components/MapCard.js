@@ -60,6 +60,11 @@ const style = {
         color: "#F5DEB3",
         textAlign:"left"
     },
+    imageContainer:{
+        backgroundColor:"black",
+        width:"100%",
+        height:"70%"
+    }
 
 }
 export default function MapCard(props){
@@ -75,7 +80,7 @@ export default function MapCard(props){
         setLiked(props.likedUsers);
         setDisliked(props.dislikedUsers);
     },[props.likedUsers, props.dislikedUsers]);
-    
+    if(props.thumbnail)console.log(props.thumbnail)
     function handleLike(){
         if(likedUsers.includes(loggedInUser)){
             //remove from liked users and update backend
@@ -178,6 +183,7 @@ export default function MapCard(props){
                 <div style={style.leftDivContainer}>
                     <div style={style.mapText}>{mapName}</div>
                     <div style={style.userText}>{ownedUser}</div>
+                    <img style={style.imageContainer} src={props.thumbnail?props.thumbnail:require('./../util/BaseThumbnail.png')}></img>
                 </div>
             </div>
             <div style={style.bottomDivContainer}>
