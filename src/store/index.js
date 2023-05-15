@@ -159,7 +159,7 @@ function GlobalStoreContextProvider(props) {
     }
   };
   store.getComment = async function (id, payload) {
-    let res = await api.getComment(id);
+    let res = await api.getComment(id, payload);
     console.log(res);
   }
 
@@ -463,16 +463,18 @@ function GlobalStoreContextProvider(props) {
     window.process = {
       browser: true,
     };
+  /*
     var options = {
       folder: 'myshapes',
       types: {
           point: 'mypoints',
           polygon: 'mypolygons',
-          line: 'mylines',
-          crs: 2154
+          line: 'mylines'
       }
     }
-    shpwrite.download(store.geojson, options);
+  */
+    console.log(store.geojson);
+    shpwrite.download(store.geojson);
   };
   store.downloadPng = function () {};
 

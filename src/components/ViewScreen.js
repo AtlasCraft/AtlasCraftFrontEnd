@@ -11,11 +11,11 @@ import AuthContext from '../auth';
 import GlobalStoreContext from '../store';
 
 
-export default function ViewScreen(prop) {
-  const mapId = prop;
+export default function ViewScreen() {
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const loggedInUser = auth.user?auth.user.username:"";
+  const mapId = store.mapId;
   const mapData = require('../test/MapEditingInfo.json');
   const usData = require('../test/us.json');
 
