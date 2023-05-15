@@ -187,41 +187,45 @@ function GlobalStoreContextProvider(props) {
   store.deleteRegion = function (layer) {
     // layer.pm._initMarkers();
     layer.remove();
+    store.updateGeojson();
   };
   store.createRegion = function (layer) {
     console.log(layer);
     layer.addTo(store.mapObject);
+    store.updateGeojson();
   };
   store.mergeRegion = function (oldRegions, newRegion) {
     for (let layer of oldRegions) {
       layer.remove();
     }
-    console.log(newRegion);
+    // console.log(newRegion);
     newRegion.addTo(store.mapObject);
+    store.updateGeojson();
   };
   store.restoreRegion = function (oldRegions, newRegion) {
     for (let layer of oldRegions) {
       layer.addTo(store.mapObject);
     }
     newRegion.remove();
+    store.updateGeojson();
   };
 
   store.addAddRegionTransaction = function (layer) {
     let transaction = new AddRegion_Transaction(store, layer);
     store.tps.addTransaction(transaction);
-    console.log(store.tps);
+    // console.log(store.tps);
   };
 
   store.addDeleteRegionTransaction = function (layer) {
     let transaction = new DeleteRegion_Transaction(store, layer);
     store.tps.addTransaction(transaction);
-    console.log(store.tps);
+    // console.log(store.tps);
   };
 
   store.addMergeRegionTransaction = function (oldLayers, newLayer) {
     let transaction = new MergeRegion_Transaction(store, oldLayers, newLayer);
     store.tps.addTransaction(transaction);
-    console.log(store.tps);
+    // console.log(store.tps);
   };
 
   store.addSplitRegionTransaction = function (verts) {
@@ -409,9 +413,9 @@ function GlobalStoreContextProvider(props) {
   //verticies functions
   store.deleteVertex = function (indexPath, latlng, layer) {
     let latlngs = layer._latlngs;
-    console.log('indexPath');
+    // console.log('indexPath');
     console.log(indexPath);
-    console.log('latlngs');
+    // console.log('latlngs');
     console.log(latlngs);
     for (let i = 0; i < indexPath.length - 1; i++) {
       latlngs = latlngs[indexPath[i]];
@@ -419,13 +423,14 @@ function GlobalStoreContextProvider(props) {
     latlngs.splice(indexPath[indexPath.length - 1], 1);
     layer.setLatLngs(layer._latlngs);
     layer.pm._initMarkers();
+    store.updateGeojson();
   };
 
   store.addVertex = function (indexPath, latlng, layer) {
     let latlngs = layer._latlngs;
-    console.log('indexPath');
+    // console.log('indexPath');
     console.log(indexPath);
-    console.log('latlngs');
+    // console.log('latlngs');
     console.log(latlngs);
     for (let i = 0; i < indexPath.length - 1; i++) {
       latlngs = latlngs[indexPath[i]];
@@ -433,6 +438,7 @@ function GlobalStoreContextProvider(props) {
     latlngs.splice(indexPath[indexPath.length - 1], 0, latlng);
     layer.setLatLngs(layer._latlngs);
     layer.pm._initMarkers();
+    store.updateGeojson();
   };
   store.moveVertices = function () {};
   store.selectVertices = function () {};
@@ -440,7 +446,7 @@ function GlobalStoreContextProvider(props) {
   store.addAddVertexTransaction = function (indexPath, latlng, layer) {
     let transaction = new AddVertex_Transaction(this, indexPath, latlng, layer);
     store.tps.addTransaction(transaction);
-    console.log(store.tps);
+    // console.log(store.tps);
   };
   store.addDeleteVertexTransaction = function (indexPath, latlng, layer) {
     let transaction = new DeleteVertex_Transaction(
@@ -450,7 +456,7 @@ function GlobalStoreContextProvider(props) {
       layer
     );
     store.tps.addTransaction(transaction);
-    console.log(store.tps);
+    // console.log(store.tps);
   };
 
   //Properties functions
@@ -531,6 +537,30 @@ function GlobalStoreContextProvider(props) {
     }
     // console.log(res);
   };
+
+  store.updateGeojson = function () {
+    var collection = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+    store.mapObject.eachLayer(function (layer) {
+      try {
+        if (
+          layer._drawnByGeoman ||
+          (layer.feature && layer.feature.type !== 'FeatureCollection')
+        ) {
+          const geojson = layer.toGeoJSON();
+          // Push GeoJSON object to collection
+          collection.features.push(geojson);
+        }
+      } catch (e) {
+        console.log('NO GEOJSON Found');
+      }
+    });
+    // Log GeoJSON collection to console
+    store.geojson = collection;
+  };
+
   store.saveMap = async function () {
     // Create an empty GeoJSON collection
     var collection = {
@@ -541,7 +571,7 @@ function GlobalStoreContextProvider(props) {
     // Iterate the layers of the map
     store.mapObject.eachLayer(function (layer) {
       // Create GeoJSON object from marker
-      console.log(layer);
+      // console.log(layer);
       try {
         if (
           layer._drawnByGeoman ||
