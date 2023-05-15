@@ -34,16 +34,16 @@ export const updateMapEditingInfoById = (id, payload) =>
   api.post(`/mapeditinginfo/${id}`, payload);
 
 // Map Cards
-export const getAllMapCards = ()=>api.get(`/mapcard`);
-export const updateCardLikes = (id)=>api.post(`/mapcard/${id}/likes`);
-export const updateCardDislikes = (id)=>api.post(`/mapcard/${id}/dislikes`);
+export const getAllMapCards = () => api.get(`/mapcard`);
+export const updateCardLikes = (id) => api.post(`/mapcard/${id}/likes`);
+export const updateCardDislikes = (id) => api.post(`/mapcard/${id}/dislikes`);
 
 // Auth
 export const getLoggedIn = () => api.get(`/loggedIn/`);
 export const registerUser = (payload) => api.post(`/register/`, payload);
 export const loginUser = (payload) => api.post(`/login/`, payload);
 export const logoutUser = () => api.get(`/logout/`);
-export const getSecurityQuestions = () => api.get('/sq/:username');
+export const getSecurityQuestions = (username) => api.get(`/sq/${username}`);
 export const forgotPassword = (payload) => api.post('/forgotPassword', payload);
 export const changePassword = (payload) => api.post('/changePassword', payload);
 export const getComment = (payload) => api.post('/getComment', payload);
@@ -66,7 +66,7 @@ const apis = {
   getSecurityQuestions,
   forgotPassword,
   changePassword,
-  getComment
+  getComment,
 };
 
 export default apis;
