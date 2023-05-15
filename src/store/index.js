@@ -158,8 +158,12 @@ function GlobalStoreContextProvider(props) {
       });
     }
   };
-  store.getComment = async function (id, payload) {
-    let res = await api.getComment(id, payload);
+  store.updateComment = async function (id) {
+    let res = await api.updateComment(id);
+    console.log(res);
+  }
+  store.getComment = async function (id) {
+    let res = await api.getComment(id);
     console.log(res);
   }
 

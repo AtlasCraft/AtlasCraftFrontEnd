@@ -30,11 +30,12 @@ export default function ViewScreen() {
   };
 
   const handleComment = (e) => {
+    store.getComment();
     const copyFeedComments = [...feedComments];
     copyFeedComments.push([loggedInUser, comment]);
     setFeedComments(copyFeedComments);
     setComment('');
-    store.getComment(mapId, copyFeedComments);
+    store.updateComment(mapId, feedComments);
   };
   
   const CommentList = props => {
