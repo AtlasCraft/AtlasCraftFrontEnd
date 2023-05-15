@@ -18,7 +18,6 @@ export default function ViewScreen() {
   const mapId = store.mapId;
   const mapData = require('../test/MapEditingInfo.json');
   const usData = require('../test/us.json');
-
   const [comment, setComment] = useState('');
   const [feedComments, setFeedComments] = useState([]);
   const [downloadOpen, setDownloadOpen] = useState(false);
@@ -30,7 +29,6 @@ export default function ViewScreen() {
   };
 
   const handleComment = (e) => {
-    store.getComment();
     const copyFeedComments = [...feedComments];
     copyFeedComments.push([loggedInUser, comment]);
     setFeedComments(copyFeedComments);
@@ -59,6 +57,7 @@ export default function ViewScreen() {
     <div>
       <Download setOpen={setDownloadOpen} open={downloadOpen}/>
       <div>
+
         <Box
           component="form"
           sx={{

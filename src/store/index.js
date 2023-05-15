@@ -161,11 +161,8 @@ function GlobalStoreContextProvider(props) {
   store.updateComment = async function (id) {
     let res = await api.updateComment(id);
     console.log(res);
-  }
-  store.getComment = async function (id) {
-    let res = await api.getComment(id);
-    console.log(res);
-  }
+  };
+
 
   // tps handling functions
   store.canUndo = function () {
