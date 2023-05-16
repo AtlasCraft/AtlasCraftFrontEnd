@@ -86,7 +86,7 @@ function GlobalStoreContextProvider(props) {
           ...store,
           mapName: payload.mapName,
           ownedUser: payload.ownedUser,
-          comentListPairs: payload.commentListPairs,
+          commentListPairs: payload.commentListPairs,
           mapId: payload._id,
           geojson: payload.geojson ? payload.geojson : {},
           isMapPublished: payload.published,
@@ -158,8 +158,14 @@ function GlobalStoreContextProvider(props) {
       });
     }
   };
-  store.updateComment = async function (id) {
-    let res = await api.updateComment(id);
+  
+  store.updateComment = async function (id, comments) {
+    console.log(comments);
+    console.log(id);
+    let payload = {
+      commentListPairs: comments
+    }
+    let res = await api.updateComment(id, payload);
     console.log(res);
   };
 
@@ -464,19 +470,10 @@ function GlobalStoreContextProvider(props) {
     window.process = {
       browser: true,
     };
-  /*
-    var options = {
-      folder: 'myshapes',
-      types: {
-          point: 'mypoints',
-          polygon: 'mypolygons',
-          line: 'mylines'
-      }
-    }
-  */
-    console.log(store.geojson);
+
     shpwrite.download(store.geojson);
   };
+
   store.downloadPng = function () {};
 
   store.compressMap = function (weight) {
@@ -610,6 +607,7 @@ function GlobalStoreContextProvider(props) {
     console.log(id);
     let res = await api.getMapEditingInfoById(id);
     if (res.data.success) {
+      console.log(res.data.map);
       storeReducer({
         type: GlobalStoreActionType.SET_MAP,
         payload: res.data.map,

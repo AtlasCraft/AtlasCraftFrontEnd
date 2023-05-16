@@ -37,7 +37,7 @@ export const updateMapEditingInfoById = (id, payload) =>
 export const getAllMapCards = ()=>api.get(`/mapcard`);
 export const updateCardLikes = (id)=>api.post(`/mapcard/${id}/likes`);
 export const updateCardDislikes = (id)=>api.post(`/mapcard/${id}/dislikes`);
-export const updateComment = (id) => api.post(`/updateComment/${id}`);
+export const updateComment = (id, payload) => api.post(`/updateComment/${id}`, payload);
 
 // Auth
 export const getLoggedIn = () => api.get(`/loggedIn/`);

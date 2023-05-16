@@ -1,4 +1,4 @@
-import React,{useContext, useState} from 'react';
+import React,{useEffect, useContext, useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -12,6 +12,7 @@ import GlobalStoreContext from '../store';
 
 
 export default function ViewScreen() {
+  
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const loggedInUser = auth.user?auth.user.username:"";
@@ -28,13 +29,18 @@ export default function ViewScreen() {
     height: '100%',
   };
 
+  useEffect(()=>{
+    console.log(store.commentListPairs)
+    setFeedComments(store.commentListPairs)
+  },[store]);
+  console.log(store.commentListPairs);
+
   const handleComment = (e) => {
     const copyFeedComments = [...feedComments];
-    copyFeedComments.push([loggedInUser, comment]);
+    copyFeedComments.push({ user:loggedInUser, comment: comment});
     setFeedComments(copyFeedComments);
     setComment('');
-    store.updateComment(mapId, feedComments);
-    console.log(feedComments);
+    store.updateComment(mapId, copyFeedComments);
   };
   
   const CommentList = props => {
@@ -133,7 +139,7 @@ export default function ViewScreen() {
             {feedComments.map((commentArr, i) => {
               return(
                 <CommentList
-                  userName={loggedInUser}
+                  userName={commentArr[0]}
                   userComment={commentArr[1]}
                   key={i}
                 />
@@ -159,7 +165,7 @@ export default function ViewScreen() {
                Comment
               
             </Button>
-            {console.log({feedComments})}
+            {console.log(store.commentListPairs)}
           </div>
         </Stack>
           </div>
