@@ -74,6 +74,11 @@ export default function MapLayer({
   map.pm.addControls({
     position: 'topleft',
     drawCircle: false,
+    drawMarker: false,
+    drawCircleMarker: false,
+    drawPolyline: false,
+    drawRectangle: false,
+    drawPolygon: false,
   });
 
   function findGeoIndex(props) {
