@@ -24,4 +24,7 @@ export default class UpdateItem_Transaction extends jsTPS_Transaction {
     undoTransaction() {
         this.store.updateItem(this.index, this.oldText);
     }
+    updateStore(store) {
+        this.store = store;
+      }
 }

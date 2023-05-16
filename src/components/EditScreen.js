@@ -361,7 +361,7 @@ export default function EditScreen() {
                 // disabled={!store.canUndo()}
                 onClick={()=>{store.undo()}}
               >
-                <Undo style={store.canUndo()?style.enabledTransaction:style.disabledTransaction}/>
+                <Undo style={style.enabledTransaction}/>
               </IconButton>
             </Tooltip>
             <Tooltip title="Redo">
@@ -371,7 +371,7 @@ export default function EditScreen() {
                 // disabled={!store.canRedo()}
                 onClick={()=>{store.redo()}}
               >
-                <Redo style={store.canRedo()?style.enabledTransaction:style.disabledTransaction}/>
+                <Redo style={style.enabledTransaction}/>
               </IconButton>
             </Tooltip>
             <Tooltip title="Publish Map">
