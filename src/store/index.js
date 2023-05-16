@@ -91,6 +91,7 @@ function GlobalStoreContextProvider(props) {
           comentListPairs: payload.commentListPairs,
           mapId: payload._id,
           geojson: payload.geojson ? payload.geojson : {},
+          wholeMapProps: payload.mapProperties,
           isMapPublished: payload.published,
           mapKey: Math.random(),
           // tps: tps,
@@ -591,6 +592,7 @@ function GlobalStoreContextProvider(props) {
       mapName: store.mapName,
       geojson: store.geojson,
       published: store.isMapPublished,
+      mapProperties: store.wholeMapProps,
     };
     let res = await api.updateMapEditingInfoById(store.mapId, payload);
     if (res.data.success) {

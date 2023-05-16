@@ -31,7 +31,9 @@ export default function EditToolbar({
   const { store } = useContext(GlobalStoreContext);
   const [value, setValue] = React.useState('1');
   const [propValue, setPropValue] = React.useState('');
+  const [globalPropValue, setGlobalPropValue] = React.useState('');
   const [regionProp, setRegionProp] = React.useState(store.regionProperty);
+  const [globalProp, setGlobalProp] = React.useState(store.wholeMapProps);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -76,6 +78,10 @@ export default function EditToolbar({
     setPropValue(event.target.value);
   };
 
+  const handleChangeGlobalPropValue = (event) => {
+    setGlobalPropValue(event.target.value);
+  };
+
   const handleAddProp = (event) => {
     event.preventDefault();
     const p = propValue.split(':', 2);
@@ -99,6 +105,26 @@ export default function EditToolbar({
     }
   };
 
+  const handleAddGlobalProp = (event) => {
+    event.preventDefault();
+    const p = globalPropValue.split(':', 2);
+    const name = p[0];
+    const val = p[1];
+    if (globalProp && globalProp[name]) {
+      console.log('Property exist');
+      return;
+    }
+    if (p.length === 2) {
+      const newProp = { ...globalProp };
+      newProp[name] = val;
+      setGlobalPropValue('');
+      setGlobalProp(newProp);
+      store.wholeMapProps = newProp;
+    } else {
+      console.log('Please use name:value format');
+    }
+  };
+
   const deleteHandler = (event, key) => {
     event.preventDefault();
     console.log(key);
@@ -109,6 +135,16 @@ export default function EditToolbar({
       setRegionProp(newProp);
       store.selectedRegion[store.selectedRegion.length - 1].feature.properties =
         newProp;
+    }
+  };
+
+  const deleteGlobalPropHandler = (event, key) => {
+    event.preventDefault();
+    if (globalProp) {
+      const newProp = { ...globalProp };
+      delete newProp[key];
+      setGlobalProp(newProp);
+      store.wholeMapProps = newProp;
     }
   };
 
@@ -270,6 +306,40 @@ export default function EditToolbar({
         </TabPanel>
         <TabPanel value="2">
           <div style={{ display: 'flex', 'flex-direction': 'column' }}>
+            <p>Global Map Properties</p>
+            {globalProp
+              ? Object.keys(globalProp).map((key) => {
+                  const val = key + ':' + globalProp[key];
+                  return (
+                    <div style={{ display: 'flex' }}>
+                      <TextField
+                        id="globalPropForm"
+                        variant="filled"
+                        placeholder="name: value"
+                        value={val}
+                        hiddenLabel
+                      />
+                      <Button
+                        onClick={(e) => {
+                          deleteGlobalPropHandler(e, key);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </Button>
+                    </div>
+                  );
+                })
+              : null}
+            <TextField
+              id="globalPropForm"
+              variant="filled"
+              placeholder="name: value"
+              hiddenLabel
+              value={globalPropValue}
+              onChange={handleChangeGlobalPropValue}
+            />
+            <a onClick={handleAddGlobalProp}>+ Add property</a>
+            {store.selectedRegion.length > 0 ? <p>Region Properties</p> : null}
             {regionProp
               ? Object.keys(regionProp).map((key) => {
                   const val = key + ':' + regionProp[key];
@@ -293,15 +363,19 @@ export default function EditToolbar({
                   );
                 })
               : null}
-            <TextField
-              id="propForm"
-              variant="filled"
-              placeholder="name: value"
-              hiddenLabel
-              value={propValue}
-              onChange={handleChangePropValue}
-            />
-            <a onClick={handleAddProp}>+ Add property</a>
+            {store.selectedRegion.length > 0 ? (
+              <React.Fragment>
+                <TextField
+                  id="propForm"
+                  variant="filled"
+                  placeholder="name: value"
+                  hiddenLabel
+                  value={propValue}
+                  onChange={handleChangePropValue}
+                />
+                <a onClick={handleAddProp}>+ Add property</a>
+              </React.Fragment>
+            ) : null}
           </div>
         </TabPanel>
         <TabPanel value="3">
