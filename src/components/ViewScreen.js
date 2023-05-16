@@ -129,13 +129,13 @@ export default function ViewScreen() {
               />
             </MapContainer>
           </div>
-          <div style={{ width: '30%', background: 'white', height: '100%'}}>
+          <div style={{ width: '30%', background: 'black', height: '100%'}}>
           <Stack
             direction="column"
             height="100%"
             justifyContent="space-between"
           >
-            <div style={{background: 'white', overflowY: 'scroll', scrollBehavior: 'smooth'}}>
+            <div style={{background: 'white', overflowY: 'scroll', scrollBehavior: 'smooth', height: '100%'}}>
             {feedComments.map((commentArr, i) => {
               return(
                 <CommentList
