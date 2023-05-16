@@ -30,10 +30,11 @@ export const deleteMapEditingInfo = (id) => api.delete(`/mapeditinginfo/${id}`);
 export const getMapEditingInfoById = (id) => api.get(`/mapeditinginfo/${id}`);
 export const updateMapEditingInfoById = (id, payload) => api.post(`/mapeditinginfo/${id}`, payload);
 
-// Map Cards
-export const getAllMapCards = () => api.get(`/mapcard`);
-export const updateCardLikes = (id) => api.post(`/mapcard/${id}/likes`);
-export const updateCardDislikes = (id) => api.post(`/mapcard/${id}/dislikes`);
+// Map Card
+export const getAllMapCards = ()=>api.get(`/mapcard`);
+export const updateCardLikes = (id)=>api.post(`/mapcard/${id}/likes`);
+export const updateCardDislikes = (id)=>api.post(`/mapcard/${id}/dislikes`);
+export const updateComment = (id, payload) => api.post(`/updateComment/${id}`, payload);
 
 // Auth
 export const getLoggedIn = () => api.get(`/loggedIn/`);
@@ -43,14 +44,13 @@ export const logoutUser = () => api.get(`/logout/`);
 export const getSecurityQuestions = (username) => api.get(`/sq/${username}`);
 export const forgotPassword = (payload) => api.post('/forgotPassword', payload);
 export const changePassword = (payload) => api.post('/changePassword', payload);
-export const getComment = (payload) => api.post('/getComment', payload);
-
 const apis = {
   //map editing info
   createMapEditingInfo,
   deleteMapEditingInfo,
   getMapEditingInfoById,
   updateMapEditingInfoById,
+  updateComment,
   //map cards
   getAllMapCards,
   updateCardDislikes,
@@ -62,8 +62,7 @@ const apis = {
   logoutUser,
   getSecurityQuestions,
   forgotPassword,
-  changePassword,
-  getComment,
+  changePassword
 };
 
 export default apis;

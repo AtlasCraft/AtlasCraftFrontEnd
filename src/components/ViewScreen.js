@@ -1,4 +1,4 @@
-import React,{useContext, useState} from 'react';
+import React,{useEffect, useContext, useState} from 'react';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
@@ -11,13 +11,14 @@ import AuthContext from '../auth';
 import GlobalStoreContext from '../store';
 
 
-export default function ViewScreen(props) {
+export default function ViewScreen() {
+  
   const { store } = useContext(GlobalStoreContext);
   const { auth } = useContext(AuthContext);
   const loggedInUser = auth.user?auth.user.username:"";
+  const mapId = store.mapId;
   const mapData = require('../test/MapEditingInfo.json');
   const usData = require('../test/us.json');
-
   const [comment, setComment] = useState('');
   const [feedComments, setFeedComments] = useState([]);
   const [downloadOpen, setDownloadOpen] = useState(false);
@@ -28,40 +29,42 @@ export default function ViewScreen(props) {
     height: '100%',
   };
 
+  useEffect(()=>{
+    console.log(store.commentListPairs)
+    setFeedComments(store.commentListPairs)
+  },[store]);
+  console.log(store.commentListPairs);
+
   const handleComment = (e) => {
     const copyFeedComments = [...feedComments];
-    copyFeedComments.push([loggedInUser, comment]);
+    copyFeedComments.push({ user:loggedInUser, comment: comment});
     setFeedComments(copyFeedComments);
     setComment('');
-    auth.getComment(
-      {
-        commentListPairs: copyFeedComments
-      },
-      store
-    );
+    store.updateComment(mapId, copyFeedComments);
   };
   
   const CommentList = props => {
     return (
       <div className="userCommentBox"
-      style = {{fontSize:"12pt"}}
+      style = {{fontSize:"12pt", width:"100%", height:50}}
       >
         <p className="userName">{props.userName}</p>
         <div className="userComment"
-        style = {{fontSize:"10pt"}}
+        style = {{fontSize:"10pt", width:"100%", height:100}}
         >{props.userComment}</div>  
       </div>
     );
   };
 
   function handleFork(){
-    store.forkMap(props.id);
+    store.forkMap(mapId);
   }
 
   return (
     <div>
       <Download setOpen={setDownloadOpen} open={downloadOpen}/>
       <div>
+
         <Box
           component="form"
           sx={{
@@ -126,22 +129,24 @@ export default function ViewScreen(props) {
               />
             </MapContainer>
           </div>
-          <div style={{ width: '30%', background: 'white', height: '100%'}}>
+          <div style={{ width: '30%', background: 'black', height: '100%'}}>
           <Stack
             direction="column"
             height="100%"
             justifyContent="space-between"
           >
-            <div style={{background: 'white', overflowY: 'scroll', scrollBehavior: 'smooth'}}>
+            <div style={{background: 'white', overflowY: 'scroll', scrollBehavior: 'smooth', height: '100%'}}>
             {feedComments.map((commentArr, i) => {
+              //{console.log(commentArr)}
               return(
                 <CommentList
-                  userName={loggedInUser}
-                  userComment={commentArr[1]}
+                  userName={commentArr["user"]}
+                  userComment={commentArr["comment"]}
                   key={i}
                 />
               );
             })}
+            
             </div>
           <div style={{ background: 'rgb(192,192,192)'}}>
             <TextField
@@ -162,7 +167,7 @@ export default function ViewScreen(props) {
                Comment
               
             </Button>
-            {console.log({feedComments})}
+            {console.log(store.commentListPairs)}
           </div>
         </Stack>
           </div>
