@@ -46,11 +46,11 @@ export default function ViewScreen() {
   const CommentList = props => {
     return (
       <div className="userCommentBox"
-      style = {{fontSize:"12pt"}}
+      style = {{fontSize:"12pt", width:"100%", height:50}}
       >
         <p className="userName">{props.userName}</p>
         <div className="userComment"
-        style = {{fontSize:"10pt"}}
+        style = {{fontSize:"10pt", width:"100%", height:100}}
         >{props.userComment}</div>  
       </div>
     );
@@ -137,14 +137,16 @@ export default function ViewScreen() {
           >
             <div style={{background: 'white', overflowY: 'scroll', scrollBehavior: 'smooth', height: '100%'}}>
             {feedComments.map((commentArr, i) => {
+              //{console.log(commentArr)}
               return(
                 <CommentList
-                  userName={commentArr[0]}
-                  userComment={commentArr[1]}
+                  userName={commentArr["user"]}
+                  userComment={commentArr["comment"]}
                   key={i}
                 />
               );
             })}
+            
             </div>
           <div style={{ background: 'rgb(192,192,192)'}}>
             <TextField
