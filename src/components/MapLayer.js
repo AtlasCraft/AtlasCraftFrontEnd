@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useMap, GeoJSON } from 'react-leaflet';
 import GlobalStoreContext from '../store';
 import L from 'leaflet';
@@ -8,6 +8,7 @@ import {
   AddVertex_Transaction,
   DeleteVertex_Transaction,
 } from '../transactions';
+import { SimpleMapScreenshoter } from "leaflet-simple-map-screenshoter";
 const mapData = require('../test/MapEditingInfo.json');
 const usData = require('../test/us.json');
 
@@ -15,6 +16,9 @@ export default function MapLayer({
   onEachFeature,
   setVertexEnabled,
   setTempSelectedVert,
+  georef,
+  setScreenshot,
+  setMapref,
 }) {
   const countryStyle = {
     fillColor: 'yellow',
@@ -27,21 +31,30 @@ export default function MapLayer({
   const map = useMap();
   store.mapObject = map;
   map.doubleClickZoom.disable();
-
+  useEffect(()=>{
+    setScreenshot(L.simpleMapScreenshoter().addTo(map));
+    setMapref(map);
+  },[]);
   map.on('pm:create', (e) => {
     const { layer } = e;
     e.layer.options.pmIgnore = false;
-    layer.feature = {
-      type: 'Feature',
-      properties: {},
-    };
     const trans = store.tps.transactions[store.tps.mostRecentTransaction];
     if (trans instanceof AddRegion_Transaction) {
       // HANDLE DUPLICATES
       if (trans.layer !== layer) {
+        layer.feature = {
+          type: 'Feature',
+          properties: {},
+        };
+        layer.feature.properties.AtlasCraftRegionID = Math.random();
         store.addAddRegionTransaction(layer);
       }
     } else {
+      layer.feature = {
+        type: 'Feature',
+        properties: {},
+      };
+      layer.feature.properties.AtlasCraftRegionID = Math.random();
       store.addAddRegionTransaction(layer);
     }
   });
@@ -68,6 +81,11 @@ export default function MapLayer({
   map.pm.addControls({
     position: 'topleft',
     drawCircle: false,
+    drawMarker: false,
+    drawCircleMarker: false,
+    drawPolyline: false,
+    drawRectangle: false,
+    drawPolygon: false,
   });
 
   function findGeoIndex(props) {
@@ -170,6 +188,12 @@ export default function MapLayer({
         console.log('Context Menu Clicked');
         if (layer) {
           if (!store.selectedRegion.includes(layer)) {
+            if (store.editSelection === 'properties') {
+              store.selectedRegion.forEach((region) => {
+                region.setStyle({ fillColor: 'yellow' });
+              });
+              store.selectedRegion = [];
+            }
             store.selectedRegion.push(layer);
             layer.setStyle({ fillColor: 'orange' });
           }
@@ -193,6 +217,7 @@ export default function MapLayer({
       style={countryStyle}
       onEachFeature={onEachFeature}
       key={store.mapKey}
+      ref={georef}
     />
   );
 }

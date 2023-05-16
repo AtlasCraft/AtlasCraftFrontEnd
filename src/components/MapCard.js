@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import {ListItem, IconButton, Tooltip} from "@mui/material";
-import {Visibility, FileCopy, Download, Edit, ThumbUp, ThumbDown, ThumbDownAltOutlined, ThumbUpAltOutlined} from '@mui/icons-material';
+import {Visibility, FileCopy, Download, Edit, ThumbUp, ThumbDown, ThumbDownAltOutlined, ThumbUpAltOutlined, Delete} from '@mui/icons-material';
 import AuthContext from '../auth'
 import GlobalStoreContext from '../store'
 
 const style = {
     cardContainer: {
-        width: "90%",
-        height:"20%",
+        width: "29%",
+        height:"60%",
         backgroundColor:"#1C353D",
-        left:"5%",
+        left:"0%",
         position:"relative",
         borderRadius:"25px",
         marginTop:"1rem",
@@ -19,28 +19,28 @@ const style = {
         width:"96%",
         top:"7%",
         left:"2%",
-        height:"50%",
+        height:"80%",
         position:"absolute"
     },
     bottomDivContainer:{
         width:"96%",
-        top:"50%",
+        top:"80%",
         left:"2%",
         height:"50%",
         position:"absolute"
     },
     leftDivContainer:{
         height:"100%", 
-        width:"50%", 
+        width:"100%", 
         position:"absolute",
-        fontSize: "24px",
-        color: "#F5DEB3",
+        // fontSize: "24px",
+        // color: "#F5DEB3",
         // backgroundColor:"black"
     },
     rightDiveContainer:{
         height:"100%", 
-        width:"50%", 
-        left:"50%", 
+        width:"45%", 
+        left:"55%", 
         position:"absolute",
         fontSize: "24px",
         color: "#F5DEB3",
@@ -49,6 +49,21 @@ const style = {
     iconButtons:{
         transform:"scale(1.2)",
         color: "#F5DEB3"
+    },
+    mapText:{
+        fontSize: "24px",
+        color: "#F5DEB3",
+        textAlign:"left"
+    },
+    userText:{
+        fontSize: "18px",
+        color: "#F5DEB3",
+        textAlign:"left"
+    },
+    imageContainer:{
+        backgroundColor:"black",
+        width:"100%",
+        height:"70%"
     }
 
 }
@@ -65,7 +80,7 @@ export default function MapCard(props){
         setLiked(props.likedUsers);
         setDisliked(props.dislikedUsers);
     },[props.likedUsers, props.dislikedUsers]);
-    
+    if(props.thumbnail)console.log(props.thumbnail)
     function handleLike(){
         if(likedUsers.includes(loggedInUser)){
             //remove from liked users and update backend
@@ -95,15 +110,6 @@ export default function MapCard(props){
             //update backend liked
             store.updateLikes(props.cardId);
         }
-
-        //Temp stuff
-        // if(!dislikedUsers.includes(loggedInUser) && !likedUsers.includes(loggedInUser)){
-        //     //not in either
-        //     let temp = [...likedUsers];
-        //     temp.push(loggedInUser);
-        //     setLiked(temp);
-        //     store.updateLikes(props.cardId);
-        // }
     }
     function handleDislike(){
         if(dislikedUsers.includes(loggedInUser)){
@@ -134,15 +140,6 @@ export default function MapCard(props){
             //TODO update backend liked
             store.updateDislikes(props.cardId);
         }
-
-
-        //TEMP STUFF
-        // if(!dislikedUsers.includes(loggedInUser) && !likedUsers.includes(loggedInUser)){
-        //     let temp = [...dislikedUsers];
-        //     temp.push(loggedInUser);
-        //     setDisliked(temp);
-        //     store.updateDislikes(props.cardId);
-        // }
         
     }
 
@@ -151,37 +148,42 @@ export default function MapCard(props){
     }
 
     let likeButton = 
+        likedUsers.includes(loggedInUser)?
+            <Tooltip title="Remove Like">
+                <IconButton onClick={handleLike}>
+                    <ThumbUp style={style.iconButtons}/>
+                </IconButton>
+            </Tooltip>:
+            <Tooltip title="Like Map">
+                <IconButton onClick={handleLike}>
+                    <ThumbUpAltOutlined style={style.iconButtons}/>
+                </IconButton>
+            </Tooltip>
+        
     
-    <Tooltip title="Like Map">
-        {likedUsers.includes(loggedInUser)?
-            <IconButton onClick={handleLike}>
-                <ThumbUp style={style.iconButtons}/>
-            </IconButton>:
-            <IconButton onClick={handleLike}>
-                <ThumbUpAltOutlined style={style.iconButtons}/>
-            </IconButton>
-        }
-    </Tooltip>
     let dislikeButton = 
-    <Tooltip title="Dislike Map">
-        {dislikedUsers.includes(loggedInUser)?
-            <IconButton onClick={handleDislike}>
-                <ThumbDown style={style.iconButtons}/>
-            </IconButton>:
-            <IconButton onClick={handleDislike}>
-                <ThumbDownAltOutlined style={style.iconButtons}/>
-            </IconButton>
-        }
-    </Tooltip>
+    
+        dislikedUsers.includes(loggedInUser)?
+            <Tooltip title="Remove Dislike">
+                <IconButton onClick={handleDislike}>
+                    <ThumbDown style={style.iconButtons}/>
+                </IconButton>
+            </Tooltip>:
+            <Tooltip title="Dislike Map">
+                <IconButton onClick={handleDislike}>
+                    <ThumbDownAltOutlined style={style.iconButtons}/>
+                </IconButton>
+            </Tooltip>
+        
+    
 
     return(
         <ListItem style={style.cardContainer}>
             <div style={style.topDivContainer}>
                 <div style={style.leftDivContainer}>
-                    {mapName}
-                </div>
-                <div style={style.rightDiveContainer}>
-                    {ownedUser}
+                    <div style={style.mapText}>{mapName}</div>
+                    <div style={style.userText}>{ownedUser}</div>
+                    <img style={style.imageContainer} src={props.thumbnail?props.thumbnail:require('./../util/BaseThumbnail.png')}></img>
                 </div>
             </div>
             <div style={style.bottomDivContainer}>
@@ -196,17 +198,18 @@ export default function MapCard(props){
                             <FileCopy style={style.iconButtons} />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Download Map">
-                        <IconButton>
-                            <Download style={style.iconButtons}/>
-                        </IconButton>
-                    </Tooltip>
                     {loggedInUser == ownedUser?
+                    <>
                         <Tooltip title="Edit Map">
                             <IconButton onClick={()=>{store.loadMap(props.id, "edit");}}>
                                 <Edit style={style.iconButtons}/>
                             </IconButton>
                         </Tooltip>
+                        <Tooltip title="Delete Map">
+                            <IconButton onClick={()=>{store.deleteMap(props.id);}}>
+                                <Delete style={style.iconButtons}/>
+                            </IconButton>
+                        </Tooltip></>
                         :<></>}
                 </div>
                 <div style={style.rightDiveContainer}>

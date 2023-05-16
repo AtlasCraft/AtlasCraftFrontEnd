@@ -122,6 +122,11 @@ function AuthContextProvider(props) {
       const response = await api.forgotPassword(userData);
       if (response.status === 200) {
         history.push('/');
+      } else {
+        enqueueSnackbar('Could not reset Password', {
+          variant: 'error',
+          autoHideDuration: 5000,
+        });
       }
     } catch (err) {
       // store.showErr(err.response.status, err.response.data.errorMessage);
