@@ -28,7 +28,6 @@ export default function EditScreen() {
   const [mapName, setMapName] = useState(store.mapName);
   const [vertexEnabled, setVertexEnabled] = useState(true);
   const [downloadOpen, setDownloadOpen] = useState(false);
-  const [show, setShow] = useState(true);
 
   useEffect(()=>{
     if(!vertexEnabled) return;
@@ -271,9 +270,9 @@ export default function EditScreen() {
           justifyContent="space-between"
           style={{ background: 'rgb(192,192,192)' }}
         >
-          {show && <p>Comments</p>}
-          <Button variant="contained" href="#" sx={{ 'align-self': 'center' }} onclick={() => setShow(!show)}>
-            {show === true ? 'Hide' : 'Show'}
+          <p>Comments</p>
+          <Button variant="contained" href="#" sx={{ 'align-self': 'center' }}>
+            View
           </Button>
         </Stack>
       </div>
