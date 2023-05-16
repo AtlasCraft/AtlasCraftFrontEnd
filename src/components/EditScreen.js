@@ -437,7 +437,7 @@ export default function EditScreen() {
         </Stack>
       </div>
       <div>
-          <Button onclick={()=>setCommentOpen(true)} variant="contained" sx={{ 'align-self': 'center' }}>
+          <Button onMouseDown={()=>setCommentOpen(true)} variant="contained" sx={{ 'align-self': 'center' }}>
             View Comment
           </Button>
       </div>
