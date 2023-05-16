@@ -304,8 +304,13 @@ export default function EditToolbar({
             </Grid>
           </Box>
         </TabPanel>
-        <TabPanel value="2">
-          <div style={{ display: 'flex', 'flex-direction': 'column' }}>
+        <TabPanel value="2" style={{ height: '80%', overflow: 'auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              'flex-direction': 'column',
+            }}
+          >
             <p>Global Map Properties</p>
             {globalProp
               ? Object.keys(globalProp).map((key) => {
