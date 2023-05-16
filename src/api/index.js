@@ -17,6 +17,9 @@ const api = axios.create({
   baseURL: 'https://jaszheng.me/api',
 });
 
+const api2 = axios.create({
+  baseURL: 'https://ogre.adc4gis.com'
+})
 // THESE ARE ALL THE REQUESTS WE`LL BE MAKING, ALL REQUESTS HAVE A
 // REQUEST METHOD (like get) AND PATH (like /top5list). SOME ALSO
 // REQUIRE AN id SO THAT THE SERVER KNOWS ON WHICH LIST TO DO ITS
@@ -44,6 +47,13 @@ export const logoutUser = () => api.get(`/logout/`);
 export const getSecurityQuestions = (username) => api.get(`/sq/${username}`);
 export const forgotPassword = (payload) => api.post('/forgotPassword', payload);
 export const changePassword = (payload) => api.post('/changePassword', payload);
+
+export const getComment = (payload) => api.post('/getComment', payload);
+
+// ogre shp converter
+
+export const convertToShp = (payload) =>api2.post('convertJson', payload);
+
 const apis = {
   //map editing info
   createMapEditingInfo,
@@ -62,7 +72,10 @@ const apis = {
   logoutUser,
   getSecurityQuestions,
   forgotPassword,
-  changePassword
+  changePassword,
+  getComment,
+
+  convertToShp
 };
 
 export default apis;

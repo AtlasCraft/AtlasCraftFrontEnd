@@ -529,8 +529,12 @@ function GlobalStoreContextProvider(props) {
     window.process = {
       browser: true,
     };
-
     shpwrite.download(store.geojson);
+    //could work but it is http 
+    // let res = api.convertToShp(store.geojson);
+    // console.log(res);
+
+
   };
 
   store.downloadPng = function () {};

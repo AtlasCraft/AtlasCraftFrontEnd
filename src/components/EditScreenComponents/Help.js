@@ -1,7 +1,11 @@
 import { useContext, useState } from "react";
 import { Dialog, DialogTitle, Tab, Button, Stack, DialogContent, Divider } from "@mui/material";
-import {TabList, TabContext } from '@mui/lab'
+import {TabList, TabContext, TabPanel } from '@mui/lab'
 import GlobalStoreContext from '../../store'
+import Basics from "./helptabs/Basics";
+import MapNav from "./helptabs/MapNav";
+import VertexEdit from "./helptabs/VertexEdit";
+import RegionEdit from "./helptabs/RegionEdit";
 
 const style = {
     dialogStyle:{
@@ -24,7 +28,20 @@ export default function Help({setOpen, open}){
                         <Tab label="Region Editing" value="4" />
                     </TabList>
                     <Divider />
+                    <TabPanel value="1">
+                        <Basics/>
+                    </TabPanel>
+                    <TabPanel value="2">
+                        <MapNav/>
+                    </TabPanel>
+                    <TabPanel value="3">
+                        <VertexEdit/>
+                    </TabPanel>
+                    <TabPanel value="4">
+                        <RegionEdit/>
+                    </TabPanel>
                 </TabContext>
+                
             </DialogContent>
         </Dialog>
     );

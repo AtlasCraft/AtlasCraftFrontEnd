@@ -71,6 +71,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     setMapCardList(store.mapcardList);
+	console.log(store.mapcardList);
     store.resetTps();
     store.selectedRegion = [];
   }, [store]);
@@ -138,6 +139,7 @@ export default function HomeScreen() {
                   ownedUser={card.ownedUser}
                   likedUsers={card.likedUsers}
                   dislikedUsers={card.dislikedUsers}
+				  thumbnail={card.thumbnail}
                 />
               );
             else if (
@@ -153,6 +155,7 @@ export default function HomeScreen() {
                   ownedUser={card.ownedUser}
                   likedUsers={card.likedUsers}
                   dislikedUsers={card.dislikedUsers}
+				  thumbnail={card.thumbnail}
                 />
               );
             //
@@ -170,6 +173,7 @@ export default function HomeScreen() {
                   ownedUser={card.ownedUser}
                   likedUsers={card.likedUsers}
                   dislikedUsers={card.dislikedUsers}
+				  thumbnail={card.thumbnail}
                 />
               );
             else if (
@@ -185,6 +189,7 @@ export default function HomeScreen() {
                   ownedUser={card.ownedUser}
                   likedUsers={card.likedUsers}
                   dislikedUsers={card.dislikedUsers}
+				  thumbnail={card.thumbnail}
                 />
               );
             else return <></>;
