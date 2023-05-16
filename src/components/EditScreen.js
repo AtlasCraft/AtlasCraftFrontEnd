@@ -12,7 +12,7 @@ import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import 'leaflet/dist/leaflet.css';
 import AuthContext from '../auth'
 import GlobalStoreContext from '../store'
-import {MapZoom, GeomanInit, Download} from './EditScreenComponents';
+import {MapZoom, Help, Download} from './EditScreenComponents';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import MapLayer from './MapLayer';
@@ -54,6 +54,8 @@ export default function EditScreen() {
   const [downloadOpen, setDownloadOpen] = useState(false);
   const [screenshotter, setScreenshot] = useState();
   const [mapref, setMapref] = useState();
+  const [helpOpen, setHelpOpen] = useState(false);
+
   // const mapref = React.useRef();
   const geoJsonRef = React.useRef();
 
@@ -205,16 +207,6 @@ export default function EditScreen() {
         thumbnail = cnv.toDataURL("image/png");
         console.log(thumbnail);
         store.saveMap(thumbnail);
-        // const resultantImage = new Image();
-        // resultantImage.style = "border: 1px solid black";
-        // resultantImage.src = thumbnail;
-
-        // document.getElementById("root").appendChild(cnv);
-
-        // cnv.toBlob(function (blob) {
-        //   // saveAs function installed as part of leaflet snapshot package
-        //   saveAs(blob, "greek_border.png");
-        // });
       };
       img.src = image;
     })
@@ -281,6 +273,7 @@ console.log(e)
   return (
     <div>
       <Download setOpen={setDownloadOpen} open={downloadOpen}/>
+      <Help setOpen={setHelpOpen} open={helpOpen}/>
       <div>
         <Box
           component="form"
@@ -389,6 +382,7 @@ console.log(e)
             setVertexEnabled = {setVertexEnabled}
             setDownloadOpen={setDownloadOpen}
             handleSave={handleSave}
+            setHelpOpen={setHelpOpen}
           />
         </Stack>
       </div>
