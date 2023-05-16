@@ -169,6 +169,11 @@ export default function EditScreen() {
   }, [selectedVerts]);
 
   function onEachFeature(feature, layer) {
+    let countryName = "";
+    if(feature.properties)
+     countryName = feature.properties["name"]?feature.properties["name"]:"";
+    layer.bindPopup(countryName);
+    layer._events.click.splice(0,1);
     layer.on('pm:vertexclick', (e) => {
       console.log(e.indexPath);
       if (e.indexPath) {
@@ -182,6 +187,12 @@ export default function EditScreen() {
         setTempSelectedVert(e.indexPath);
       }
     });
+    layer.on({
+      click: (event)=>{
+        if(event.originalEvent.ctrlKey == true){
+          event.target._openPopup(event);
+        }
+    }});
   }
 
 
@@ -230,7 +241,7 @@ export default function EditScreen() {
 
         // Create URL for resultant png
         thumbnail = cnv.toDataURL("image/png");
-        console.log(thumbnail);
+        // console.log(thumbnail);
         store.saveMap(thumbnail);
       };
       img.src = image;
