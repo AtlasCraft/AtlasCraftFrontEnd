@@ -34,6 +34,7 @@ export default function ViewScreen() {
     setFeedComments(copyFeedComments);
     setComment('');
     store.updateComment(mapId, feedComments);
+    console.log(feedComments);
   };
   
   const CommentList = props => {

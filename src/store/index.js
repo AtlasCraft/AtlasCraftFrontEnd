@@ -68,7 +68,7 @@ function GlobalStoreContextProvider(props) {
     mapKey: Math.random(),
   });
   const history = useHistory();
-
+  
   const tps = new jsTPS();
   store.tps = tps;
 
