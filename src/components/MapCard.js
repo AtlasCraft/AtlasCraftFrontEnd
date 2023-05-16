@@ -61,9 +61,16 @@ const style = {
         textAlign:"left"
     },
     imageContainer:{
-        backgroundColor:"black",
+        // backgroundColor:"black",
+        maxWidth:"100%",
+        maxHeight:"100%",
+    },
+    outerImageContainer:{
+        // backgroundColor:"black",
         width:"100%",
-        height:"70%"
+        height:"70%",
+        justifyContent: 'space-evenly',
+        display: 'flex',
     }
 
 }
@@ -183,7 +190,9 @@ export default function MapCard(props){
                 <div style={style.leftDivContainer}>
                     <div style={style.mapText}>{mapName}</div>
                     <div style={style.userText}>{ownedUser}</div>
-                    <img style={style.imageContainer} src={props.thumbnail?props.thumbnail:require('./../util/BaseThumbnail.png')}></img>
+                    <div style={style.outerImageContainer}>
+                        <img style={style.imageContainer} src={props.thumbnail?props.thumbnail:require('./../util/BaseThumbnail.png')}></img>
+                    </div>
                 </div>
             </div>
             <div style={style.bottomDivContainer}>
