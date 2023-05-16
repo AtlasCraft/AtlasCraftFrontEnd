@@ -20,7 +20,7 @@ import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import 'leaflet/dist/leaflet.css';
 import AuthContext from '../auth';
 import GlobalStoreContext from '../store';
-import { MapZoom, GeomanInit, Download, Help } from './EditScreenComponents';
+import { MapZoom, GeomanInit, Download, Help, Comment } from './EditScreenComponents';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import MapLayer from './MapLayer';
@@ -64,6 +64,7 @@ export default function EditScreen() {
   const [screenshotter, setScreenshot] = useState();
   const [mapref, setMapref] = useState();
   const [helpOpen, setHelpOpen] = useState(false);
+  const [commentOpen, setCommentOpen] = useState(false);
 
   // const mapref = React.useRef();
   const geoJsonRef = React.useRef();
@@ -321,6 +322,7 @@ export default function EditScreen() {
     <div>
       <Download setOpen={setDownloadOpen} open={downloadOpen}/>
       <Help setOpen={setHelpOpen} open={helpOpen}/>
+      <Comment setOpen={setCommentOpen} open={commentOpen}/>
 
       <div>
         <Box
@@ -435,17 +437,9 @@ export default function EditScreen() {
         </Stack>
       </div>
       <div>
-        <Stack
-          direction="row"
-          height="100%"
-          justifyContent="space-between"
-          style={{ background: 'rgb(192,192,192)' }}
-        >
-          <p>Comments</p>
-          <Button variant="contained" href="#" sx={{ 'align-self': 'center' }}>
-            View
+          <Button onclick={()=>setCommentOpen(true)} variant="contained" sx={{ 'align-self': 'center' }}>
+            View Comment
           </Button>
-        </Stack>
       </div>
     </div>
   );
