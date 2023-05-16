@@ -68,6 +68,7 @@ export default function HomeScreen() {
   const [searchText, setSearchText] = useState('');
   const isMenuOpen = Boolean(anchorEl);
 
+
   useEffect(() => {
     setMapCardList(store.mapcardList);
     store.resetTps();

@@ -16,6 +16,7 @@ import * as shpwrite from 'shp-write';
 import 'core-js/stable';
 import { saveAs } from 'file-saver';
 import L from 'leaflet';
+import * as turf from '@turf/turf';
 
 /*
 	This is our global data store. Note that it uses the Flux design pattern,
@@ -44,6 +45,7 @@ export const GlobalStoreActionType = {
   HIDE_ERR: 'HIDE_ERR',
   CHANGE_GEO: 'CHANGE_GEO',
   CHANGE_MAP_NAME: 'CHANGE_MAP_NAME',
+  UPLOAD_MAP: 'UPLOAD_MAP',
 };
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -68,6 +70,7 @@ function GlobalStoreContextProvider(props) {
     commentListPairs: [],
     mapKey: Math.random(),
     tps: new jsTPS(),
+    wholeMapProp: {},
   });
   const history = useHistory();
 
@@ -94,6 +97,7 @@ function GlobalStoreContextProvider(props) {
           wholeMapProps: payload.mapProperties,
           isMapPublished: payload.published,
           mapKey: Math.random(),
+          wholeMapProp: payload.mapProperties ? payload.mapProperties: {},
           // tps: tps,
         });
       }
@@ -123,7 +127,16 @@ function GlobalStoreContextProvider(props) {
           ...store,
           geojson: payload,
           mapKey: Math.random(),
-          // tps: tps,
+          // tps: store.tps,
+        });
+      }
+      case GlobalStoreActionType.UPLOAD_MAP: {
+        return setStore({
+          ...store,
+          geojson: payload.geojson,
+          wholeMapProp: payload.props?payload.props:{},
+          mapKey: Math.random(),
+          // tps: store.tps,
         });
       }
       case GlobalStoreActionType.CHANGE_MAP_NAME: {
@@ -177,11 +190,11 @@ function GlobalStoreContextProvider(props) {
   };
   store.undo = function () {
     console.log('undo');
-    store.tps.undoTransaction();
+    store.tps.undoTransaction(store);
   };
   store.redo = function () {
     console.log('redo');
-    store.tps.doTransaction();
+    store.tps.doTransaction(store);
   };
 
   //region functions
@@ -237,6 +250,19 @@ function GlobalStoreContextProvider(props) {
       }); //  should be in asc order
       let vert1 = verts[0];
       let vert2 = verts[1];
+
+      let poly = store.geojson.features[vert2[0]];
+      let line = turf.lineString([store.geojson.features[vert1[0]].geometry.coordinates[vert1[1]][vert1[2]], store.geojson.features[vert2[0]].geometry.coordinates[vert2[1]][vert2[2]]])
+      // console.log("AAAAAAAAAAAAAA");
+      // console.log(turf.booleanWithin(line,poly));
+      if(!turf.booleanWithin(line,poly)){
+        enqueueSnackbar('Line must be contained in original shape', {
+          variant: 'error',
+          autoHideDuration: 5000,
+        });
+        return;
+      }
+
       let oldRegion = JSON.parse(
         JSON.stringify(store.geojson.features[vert1[0]])
       );
@@ -283,6 +309,19 @@ function GlobalStoreContextProvider(props) {
       }); //  should be in asc order
       let vert1 = verts[0];
       let vert2 = verts[1];
+
+      let poly = turf.polygon(store.geojson.features[vert2[0]].geometry.coordinates[vert1[1]]);
+      let line = turf.lineString([store.geojson.features[vert1[0]].geometry.coordinates[vert1[1]][vert1[2]][vert1[3]], store.geojson.features[vert2[0]].geometry.coordinates[vert2[1]][vert2[2]][vert2[3]]])
+      // console.log("AAAAAAAAAAAAAA");
+      // console.log(turf.booleanWithin(line,poly));
+      if(!turf.booleanWithin(line,poly)){
+        enqueueSnackbar('Line must be contained in original shape', {
+          variant: 'error',
+          autoHideDuration: 5000,
+        });
+        return;
+      }
+
       let oldRegion = JSON.parse(
         JSON.stringify(store.geojson.features[vert1[0]])
       );
@@ -348,6 +387,7 @@ function GlobalStoreContextProvider(props) {
           type: GlobalStoreActionType.CHANGE_GEO,
           payload: tempGeo,
         });
+        console.log(store.geojson);
         console.log(store.tps);
       } else {
         //a multipolygon
@@ -466,7 +506,9 @@ function GlobalStoreContextProvider(props) {
 
   //map management
   store.downloadGeo = function () {
-    let blob = new Blob([JSON.stringify(store.geojson)], {
+    let tempGeo = JSON.parse(JSON.stringify(store.geojson));
+    tempGeo["properties"] = store.wholeMapProp;
+    let blob = new Blob([JSON.stringify(tempGeo)], {
       type: 'data:text/plain;charset=utf-8',
     });
     saveAs(blob, store.mapName.concat('.geojson'));
@@ -514,8 +556,11 @@ function GlobalStoreContextProvider(props) {
     }
     console.log(geo);
     storeReducer({
-      type: GlobalStoreActionType.CHANGE_GEO,
-      payload: geo,
+      type: GlobalStoreActionType.UPLOAD_MAP,
+      payload: {
+        geojson:geo,
+        props:geo.properties
+      }
     });
   };
 
@@ -562,7 +607,7 @@ function GlobalStoreContextProvider(props) {
     store.geojson = collection;
   };
 
-  store.saveMap = async function () {
+  store.saveMap = async function (thumbnail = null) {
     // Create an empty GeoJSON collection
     var collection = {
       type: 'FeatureCollection',
@@ -591,7 +636,9 @@ function GlobalStoreContextProvider(props) {
     let payload = {
       mapName: store.mapName,
       geojson: store.geojson,
+      mapProperties:store.wholeMapProp,
       published: store.isMapPublished,
+      thumbnail: thumbnail,
       mapProperties: store.wholeMapProps,
     };
     let res = await api.updateMapEditingInfoById(store.mapId, payload);
@@ -606,7 +653,7 @@ function GlobalStoreContextProvider(props) {
         autoHideDuration: 5000,
       });
     }
-    console.log(payload);
+    store.loadMapCards();
   };
   store.changeMapName = function (name) {
     storeReducer({
@@ -615,7 +662,15 @@ function GlobalStoreContextProvider(props) {
     });
   };
 
-  store.deleteMap = function () {};
+  store.deleteMap = async function (id) {
+    let res = await api.deleteMapEditingInfo(id);
+    if(res.data.success){
+      enqueueSnackbar('Map Deleted', {variant: 'success', autoHideDuration: 2000,});
+      store.loadMapCards();
+    }else{
+      enqueueSnackbar('Map Delete Failed', {variant: 'error', autoHideDuration: 2000,});
+    }
+  };
   store.publishMap = async function (id) {
     let payload = {
       mapName: store.mapName,
@@ -623,6 +678,10 @@ function GlobalStoreContextProvider(props) {
       published: true,
     };
     let res = await api.updateMapEditingInfoById(store.mapId, payload);
+    enqueueSnackbar('Map Published', {
+      variant: 'success',
+      autoHideDuration: 2000,
+    });
     console.log(res);
   };
   store.createNewMap = async function () {

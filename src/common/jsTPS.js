@@ -22,6 +22,10 @@ export class jsTPS_Transaction {
     undoTransaction() {
       console.log('undoTransaction - MISSING IMPLEMENTATION');
     }
+
+    updateStore(store) {
+      console.log('updateStore - MISSING IMPLEMENTATION');
+    }
   }
   
   /**
@@ -169,11 +173,15 @@ export class jsTPS_Transaction {
      * counter. Note this function may be invoked as a result of either adding
      * a transaction (which also does it), or redoing a transaction.
      */
-    doTransaction() {
+    doTransaction(store=null) {
       if (this.hasTransactionToRedo()) {
         this.performingDo = true;
         let transaction = this.transactions[this.mostRecentTransaction + 1];
+        //if a store is passed in then update the transactions store
+        //ignore for the first instance of creating then "doing" the transaction
+        if(store != null) {transaction.updateStore(store);}
         transaction.doTransaction();
+        
         this.mostRecentTransaction++;
         this.performingDo = false;
       }
@@ -183,11 +191,14 @@ export class jsTPS_Transaction {
      * This function gets the most recently executed transaction on the
      * TPS stack and undoes it, moving the TPS counter accordingly.
      */
-    undoTransaction() {
+    undoTransaction(store=null) {
       if (this.hasTransactionToUndo()) {
         this.performingUndo = true;
         let transaction = this.transactions[this.mostRecentTransaction];
+        //if a store is passed in then update the transactions store
+        if(store != null) {transaction.updateStore(store);}
         transaction.undoTransaction();
+        
         this.mostRecentTransaction--;
         this.performingUndo = false;
       }
