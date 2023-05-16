@@ -21,4 +21,7 @@ export default class AddVertex_Transaction extends jsTPS_Transaction {
   undoTransaction() {
     this.store.deleteVertex(this.indexPath, this.latlng, this.layer);
   }
+  updateStore(store) {
+    this.store = store;
+  }
 }
