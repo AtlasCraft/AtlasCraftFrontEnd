@@ -517,16 +517,12 @@ function GlobalStoreContextProvider(props) {
     window.process = {
       browser: true,
     };
-    // var options = {
-    //   folder: 'myshapes',
-    //   types: {
-    //       point: 'mypoints',
-    //       polygon: 'mypolygons',
-    //       line: 'mylines'
-    //   }
-    // }
-    // console.log(store.geojson);
     shpwrite.download(store.geojson);
+    //could work but it is http 
+    // let res = api.convertToShp(store.geojson);
+    // console.log(res);
+
+
   };
   store.downloadPng = function () {};
 
