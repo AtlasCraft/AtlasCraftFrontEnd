@@ -20,7 +20,7 @@ import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import 'leaflet/dist/leaflet.css';
 import AuthContext from '../auth';
 import GlobalStoreContext from '../store';
-import { MapZoom, GeomanInit, Download } from './EditScreenComponents';
+import { MapZoom, GeomanInit, Download, Help } from './EditScreenComponents';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import MapLayer from './MapLayer';
