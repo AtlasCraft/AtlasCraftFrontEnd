@@ -1,6 +1,8 @@
 import React, { useContext, useEffect } from 'react';
 import Tab from '@mui/material/Tab';
+import IconButton from '@mui/material/IconButton';
 import TabContext from '@mui/lab/TabContext';
+import Tooltip from '@mui/material/Tooltip';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import Grid from '@mui/material/Grid';
@@ -19,6 +21,7 @@ import CompressIcon from '@mui/icons-material/Compress';
 import InfoIcon from '@mui/icons-material/Info';
 import * as turf from '@turf/turf';
 import L from 'leaflet';
+import { ButtonGroup } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function EditToolbar({
@@ -27,6 +30,8 @@ export default function EditToolbar({
   handleSplit,
   setVertexEnabled,
   setDownloadOpen,
+  handleSave,
+  setHelpOpen,
 }) {
   const { store } = useContext(GlobalStoreContext);
   const [value, setValue] = React.useState('1');
@@ -168,6 +173,7 @@ export default function EditToolbar({
 
   const editIconStyle = {
     fontSize: 50,
+    color:"black",
     'text-align': 'center',
   };
 
@@ -244,62 +250,68 @@ export default function EditToolbar({
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle} onClick={handleEdit}>
-                  <EditIcon sx={editIconStyle} />
-                  <p style={editTextStyle}>EDIT</p>
-                </Box>
+                <Tooltip title="Edit">
+                  <IconButton sx={editIconBoxStyle} onClick={handleEdit}>
+                    <EditIcon sx={editIconStyle} />
+                    {/* <p style={editTextStyle}>EDIT</p> */}
+                  </IconButton>
+                </Tooltip>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle} onClick={handleCreateRegion}>
-                  <LibraryAddIcon sx={editIconStyle} />
-                  <p style={editTextStyle}>CREATE REGION</p>
-                </Box>
+                <Tooltip title="Create Region">
+                  <IconButton sx={editIconBoxStyle} onClick={handleCreateRegion}>
+                    <LibraryAddIcon sx={editIconStyle} />
+                    {/* <p style={editTextStyle}>CREATE REGION</p> */}
+                  </IconButton>
+                </Tooltip>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle} onClick={handleMergeRegion}>
-                  <MergeIcon sx={editIconStyle} />
-                  <p style={editTextStyle}>MERGE REGION</p>
-                </Box>
+                <Tooltip title="Merge Region">
+                  <IconButton sx={editIconBoxStyle} onClick={handleMergeRegion}>
+                    <MergeIcon sx={editIconStyle} />
+                    {/* <p style={editTextStyle}>MERGE REGION</p> */}
+                  </IconButton>
+                </Tooltip>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle} onClick={handleSplit}>
-                  <CallSplitIcon sx={editIconStyle} />
-                  <p style={editTextStyle}>SPLIT REGION</p>
-                </Box>
+                <Tooltip title="Split Region">
+                  <IconButton sx={editIconBoxStyle} onClick={handleSplit}>
+                    <CallSplitIcon sx={editIconStyle} />
+                    {/* <p style={editTextStyle}>SPLIT REGION</p> */}
+                  </IconButton>
+                </Tooltip>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle} onClick={setDownloadOpen}>
-                  <DownloadIcon sx={editIconStyle} />
-                  <p style={editTextStyle}>Downlaod</p>
-                </Box>
+                <Tooltip title="Download">
+                  <IconButton sx={editIconBoxStyle} onClick={setDownloadOpen}>
+                    <DownloadIcon sx={editIconStyle} />
+                    {/* <p style={editTextStyle}>Downlaod</p> */}
+                  </IconButton>
+                </Tooltip>
               </Grid>
               <Grid item xs={6}>
-                <Box
-                  sx={editIconBoxStyle}
-                  onClick={() => {
-                    store.saveMap();
-                  }}
-                >
-                  <SaveIcon sx={editIconStyle} />
-                  <p style={editTextStyle}>Save</p>
-                </Box>
+                <Tooltip title="Save">
+                  <IconButton sx={editIconBoxStyle} onClick={handleSave}>
+                    <SaveIcon sx={editIconStyle} />
+                    {/* <p style={editTextStyle}>Save</p> */}
+                  </IconButton>
+                </Tooltip>
               </Grid>
               <Grid item xs={6}>
-                <Box
-                  sx={editIconBoxStyle}
-                  onClick={() => {
-                    store.compressMap(0.005);
-                  }}
-                >
-                  <CompressIcon sx={editIconStyle} />
-                  <p style={editTextStyle}>Compress Map</p>
-                </Box>
+                <Tooltip title="Compress Map">
+                  <IconButton sx={editIconBoxStyle} onClick={()=>{store.compressMap(0.005)}}>
+                    <CompressIcon sx={editIconStyle} />
+                    {/* <p style={editTextStyle}>Compress Map</p> */}
+                  </IconButton>
+                </Tooltip>
               </Grid>
               <Grid item xs={6}>
-                <Box sx={editIconBoxStyle} onClick={() => {}}>
-                  <InfoIcon sx={editIconStyle} />
-                  <p style={editTextStyle}>Help</p>
-                </Box>
+                <Tooltip title="Help">
+                  <IconButton sx={editIconBoxStyle} onClick={()=>{setHelpOpen(true)}}>
+                    <InfoIcon sx={editIconStyle} />
+                    {/* <p style={editTextStyle}>Help</p> */}
+                  </IconButton>
+                </Tooltip>
               </Grid>
             </Grid>
           </Box>
@@ -384,7 +396,8 @@ export default function EditToolbar({
           </div>
         </TabPanel>
         <TabPanel value="3">
-          <div>
+          <div style={{justifyContent:"space-evenly"}}>
+            <ButtonGroup orientation="vertical">
             <Button variant="contained" component="label">
               Upload GeoJson
               <input
@@ -394,6 +407,7 @@ export default function EditToolbar({
                 onChange={(e) => handleGeoUpload(e.target.files)}
               />
             </Button>
+            <br/>
             <Button variant="contained" component="label">
               Upload Shp/Dbf
               <input
@@ -404,6 +418,7 @@ export default function EditToolbar({
                 multiple
               />
             </Button>
+            </ButtonGroup>
           </div>
         </TabPanel>
       </TabContext>

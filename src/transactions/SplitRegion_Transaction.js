@@ -24,4 +24,8 @@ export default class SplitRegion_Transaction extends jsTPS_Transaction {
     undoTransaction() {
         this.store.splitRegion(this.oldRegion, this.newOldRegion, this.newRegion1, this.newRegion2, "undo", this.type);
     }
+
+    updateStore(store) {
+        this.store = store;
+      }
 }

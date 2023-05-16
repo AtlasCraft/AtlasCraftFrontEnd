@@ -7,8 +7,9 @@ import {
   Tab,
   Grid,
   IconButton,
+  Tooltip,
 } from '@mui/material';
-import { Undo, Redo } from '@mui/icons-material';
+import { Undo, Redo, Publish } from '@mui/icons-material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import { MapContainer, GeoJSON, TileLayer, Marker } from 'react-leaflet';
 import shp from 'shpjs';
@@ -25,18 +26,31 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import MapLayer from './MapLayer';
 import EditToolbar from './EditToolbar';
 import { enqueueSnackbar } from 'notistack';
+import { SimpleMapScreenshoter} from "leaflet-simple-map-screenshoter";
 
 const style = {
   enabledTransaction: {
     color: 'Black',
     transform: 'scale(1.6)',
   },
-  disabledTransaction: {
-    color: 'Black',
-    transform: 'scale(1.6)',
-    opacity: '50%',
-  },
+
+  disabledTransaction:{
+    color:"Black",
+    transform:"scale(1.6)",
+    opacity:"50%",
+  }
+}
+
+const snapshotOptions = {
+  hideElementsWithSelectors: [
+    ".leaflet-control-container",
+    ".leaflet-dont-include-pane",
+    "#snapshot-button"
+  ],
+  hidden: true
 };
+
+// const screenshotter = new SimpleMapScreenshoter();
 
 export default function EditScreen() {
   const { store } = useContext(GlobalStoreContext);
@@ -47,6 +61,36 @@ export default function EditScreen() {
   const [mapName, setMapName] = useState(store.mapName);
   const [vertexEnabled, setVertexEnabled] = useState(true);
   const [downloadOpen, setDownloadOpen] = useState(false);
+  const [screenshotter, setScreenshot] = useState();
+  const [mapref, setMapref] = useState();
+  const [helpOpen, setHelpOpen] = useState(false);
+
+  // const mapref = React.useRef();
+  const geoJsonRef = React.useRef();
+
+  useEffect(()=>{
+    console.log(mapref)
+  },[mapref])
+
+  useEffect(()=>{
+    document.addEventListener("keydown", handleKeyDown, true);
+    return ()=>{document.removeEventListener("keydown", handleKeyDown, true);}
+  });
+  function handleKeyDown(e){
+    console.log(e)
+    if(!e.ctrlKey) return;
+    switch(e.code){
+      case "KeyZ":
+        store.undo();
+        break;
+      case "KeyY":
+        store.redo();
+        break;
+      // case "KeyS":
+      //   handleSave();
+      //   break;
+    }
+  }
 
   useEffect(() => {
     if (!vertexEnabled) return;
@@ -140,7 +184,7 @@ export default function EditScreen() {
     });
   }
 
-  console.log(selectedVerts);
+
   function findGeoIndex(props) {
     for (let i = 0; i < store.geojson.features.length; i++) {
       if (
@@ -153,7 +197,50 @@ export default function EditScreen() {
     return -1;
   }
 
+  function handleSave(){
+    let thumbnail=null;
+    const featureBounds = geoJsonRef.current.getBounds().pad(0.1);
+    const nw = featureBounds.getNorthWest();
+    const se = featureBounds.getSouthEast();
+    const topLeft = mapref.latLngToContainerPoint(nw);
+    const bottomRight = mapref.latLngToContainerPoint(se);
+    const imageSize = bottomRight.subtract(topLeft);
+    screenshotter.takeScreen("image",{hidden:true}).then((image)=>{
+      // Create <img> element to render img data
+      var img = new Image();
+      console.log(image);
+      // once the image loads, do the following:
+      img.onload = () => {
+        // Create canvas to process image data
+        const cnv = document.createElement("canvas");
+        const ctx = cnv.getContext("2d");
+        cnv.width = imageSize.x;
+        cnv.height = imageSize.y;
+        ctx.drawImage(
+          img,
+          topLeft.x,
+          topLeft.y,
+          imageSize.x,
+          imageSize.y,
+          0,
+          0,
+          imageSize.x,
+          imageSize.y
+        );
+
+        // Create URL for resultant png
+        thumbnail = cnv.toDataURL("image/png");
+        console.log(thumbnail);
+        store.saveMap(thumbnail);
+      };
+      img.src = image;
+    })
+    
+  }
+
+
   function handleChange(event, newValue) {
+
     setValue(newValue);
   }
 
@@ -212,7 +299,6 @@ export default function EditScreen() {
     //TODO need to check for vertex list size
     //call store function and create a transaction
   }
-
   const updateMapName = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -222,7 +308,9 @@ export default function EditScreen() {
   };
   return (
     <div>
-      <Download setOpen={setDownloadOpen} open={downloadOpen} />
+      <Download setOpen={setDownloadOpen} open={downloadOpen}/>
+      <Help setOpen={setHelpOpen} open={helpOpen}/>
+
       <div>
         <Box
           component="form"
@@ -253,40 +341,39 @@ export default function EditScreen() {
               }}
               hiddenLabel
             />
-            <IconButton
-              href="#"
-              sx={{
-                'align-self': 'center',
-              }}
-              disabled={!store.canUndo()}
-              onClick={() => {
-                store.undo();
-              }}
-            >
-              <Undo
-                style={
-                  store.canUndo()
-                    ? style.enabledTransaction
-                    : style.disabledTransaction
-                }
-              />
-            </IconButton>
-            <IconButton
-              href="#"
-              sx={{ 'align-self': 'center' }}
-              disabled={!store.canRedo()}
-              onClick={() => {
-                store.redo();
-              }}
-            >
-              <Redo
-                style={
-                  store.canRedo()
-                    ? style.enabledTransaction
-                    : style.disabledTransaction
-                }
-              />
-            </IconButton>
+            <Tooltip title="Undo">
+              <IconButton
+                href="#"
+                sx={{
+                  'align-self': 'center',
+                }}
+                disabled={!store.canUndo()}
+                onClick={()=>{store.undo()}}
+              >
+                <Undo style={store.canUndo()?style.enabledTransaction:style.disabledTransaction}/>
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Redo">
+              <IconButton
+                href="#"
+                sx={{ 'align-self': 'center' }}
+                disabled={!store.canRedo()}
+                onClick={()=>{store.redo()}}
+              >
+                <Redo style={store.canRedo()?style.enabledTransaction:style.disabledTransaction}/>
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Publish Map">
+              <IconButton
+                href="#"
+                sx={{
+                  'align-self': 'center',
+                }}
+                onClick={()=>{store.publishMap(store.mapId)}}
+              >
+                <Publish style={style.enabledTransaction}/>
+              </IconButton>
+            </Tooltip>
           </Stack>
         </Box>
       </div>
@@ -300,14 +387,17 @@ export default function EditScreen() {
             }}
           >
             <MapContainer
+              whenCreated={ mapInstance => {mapref.current=mapInstance } }
               style={{ height: '75vh' }}
               center={[42.09618442380296, -71.5045166015625]}
               zoom={7}
+              preferCanvas={true}
+              
             >
               <MapZoom />
               <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                url="https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
+                attribution="Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri"
               />
 
               {markedVertices}
@@ -316,6 +406,9 @@ export default function EditScreen() {
                 onEachFeature={onEachFeature}
                 setVertexEnabled={setVertexEnabled}
                 setTempSelectedVert={setTempSelectedVert}
+                georef={geoJsonRef}
+                setScreenshot={setScreenshot}
+                setMapref={setMapref}
               />
             </MapContainer>
           </div>
@@ -325,6 +418,8 @@ export default function EditScreen() {
             handleSplit={handleSplit}
             setVertexEnabled={setVertexEnabled}
             setDownloadOpen={setDownloadOpen}
+            handleSave={handleSave}
+            setHelpOpen={setHelpOpen}
           />
         </Stack>
       </div>
