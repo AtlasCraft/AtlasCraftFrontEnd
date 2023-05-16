@@ -358,7 +358,7 @@ export default function EditScreen() {
                 sx={{
                   'align-self': 'center',
                 }}
-                disabled={!store.canUndo()}
+                // disabled={!store.canUndo()}
                 onClick={()=>{store.undo()}}
               >
                 <Undo style={store.canUndo()?style.enabledTransaction:style.disabledTransaction}/>
@@ -368,7 +368,7 @@ export default function EditScreen() {
               <IconButton
                 href="#"
                 sx={{ 'align-self': 'center' }}
-                disabled={!store.canRedo()}
+                // disabled={!store.canRedo()}
                 onClick={()=>{store.redo()}}
               >
                 <Redo style={store.canRedo()?style.enabledTransaction:style.disabledTransaction}/>
