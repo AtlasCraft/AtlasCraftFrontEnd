@@ -506,7 +506,29 @@ function GlobalStoreContextProvider(props) {
 
   //map management
   store.downloadGeo = function () {
-    let tempGeo = JSON.parse(JSON.stringify(store.geojson));
+    var collection = {
+      type: 'FeatureCollection',
+      features: [],
+    };
+
+    // Iterate the layers of the map
+    store.mapObject.eachLayer(function (layer) {
+      // Create GeoJSON object from marker
+      // console.log(layer);
+      try {
+        if (
+          layer._drawnByGeoman ||
+          (layer.feature && layer.feature.type !== 'FeatureCollection')
+        ) {
+          const geojson = layer.toGeoJSON();
+          // Push GeoJSON object to collection
+          collection.features.push(geojson);
+        }
+      } catch (e) {
+        console.log('NO GEOJSON Found');
+      }
+    });
+    let tempGeo = JSON.parse(JSON.stringify(collection));
     tempGeo["properties"] = store.wholeMapProp;
     let blob = new Blob([JSON.stringify(tempGeo)], {
       type: 'data:text/plain;charset=utf-8',
