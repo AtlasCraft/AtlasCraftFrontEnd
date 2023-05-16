@@ -87,7 +87,7 @@ export default function MapCard(props){
         setLiked(props.likedUsers);
         setDisliked(props.dislikedUsers);
     },[props.likedUsers, props.dislikedUsers]);
-    if(props.thumbnail)console.log(props.thumbnail)
+    // if(props.thumbnail)console.log(props.thumbnail)
     function handleLike(){
         if(likedUsers.includes(loggedInUser)){
             //remove from liked users and update backend

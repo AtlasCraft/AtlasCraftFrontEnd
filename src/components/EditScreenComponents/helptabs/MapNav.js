@@ -25,7 +25,8 @@ export default function MapNav(){
                 You can move the map by dragging and clicking<br/>
                 You can zoom using either the buttons on the top left or using a scroll wheel<br/>
                 The camera icon can be used to take a snapshot ant download a png for the vieport<br/>
-                The eraser allows you to remove a region.
+                The eraser allows you to remove a region.<br/>
+                You can also view the name of the region by ctrl left click on a region but there must be a property called name for the region for text to appear
             </p>
             <Divider />
             <br/>
