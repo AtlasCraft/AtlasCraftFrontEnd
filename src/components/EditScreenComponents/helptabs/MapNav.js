@@ -47,6 +47,7 @@ export default function MapNav(){
                 The left picture contains editing functions as well as a save and download function <br/>
                 The center picture is the properties tab and simply follow the format specified in the add properties textbox<br/>
                 The right picture is the upload tab, simply click on the button of the file type that you wish to upload<br/>
+                NOTE: Compress Map should only be used on a fresh upload
             </p>
         </div>
     );
