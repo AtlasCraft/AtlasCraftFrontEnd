@@ -18,6 +18,11 @@ const LoginScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const history = useHistory();
+
+  // if (auth.loggedIn) {
+  //   history.push('/home');
+  // }
+
   console.log(auth);
   const handleLogin = (e) => {
     e.preventDefault();
@@ -93,7 +98,13 @@ const LoginScreen = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <Button type="submit" variant="contained" color="primary" fullWidth onClick={handleLogin}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={handleLogin}
+            >
               Login
             </Button>
             <Grid container justifyContent="space-between">

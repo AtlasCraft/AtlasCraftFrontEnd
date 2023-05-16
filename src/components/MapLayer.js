@@ -38,17 +38,23 @@ export default function MapLayer({
   map.on('pm:create', (e) => {
     const { layer } = e;
     e.layer.options.pmIgnore = false;
-    layer.feature = {
-      type: 'Feature',
-      properties: {},
-    };
     const trans = store.tps.transactions[store.tps.mostRecentTransaction];
     if (trans instanceof AddRegion_Transaction) {
       // HANDLE DUPLICATES
       if (trans.layer !== layer) {
+        layer.feature = {
+          type: 'Feature',
+          properties: {},
+        };
+        layer.feature.properties.AtlasCraftRegionID = Math.random();
         store.addAddRegionTransaction(layer);
       }
     } else {
+      layer.feature = {
+        type: 'Feature',
+        properties: {},
+      };
+      layer.feature.properties.AtlasCraftRegionID = Math.random();
       store.addAddRegionTransaction(layer);
     }
   });
@@ -75,6 +81,11 @@ export default function MapLayer({
   map.pm.addControls({
     position: 'topleft',
     drawCircle: false,
+    drawMarker: false,
+    drawCircleMarker: false,
+    drawPolyline: false,
+    drawRectangle: false,
+    drawPolygon: false,
   });
 
   function findGeoIndex(props) {
@@ -177,6 +188,12 @@ export default function MapLayer({
         console.log('Context Menu Clicked');
         if (layer) {
           if (!store.selectedRegion.includes(layer)) {
+            if (store.editSelection === 'properties') {
+              store.selectedRegion.forEach((region) => {
+                region.setStyle({ fillColor: 'yellow' });
+              });
+              store.selectedRegion = [];
+            }
             store.selectedRegion.push(layer);
             layer.setStyle({ fillColor: 'orange' });
           }

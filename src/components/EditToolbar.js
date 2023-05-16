@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import Tab from '@mui/material/Tab';
 import IconButton from '@mui/material/IconButton';
 import TabContext from '@mui/lab/TabContext';
@@ -11,8 +11,8 @@ import LibraryAddIcon from '@mui/icons-material/LibraryAdd';
 import MergeIcon from '@mui/icons-material/Merge';
 import CallSplitIcon from '@mui/icons-material/CallSplit';
 
-import DownloadIcon from '@mui/icons-material/Download'
-import SaveIcon from '@mui/icons-material/Save'
+import DownloadIcon from '@mui/icons-material/Download';
+import SaveIcon from '@mui/icons-material/Save';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -22,6 +22,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import * as turf from '@turf/turf';
 import L from 'leaflet';
 import { ButtonGroup } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function EditToolbar({
   handleGeoUpload,
@@ -34,8 +35,122 @@ export default function EditToolbar({
 }) {
   const { store } = useContext(GlobalStoreContext);
   const [value, setValue] = React.useState('1');
+  const [propValue, setPropValue] = React.useState('');
+  const [globalPropValue, setGlobalPropValue] = React.useState('');
+  const [regionProp, setRegionProp] = React.useState(store.regionProperty);
+  const [globalProp, setGlobalProp] = React.useState(store.wholeMapProps);
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  useEffect(() => {
+    console.log('EDIT TOOLBAR USE EFFECT');
+    if (value === '2') {
+      store.editSelection = 'properties';
+      let timer = setInterval(() => {
+        if (store.selectedRegion.length === 0) {
+          setRegionProp(null);
+          return;
+        }
+        if (
+          store.selectedRegion.length &&
+          store.selectedRegion[store.selectedRegion.length - 1].feature
+        ) {
+          store.regionProperty =
+            store.selectedRegion[
+              store.selectedRegion.length - 1
+            ].feature.properties;
+          // store.selectedRegion[store.selectedRegion.length - 1].setStyle({
+          //   fillColor: 'blue',
+          // });
+          setRegionProp(store.regionProperty);
+        }
+      }, 100);
+      return () => clearInterval(timer);
+    } else {
+      if (store.editSelection === 'properties') {
+        if (store.selectedRegion.length) {
+          store.selectedRegion[0].setStyle({ fillColor: 'yellow' });
+          store.selectedRegion = [];
+        }
+      }
+      store.editSelection = value;
+    }
+  }, [value, store]);
+
+  const handleChangePropValue = (event) => {
+    setPropValue(event.target.value);
+  };
+
+  const handleChangeGlobalPropValue = (event) => {
+    setGlobalPropValue(event.target.value);
+  };
+
+  const handleAddProp = (event) => {
+    event.preventDefault();
+    const p = propValue.split(':', 2);
+    const name = p[0];
+    const val = p[1];
+    if (regionProp && regionProp[name]) {
+      console.log('Property exist');
+      return;
+    }
+    console.log(p);
+    if (p.length === 2) {
+      const newProp = { ...regionProp };
+      newProp[name] = val;
+      // store.updateProp(newProp);
+      setPropValue('');
+      setRegionProp(newProp);
+      store.selectedRegion[store.selectedRegion.length - 1].feature.properties =
+        newProp;
+    } else {
+      console.log('Please use name:value format');
+    }
+  };
+
+  const handleAddGlobalProp = (event) => {
+    event.preventDefault();
+    const p = globalPropValue.split(':', 2);
+    const name = p[0];
+    const val = p[1];
+    if (globalProp && globalProp[name]) {
+      console.log('Property exist');
+      return;
+    }
+    if (p.length === 2) {
+      const newProp = { ...globalProp };
+      newProp[name] = val;
+      setGlobalPropValue('');
+      setGlobalProp(newProp);
+      store.wholeMapProps = newProp;
+    } else {
+      console.log('Please use name:value format');
+    }
+  };
+
+  const deleteHandler = (event, key) => {
+    event.preventDefault();
+    console.log(key);
+    if (regionProp) {
+      const newProp = { ...regionProp };
+      delete newProp[key];
+      // store.updateProp(newProp);
+      setRegionProp(newProp);
+      store.selectedRegion[store.selectedRegion.length - 1].feature.properties =
+        newProp;
+    }
+  };
+
+  const deleteGlobalPropHandler = (event, key) => {
+    event.preventDefault();
+    if (globalProp) {
+      const newProp = { ...globalProp };
+      delete newProp[key];
+      setGlobalProp(newProp);
+      store.wholeMapProps = newProp;
+    }
   };
 
   const countryStyle = {
@@ -125,7 +240,6 @@ export default function EditToolbar({
             <Tab label="Edit" value="1" />
             <Tab label="Properties" value="2" />
             <Tab label="Upload" value="3" />
-
           </TabList>
         </Box>
         <TabPanel value="1">
@@ -202,15 +316,83 @@ export default function EditToolbar({
             </Grid>
           </Box>
         </TabPanel>
-        <TabPanel value="2">
-          <div style={{ display: 'flex', 'flex-direction': 'column' }}>
+        <TabPanel value="2" style={{ height: '80%', overflow: 'auto' }}>
+          <div
+            style={{
+              display: 'flex',
+              'flex-direction': 'column',
+            }}
+          >
+            <p>Global Map Properties</p>
+            {globalProp
+              ? Object.keys(globalProp).map((key) => {
+                  const val = key + ':' + globalProp[key];
+                  return (
+                    <div style={{ display: 'flex' }}>
+                      <TextField
+                        id="globalPropForm"
+                        variant="filled"
+                        placeholder="name: value"
+                        value={val}
+                        hiddenLabel
+                      />
+                      <Button
+                        onClick={(e) => {
+                          deleteGlobalPropHandler(e, key);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </Button>
+                    </div>
+                  );
+                })
+              : null}
             <TextField
-              id="propForm"
+              id="globalPropForm"
               variant="filled"
               placeholder="name: value"
               hiddenLabel
+              value={globalPropValue}
+              onChange={handleChangeGlobalPropValue}
             />
-            <a>+ Add property</a>
+            <a onClick={handleAddGlobalProp}>+ Add property</a>
+            {store.selectedRegion.length > 0 ? <p>Region Properties</p> : null}
+            {regionProp
+              ? Object.keys(regionProp).map((key) => {
+                  const val = key + ':' + regionProp[key];
+                  return (
+                    <div style={{ display: 'flex' }}>
+                      <TextField
+                        id="propForm"
+                        variant="filled"
+                        placeholder="name: value"
+                        value={val}
+                        hiddenLabel
+                      />
+                      <Button
+                        onClick={(e) => {
+                          deleteHandler(e, key);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </Button>
+                    </div>
+                  );
+                })
+              : null}
+            {store.selectedRegion.length > 0 ? (
+              <React.Fragment>
+                <TextField
+                  id="propForm"
+                  variant="filled"
+                  placeholder="name: value"
+                  hiddenLabel
+                  value={propValue}
+                  onChange={handleChangePropValue}
+                />
+                <a onClick={handleAddProp}>+ Add property</a>
+              </React.Fragment>
+            ) : null}
           </div>
         </TabPanel>
         <TabPanel value="3">
@@ -239,7 +421,6 @@ export default function EditToolbar({
             </ButtonGroup>
           </div>
         </TabPanel>
-        
       </TabContext>
     </div>
   );
